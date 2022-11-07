@@ -1,0 +1,31 @@
+jwt:
+  secret: {key}
+  accessTokenExpTime: {ms}
+  refreshTokenExpTime: {ms}
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/{데이터베이스이름}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: {username}
+    password: {password}
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+        format_sql: true
+
+  security:
+    user:
+      password: {password}
+
+  webservices:
+    path: "/api"
+
+logging:
+  level:
+    org.hibernate.sql: debug
