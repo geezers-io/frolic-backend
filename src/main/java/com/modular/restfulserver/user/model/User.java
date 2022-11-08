@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE users SET deleted_date = CURRENT_TIMESTAMP WHERE id ?")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id ?")
 @Where(clause = "deleted = false")
 public class User extends CreateAndModifiedTimeAuditEntity {
 

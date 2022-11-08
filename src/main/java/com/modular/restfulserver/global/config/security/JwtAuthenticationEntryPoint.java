@@ -42,7 +42,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     response.getWriter().write(resDataString);
   }
 
-  public String mapping(Map<String, String> data) throws JsonProcessingException {
+  private String mapping(Map<String, String> data) throws JsonProcessingException {
     return mapper.writeValueAsString(data);
   }
 }
