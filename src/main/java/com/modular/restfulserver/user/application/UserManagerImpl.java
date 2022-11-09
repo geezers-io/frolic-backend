@@ -1,6 +1,6 @@
 package com.modular.restfulserver.user.application;
 
-import com.modular.restfulserver.auth.exception.InvalidTokenException;
+import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.UserInfoDto;
 import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
@@ -8,13 +8,12 @@ import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.FollowRepository;
 import com.modular.restfulserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserManagerImpl implements UserManager {
@@ -27,21 +26,19 @@ public class UserManagerImpl implements UserManager {
 
   @Override
   public void updateUserInfo(String token, UserUpdateRequestDto dto) {
-    Optional<User> userByToken = userRepository.findByEmail(
+    User user = userRepository.findByEmail(
       jwtProvider.getUserEmailByToken(token)
-    );
-    User user = userRepository.findByEmail(dto.getEmail())
-      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
-    if (
-      userByToken.isPresent()
-      && !Objects.equals(userByToken.get().getId(), user.getId())
-    )
-      throw new InvalidTokenException();
+    ).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
 
-    String newPassword = passwordEncoder.encode(dto.getPassword());
-    user.changePassword(newPassword);
+    checkDuplicatedInfo(dto, user);
+
+    String newPassword =  passwordEncoder.encode(dto.getPassword());
+    user.changePassword(
+      newPassword
+    );
     user.changeEmail(dto.getEmail());
     user.changeUsername(dto.getUsername());
+    userRepository.save(user);
   }
 
   @Override
@@ -80,4 +77,17 @@ public class UserManagerImpl implements UserManager {
       .addAllPostCount(0L)
       .build();
   }
+
+  private void checkDuplicatedInfo(UserUpdateRequestDto dto, User targetUser) {
+    boolean isAlreadyExistsEmail = userRepository.existsByEmail(dto.getEmail());
+    boolean isAlreadyExistsUsername = userRepository.existsByUsername(dto.getUsername());
+
+    if (isAlreadyExistsEmail && !dto.getEmail().equals(targetUser.getEmail()))
+      throw new AlreadyExistsUserException();
+
+    if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
+      throw new AlreadyExistsUserException();
+
+  }
+
 }
