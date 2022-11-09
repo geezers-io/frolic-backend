@@ -55,9 +55,10 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   public void changePassword(String newPassword) {
     this.password = newPassword;
   }
+  public void changeUsername(String username) { this.username = username; }
+  public void changeEmail(String email) { this.email = email; }
 
   public void updateRefreshToken(String token) {
     this.refreshToken = token;
   }
-
 }
