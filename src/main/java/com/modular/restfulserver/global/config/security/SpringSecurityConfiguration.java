@@ -34,7 +34,8 @@ public class SpringSecurityConfiguration {
       .ignoring()
       .antMatchers(
         "/api/auth/login",
-        "/api/auth/signup"
+        "/api/auth/signup",
+        "/api/user/{username}"
       );
   }
 

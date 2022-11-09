@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 
@@ -30,6 +31,12 @@ public class JwtProvider {
     this.jwtSecretKey = Keys.hmacShaKeyFor(keyBytes);
     this.accessTokenExpTime = accessTokenExpTime;
     this.refreshTokenExpTime = refreshTokenExpTime;
+  }
+
+  public String getTokenByHttpRequestHeader(HttpServletRequest request) {
+    return request
+      .getHeader("AUTHORIZATION")
+      .substring(JwtConstants.TOKEN_HEADER_PREFIX.length());
   }
 
   public String createAccessToken(String email) {
