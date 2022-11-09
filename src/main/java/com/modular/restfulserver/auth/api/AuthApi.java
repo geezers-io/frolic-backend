@@ -3,7 +3,6 @@ package com.modular.restfulserver.auth.api;
 import com.modular.restfulserver.auth.application.AuthService;
 import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
 import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
-import com.modular.restfulserver.auth.exception.NoneTokenOnHeaderException;
 import com.modular.restfulserver.global.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +38,8 @@ public class AuthApi {
   protected ResponseEntity<ErrorResponse> handleDtoMethodArgumentNotValidExceptionHandler(
     MethodArgumentNotValidException ex
   ) {
-    return ErrorResponse.toResponseEntityByArgumentNotValidException(ex);
+    return ErrorResponse
+      .toResponseEntityByArgumentNotValidException(ex);
   }
 
   @PostMapping("/login")
