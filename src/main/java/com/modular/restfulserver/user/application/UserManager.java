@@ -7,7 +7,7 @@ public interface UserManager {
 
   void updateUserInfo(String token, UserUpdateRequestDto dto);
 
-  void deleteUser(String token);
+  void deleteUser(String token, String password);
 
   UserInfoDto getUserInfo(String username);
 

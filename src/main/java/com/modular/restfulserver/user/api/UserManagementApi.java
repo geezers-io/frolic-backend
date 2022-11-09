@@ -2,6 +2,7 @@ package com.modular.restfulserver.user.api;
 
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.application.UserManager;
+import com.modular.restfulserver.user.dto.UserDeletePasswordDto;
 import com.modular.restfulserver.user.dto.UserInfoDto;
 import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -48,12 +49,22 @@ public class UserManagementApi {
   }
 
   @PutMapping("")
-  public ResponseEntity<Void> updateUserInfo(
+  public ResponseEntity<Void> updateUserInfoApi(
     HttpServletRequest request,
     @RequestBody @Valid UserUpdateRequestDto dto
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     userManager.updateUserInfo(token, dto);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @DeleteMapping("")
+  public ResponseEntity<Void> deleteUserApi(
+    HttpServletRequest request,
+    @RequestBody @Valid UserDeletePasswordDto dto
+    ) {
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
+    userManager.deleteUser(token, dto.getPassword());
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

@@ -3,6 +3,7 @@ package com.modular.restfulserver.user.application;
 import com.modular.restfulserver.article.repository.ArticleRepository;
 import com.modular.restfulserver.article.repository.LikeRepository;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
+import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.UserInfoDto;
 import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
@@ -46,10 +47,12 @@ public class UserManagerImpl implements UserManager {
   }
 
   @Override
-  public void deleteUser(String token) {
+  public void deleteUser(String token, String password) {
     String email = jwtProvider.getUserEmailByToken(token);
     User user = userRepository.findByEmail(email)
       .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
+    if (!passwordEncoder.matches(password, user.getPassword()))
+      throw new PasswordNotMatchException();
     userRepository.delete(user);
   }
 
