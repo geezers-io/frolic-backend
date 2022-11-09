@@ -1,5 +1,7 @@
 package com.modular.restfulserver.user.application;
 
+import com.modular.restfulserver.article.repository.ArticleRepository;
+import com.modular.restfulserver.article.repository.LikeRepository;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.UserInfoDto;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class UserManagerImpl implements UserManager {
 
   private final UserRepository userRepository;
+  private final LikeRepository likeRepository;
+  private final ArticleRepository articleRepository;
   private final FollowRepository followRepository;
   private final PasswordEncoder passwordEncoder;
 
@@ -69,12 +73,14 @@ public class UserManagerImpl implements UserManager {
   private UserInfoDto getUserInfoDto(User user) {
     long followerCount = followRepository.countByFollowingId(user);
     long followingCount = followRepository.countByFollowerId(user);
+    long postCount = articleRepository.countAllByUser(user);
+    long likeCount = likeRepository.countAllByUser(user);
 
     return UserInfoDto.builder()
       .addAllFollowerCount(followerCount)
       .addAllFollowingCount(followingCount)
-      .addAllGivenLikeCount(0L)
-      .addAllPostCount(0L)
+      .addAllGivenLikeCount(likeCount)
+      .addAllPostCount(postCount)
       .build();
   }
 
