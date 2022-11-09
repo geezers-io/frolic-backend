@@ -44,7 +44,7 @@ public class AuthService {
   }
 
   public Map<String, TokenResponseDto> loginUser(UserLoginRequestDto dto) {
-    Map<String, Object> response = new HashMap<>();
+    Map<String, TokenResponseDto> response = new HashMap<>();
     User user = userRepository.findByEmail(dto.getEmail())
       .orElseThrow(
         () -> new UsernameNotFoundException("존재하지 않는 이메일 사용자입니다.")
