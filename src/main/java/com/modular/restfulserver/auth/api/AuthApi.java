@@ -3,6 +3,7 @@ package com.modular.restfulserver.auth.api;
 import com.modular.restfulserver.auth.application.AuthService;
 import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
 import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.global.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ import static com.modular.restfulserver.global.config.security.JwtConstants.*;
 @RequestMapping("/api/auth")
 public class AuthApi {
 
+  private final JwtProvider jwtProvider;
   private final AuthService authService;
 
   @PostMapping("/signup")
@@ -56,13 +59,21 @@ public class AuthApi {
   public ResponseEntity<Map<String, Map<String, String>>> refresh(
     HttpServletRequest req
   ) {
-    String authorizationHeader = req.getHeader("AUTHORIZATION");
-    String refreshToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
+    String refreshToken = jwtProvider.getTokenByHttpRequestHeader(req);
     Map<String, String> tokens = authService.refresh(refreshToken);
     Map<String, Map<String, String>> response = new HashMap<>();
     response.put("data", tokens);
 
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/logout")
+  public ResponseEntity<Void> logoutApi(
+    HttpServletRequest request
+  ) {
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
+    authService.logout(token);
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
 }

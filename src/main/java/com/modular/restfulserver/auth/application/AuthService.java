@@ -84,4 +84,11 @@ public class AuthService {
     return response;
   }
 
+  public void logout(String token) {
+    String email = jwtProvider.getUserEmailByToken(token);
+    User user = userRepository.findByEmail(email)
+      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
+    user.updateRefreshToken(null);
+  }
+
 }
