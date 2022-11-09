@@ -13,12 +13,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.modular.restfulserver.global.config.security.JwtConstants.*;
 
 @RequiredArgsConstructor
 @RestController
