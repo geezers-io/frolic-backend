@@ -70,8 +70,8 @@ public class UserManagerImpl implements UserManager {
   }
 
   private UserInfoDto getUserInfoDto(User user) {
-    long followerCount = followRepository.countByFollowerId(user);
-    long followingCount = followRepository.countByFollowingId(user);
+    long followerCount = followRepository.countByFollowingId(user);
+    long followingCount = followRepository.countByFollowerId(user);
 
     return UserInfoDto.builder()
       .addAllFollowerCount(followerCount)
