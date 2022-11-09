@@ -1,6 +1,7 @@
 package com.modular.restfulserver.auth.api;
 
 import com.modular.restfulserver.auth.application.AuthService;
+import com.modular.restfulserver.auth.dto.TokenResponseDto;
 import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
 import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
 import com.modular.restfulserver.global.config.security.JwtProvider;
@@ -46,7 +47,7 @@ public class AuthApi {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Map<String, Object>> login(
+  public ResponseEntity<Map<String, TokenResponseDto>> login(
     @RequestBody @Valid UserLoginRequestDto dto
     ) {
     var data = authService.loginUser(dto);

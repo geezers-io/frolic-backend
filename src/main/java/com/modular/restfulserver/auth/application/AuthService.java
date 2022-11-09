@@ -43,7 +43,7 @@ public class AuthService {
     userRepository.save(dto.toEntity());
   }
 
-  public Map<String, Object> loginUser(UserLoginRequestDto dto) {
+  public Map<String, TokenResponseDto> loginUser(UserLoginRequestDto dto) {
     Map<String, Object> response = new HashMap<>();
     User user = userRepository.findByEmail(dto.getEmail())
       .orElseThrow(
