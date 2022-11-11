@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
@@ -16,11 +14,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
   Long countByFollowingId(User user);
 
+  @Modifying
   @Query("" +
     "select u.username" +
     " from users u" +
     " inner join follows f" +
-    " where f.followingId = :user" +
+    " on f.followingId = :user" +
     "")
   String[] getAllByFollowerId(User user);
 
@@ -28,7 +27,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     "select u.username" +
     " from users u" +
     " inner join follows f" +
-    " where f.followerId = :user" +
+    " on f.followerId = :user" +
     "")
   String[] getAllByFollowingId(User user);
 
