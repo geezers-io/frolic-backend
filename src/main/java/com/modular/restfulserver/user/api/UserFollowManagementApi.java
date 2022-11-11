@@ -21,7 +21,7 @@ public class UserFollowManagementApi {
 
   @GetMapping("/follower")
   public ResponseEntity<Map<String, String[]>> getFollowerListBySelfApi(
-    HttpServletRequest request,
+    HttpServletRequest request
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     String[] followList = userFollowManager.getFollowerListBySelf(token);
