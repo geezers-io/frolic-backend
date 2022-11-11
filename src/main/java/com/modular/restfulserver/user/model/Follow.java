@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity(name = "follows")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Follow {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +22,13 @@ public class Follow {
   @ManyToOne
   @JoinColumn(name = "following_id")
   private User followingId;
+
+  public void setFollowerId(User followerId) {
+    this.followerId = followerId;
+  }
+
+  public void setFollowingId(User followingId) {
+    this.followingId = followingId;
+  }
 
 }
