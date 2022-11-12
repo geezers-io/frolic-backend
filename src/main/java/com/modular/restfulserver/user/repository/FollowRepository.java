@@ -14,25 +14,26 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
   Long countByFollowingId(User user);
 
-  @Modifying
   @Query("" +
     "select u.username" +
     " from users u" +
-    " inner join follows f" +
-    " on f.followingId = :user" +
+    " left join follows f" +
+    " on f.followingId = u.id " +
+    "where f.followingId = ?1"+
     "")
   String[] getAllByFollowerId(User user);
 
   @Query("" +
     "select u.username" +
     " from users u" +
-    " inner join follows f" +
-    " on f.followerId = :user" +
+    " left join follows f" +
+    " on f.followerId = u.id " +
+    "where f.followerId = ?1" +
     "")
   String[] getAllByFollowingId(User user);
 
   @Modifying
-  @Query("delete from follows f where f.followingId = :followingUser and f.followerId = :followerUser")
+  @Query("delete from follows f where f.followerId = ?1 and f.followingId = ?2")
   void deleteFollowByFollowerIdAndFollowingId(
     User followerUser,
     User followingUser
