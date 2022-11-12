@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "articles")
-@SQLDelete(sql = "UPDATE articles SET deleted = true WHERE id ?")
+@SQLDelete(sql = "UPDATE articles SET deleted = true WHERE id = ?")
 @Where(clause = "deleted = false")
 public class Article extends CreateAndModifiedTimeAuditEntity {
 

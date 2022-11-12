@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "comments")
-@SQLDelete(sql = "UPDATE comments SET deleted = true WHERE id ?")
+@SQLDelete(sql = "UPDATE comments SET deleted = true WHERE id = ?")
 @Where(clause = "deleted = false")
 public class Comment extends CreateAndModifiedTimeAuditEntity {
 
