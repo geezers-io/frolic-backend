@@ -1,19 +1,21 @@
 package com.modular.restfulserver.article.application;
 
+import com.modular.restfulserver.article.dto.CreatePostRequestDto;
+import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.article.model.Article;
 
 public interface PostCrudManager {
 
-  Article getPostById(Long id);
+  SingleArticleInfoDto getPostById(Long id);
 
-  Article updatePostById(Long id);
+  void updatePostById(String token, Long id);
 
-  Article deletePostById(Long id);
+  void deletePostById(String token, Long id);
 
-  Article createPost();
+  Article createPost(String token, CreatePostRequestDto dto);
 
   Article getPostByTokenAndPagination(String token, Integer offset);
 
-  Article getEntirePostByPagination(String token, Integer offset);
+  Article getEntirePostByPagination(Integer offset);
 
 }
