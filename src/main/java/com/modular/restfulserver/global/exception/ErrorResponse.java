@@ -30,7 +30,7 @@ public class ErrorResponse {
       );
   }
 
-  public static ResponseEntity<ErrorResponse> toResponseEntityByArgumentNotValidException(
+  public static ResponseEntity<Object> toResponseEntityByArgumentNotValidException(
     MethodArgumentNotValidException ex
   ) {
     var responseMap = new HashMap<String, String>();
