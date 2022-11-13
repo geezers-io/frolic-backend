@@ -21,7 +21,7 @@ public class CreatePostRequestDto {
   private final String textContent;
 
   @Max(5)
-  private List<String> tagList;
+  private List<String> hashTagList;
 
   @Builder(setterPrefix = "add")
   public CreatePostRequestDto(
