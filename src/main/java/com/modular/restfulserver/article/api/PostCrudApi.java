@@ -17,19 +17,19 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 public class PostCrudApi {
 
   private final JwtProvider jwtProvider;
   private final PostCrudManager postCrudManager;
 
   @PostMapping("")
-  public ResponseEntity<Map<String, Article>> createPostApi(
+  public ResponseEntity<Map<String, SingleArticleInfoDto>> createPostApi(
     HttpServletRequest request,
     @RequestBody @Valid CreatePostRequestDto createPostRequestDto
   ) {
-    var responseData = new HashMap<String, Article>();
-    Article post = postCrudManager.createPost(
+    var responseData = new HashMap<String, SingleArticleInfoDto>();
+    SingleArticleInfoDto post = postCrudManager.createPost(
       getToken(request),
       createPostRequestDto
     );
@@ -50,10 +50,11 @@ public class PostCrudApi {
   @PutMapping("/{postId}")
   public ResponseEntity<Void> updatePostByIdApi(
     HttpServletRequest request,
-    @PathVariable(name = "postId") Long postId
+    @PathVariable(name = "postId") Long postId,
+    @RequestBody @Valid SingleArticleInfoDto dto
   ) {
     String token = getToken(request);
-    postCrudManager.updatePostById(token, postId);
+    postCrudManager.updatePostById(token, postId, dto);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 

@@ -47,4 +47,14 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
     this.user = user;
   }
 
+  public void updateTitle(String title) {
+    // TODO: 2022-11-13 validation
+    this.title = title;
+  }
+
+  public void updateTextContent(String textContent) {
+    // TODO: 2022-11-13 validation
+    this.textContent = textContent;
+  }
+
 }

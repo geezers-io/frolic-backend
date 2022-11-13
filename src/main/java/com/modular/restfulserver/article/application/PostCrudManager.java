@@ -8,11 +8,11 @@ public interface PostCrudManager {
 
   SingleArticleInfoDto getPostById(Long id);
 
-  void updatePostById(String token, Long id);
+  void updatePostById(String token, Long id, SingleArticleInfoDto singleArticleInfoDto);
 
   void deletePostById(String token, Long id);
 
-  Article createPost(String token, CreatePostRequestDto dto);
+  SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto);
 
   Article getPostByTokenAndPagination(String token, Integer offset);
 

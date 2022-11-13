@@ -12,16 +12,15 @@ import java.util.List;
 @Getter
 public class CreatePostRequestDto {
 
-  @NotEmpty
-  @Max(value = 50, message = "게시글 제목은 50글자 미만이어야 합니다.")
+//  @NotEmpty
+//  @Max(value = 50, message = "게시글 제목은 50글자 미만이어야 합니다.")
   private final String title;
 
-  @NotEmpty
-  @Max(value = 1000, message = "게시글 본문은 1000글자 미만이어야 합니다.")
+//  @NotEmpty
+//  @Max(value = 1000, message = "게시글 본문은 1000글자 미만이어야 합니다.")
   private final String textContent;
-
-  @Max(5)
-  private List<String> hashTagList;
+  // TODO: 2022-11-13 Validation 제대로 작성하기 
+  private final List<String> hashTagList;
 
   @Builder(setterPrefix = "add")
   public CreatePostRequestDto(
