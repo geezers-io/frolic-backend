@@ -37,7 +37,7 @@ public class AuthApi {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  protected ResponseEntity<ErrorResponse> handleDtoMethodArgumentNotValidExceptionHandler(
+  protected ResponseEntity<Object> handleDtoMethodArgumentNotValidExceptionHandler(
     MethodArgumentNotValidException ex
   ) {
     return ErrorResponse
