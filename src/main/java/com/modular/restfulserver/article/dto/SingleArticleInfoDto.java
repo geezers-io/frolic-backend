@@ -16,6 +16,7 @@ public class SingleArticleInfoDto {
   private final String textContent;
   private final List<Comment> comments;
   private final List<String> hashtags;
+  private final Long likeCount;
 
   @Builder(setterPrefix = "add")
   public SingleArticleInfoDto(
@@ -24,7 +25,8 @@ public class SingleArticleInfoDto {
     String textContent,
     UserInfoForClientDto userInfo,
     List<Comment> comments,
-    List<String> hashtags
+    List<String> hashtags,
+    Long likeCount
   ) {
     this.postId = postId;
     this.title = title;
@@ -32,6 +34,7 @@ public class SingleArticleInfoDto {
     this.userInfo = userInfo;
     this.comments = comments;
     this.hashtags = hashtags;
+    this.likeCount = likeCount;
   }
 
 }

@@ -26,13 +26,15 @@ public class CreatePostRequestDto {
   @Builder(setterPrefix = "add")
   public CreatePostRequestDto(
     String title,
-    String textContent
+    String textContent,
+    List<String> hashTagList
   ) {
     Assert.hasText(title, "title field must be not empty");
     Assert.hasText(textContent, "textContent field must be not empty");
 
     this.title = title;
     this.textContent = textContent;
+    this.hashTagList = hashTagList;
   }
 
   public Article toEntity() {
