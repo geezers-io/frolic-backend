@@ -9,6 +9,7 @@ import com.modular.restfulserver.article.repository.CommentRepository;
 import com.modular.restfulserver.article.repository.HashtagRepository;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.global.exception.NotFoundResourceException;
+import com.modular.restfulserver.user.exception.NotPermissionException;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.UserRepository;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +52,8 @@ public class PostCrudManagerImpl implements PostCrudManager {
       jwtProvider.getUserEmailByToken(token)
     ).orElseThrow(UserNotFoundException::new);
     Long userId = user.getId();
-    if (userId != article.getId())
-      throw new RuntimeException();
+    if (!Objects.equals(userId, article.getId()))
+      throw new NotPermissionException();
 
     articleRepository.deleteById(id);
   }
