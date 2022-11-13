@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,12 +18,11 @@ public class Hashtag {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String name;
 
-  @ManyToOne
-  @JoinColumn(name = "article_id")
-  private Article article;
+  @OneToMany(mappedBy = "hashtag")
+  private final List<ArticleHashTag> articleHashTags = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
   public Hashtag(String name) {

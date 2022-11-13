@@ -8,6 +8,8 @@ import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,14 +32,19 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
+  @OneToMany(mappedBy = "article")
+  private final List<ArticleHashTag> articleHashTags = new ArrayList<>();
+
   @Builder(setterPrefix = "add")
   public Article(
     String title,
-    String textContent
+    String textContent,
+    User user
   ) {
     Assert.hasText(title, "title field must be string");
     this.title = title;
     this.textContent = textContent;
+    this.user = user;
   }
 
 }
