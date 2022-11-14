@@ -36,14 +36,6 @@ public class AuthApi {
       .build();
   }
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  protected ResponseEntity<Object> handleDtoMethodArgumentNotValidExceptionHandler(
-    MethodArgumentNotValidException ex
-  ) {
-    return ErrorResponse
-      .toResponseEntityByArgumentNotValidException(ex);
-  }
-
   @PostMapping("/login")
   public ResponseEntity<Map<String, TokenResponseDto>> login(
     @RequestBody @Valid UserLoginRequestDto dto

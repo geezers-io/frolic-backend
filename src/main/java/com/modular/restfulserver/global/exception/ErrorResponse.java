@@ -30,6 +30,15 @@ public class ErrorResponse {
       );
   }
 
+  public static ResponseEntity<Map<String, String>> toResponseEntityByMessage(String message) {
+    var responseMap = new HashMap<String, String>();
+    responseMap.put("error", message);
+
+    return ResponseEntity
+      .status(HttpStatus.BAD_REQUEST)
+      .body(responseMap);
+  }
+
   public static ResponseEntity<Object> toResponseEntityByArgumentNotValidException(
     MethodArgumentNotValidException ex
   ) {
