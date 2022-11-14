@@ -2,6 +2,7 @@ package com.modular.restfulserver.article.model;
 
 import com.modular.restfulserver.user.model.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,5 +24,10 @@ public class Like {
   @ManyToOne
   @JoinColumn(name = "article_id")
   private Article article;
+
+  public Like(User user, Article article) {
+    this.user = user;
+    this.article = article;
+  }
 
 }
