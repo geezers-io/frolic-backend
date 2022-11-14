@@ -34,8 +34,9 @@ public class JwtProvider {
   }
 
   public String getTokenByHttpRequestHeader(HttpServletRequest request) {
-    return request
-      .getHeader("AUTHORIZATION")
+    String authorizationHeader = request.getHeader("AUTHORIZATION");
+    if (authorizationHeader == null) return null;
+    return authorizationHeader
       .substring(JwtConstants.TOKEN_HEADER_PREFIX.length());
   }
 
