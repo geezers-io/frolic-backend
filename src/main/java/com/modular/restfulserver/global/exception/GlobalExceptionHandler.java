@@ -1,14 +1,12 @@
 package com.modular.restfulserver.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +24,12 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   protected ResponseEntity<Map<String, String>> handleMethodArgumentNotValid(IllegalArgumentException ex) {
-    log.error("여기안탐");
     return ErrorResponse.toResponseEntityByMessage(ex.getMessage());
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  protected ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    return ErrorResponse.toResponseEntityByArgumentNotValidException(ex);
   }
 
   @ExceptionHandler(UsernameNotFoundException.class)
