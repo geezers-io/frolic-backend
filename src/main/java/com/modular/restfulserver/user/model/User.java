@@ -19,13 +19,12 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String email;
 
   @Column(
     length = 15,
-    nullable = false,
-    unique = true
+    nullable = false
   )
   private String username;
 
