@@ -35,6 +35,9 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   @OneToMany(mappedBy = "article")
   private final List<ArticleHashTag> articleHashTags = new ArrayList<>();
 
+  @OneToMany(mappedBy = "article")
+  private final List<Comment> comments = new ArrayList<>();
+
   @Builder(setterPrefix = "add")
   public Article(
     String title,

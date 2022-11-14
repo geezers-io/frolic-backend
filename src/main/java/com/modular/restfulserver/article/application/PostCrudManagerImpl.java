@@ -38,7 +38,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
     Article article = articleRepository.findById(id)
       .orElseThrow(NotFoundResourceException::new);
     User user = article.getUser();
-    List<Comment> comments = commentRepository.findAllByArticle(article);
     List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
     UserInfoForClientDto userInfo = UserInfoForClientDto.builder()
       .addUserId(user.getId())
@@ -53,7 +52,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addTextContent(article.getTextContent())
       .addUserInfo(userInfo)
       .addLikeCount(likeCount)
-      .addComments(comments)
+      .addComments(article.getComments())
       .addHashtags(hashtags)
       .build();
   }
