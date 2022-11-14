@@ -5,6 +5,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ public class JwtProvider {
   }
 
   public String getTokenByHttpRequestHeader(HttpServletRequest request) {
-    String authorizationHeader = request.getHeader("AUTHORIZATION");
+    String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
     if (authorizationHeader == null) return null;
     return authorizationHeader
       .substring(JwtConstants.TOKEN_HEADER_PREFIX.length());
