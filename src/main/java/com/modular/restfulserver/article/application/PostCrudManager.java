@@ -3,6 +3,9 @@ package com.modular.restfulserver.article.application;
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.article.model.Article;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface PostCrudManager {
 
@@ -14,8 +17,8 @@ public interface PostCrudManager {
 
   SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto);
 
-  Article getPostByTokenAndPagination(String token, Integer offset);
+  List<SingleArticleInfoDto> getPostByTokenAndPagination(String token, Pageable pageable);
 
-  Article getEntirePostByPagination(Integer offset);
+  List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable);
 
 }
