@@ -31,34 +31,26 @@ public class SpringSecurityConfiguration {
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final CustomAuthProvider customAuthProvider;
 
-
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web
-      .ignoring()
-      .antMatchers(
-        "/api/auth/login",
-        "/api/auth/signup",
-        "/api/user/{username}",
-        "/api/post/list"
-      );
-  }
-
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("*"));
+
+    configuration.setAllowedOriginPatterns(Arrays.asList("*"));
     configuration.setAllowedMethods(Arrays.asList("*"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    configuration.setAllowCredentials(false);
+
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
-
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     /* off security features **/
     http
       .csrf().disable()
+      .cors().configurationSource(corsConfigurationSource())
+      .and()
       .formLogin().disable()
       .sessionManagement(
         session -> session.sessionCreationPolicy(
@@ -72,12 +64,12 @@ public class SpringSecurityConfiguration {
       .authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
       .authorizeRequests()
-//      .antMatchers(
-//        "/api/auth/login",
-//        "/api/auth/signup",
-//        "/api/user/{username}",
-//        "/api/post/list"
-//      ).permitAll()
+      .antMatchers(
+        "/api/auth/login",
+        "/api/auth/signup",
+        "/api/user/{username}",
+        "/api/post/list"
+      ).permitAll()
       .anyRequest().authenticated()
       .and()
       .httpBasic()
