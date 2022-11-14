@@ -35,7 +35,8 @@ public class SpringSecurityConfiguration {
       .antMatchers(
         "/api/auth/login",
         "/api/auth/signup",
-        "/api/user/{username}"
+        "/api/user/{username}",
+        "/api/post/list"
       );
   }
 
