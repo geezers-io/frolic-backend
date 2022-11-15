@@ -15,5 +15,4 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
   Page<Article> findAllByUserOrderByCreatedDate(User user, Pageable pageable);
 
-
 }

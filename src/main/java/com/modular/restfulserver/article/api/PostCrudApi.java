@@ -98,7 +98,6 @@ public class PostCrudApi {
     return ResponseEntity.ok(responseData);
   }
 
-
   private String getToken(HttpServletRequest request) {
     return jwtProvider.getTokenByHttpRequestHeader(request);
   }

@@ -2,6 +2,7 @@ package com.modular.restfulserver.article.dto;
 
 import com.modular.restfulserver.global.exception.BuilderArgumentNotValidException;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -17,6 +18,7 @@ public class SingleCommentInfoDto {
 
   private final UserInfoForClientDto userInfo;
 
+  @Builder(setterPrefix = "add")
   public SingleCommentInfoDto(
     Long commentId,
     Long articleId,
