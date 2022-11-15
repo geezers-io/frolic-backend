@@ -9,6 +9,7 @@ import com.modular.restfulserver.article.repository.CommentRepository;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.global.exception.NotFoundResourceException;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;
+import com.modular.restfulserver.user.exception.NotPermissionException;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,15 +102,29 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
 
   @Override
   public void deleteComment(String token, Long commentId) {
+    User tokenUser = getUserIsTokenAble(token);
+    Comment comment = commentRepository.findById(commentId)
+      .orElseThrow(NotFoundResourceException::new);
 
+    boolean isSameUser = Objects.equals(tokenUser.getId(), comment.getUser().getId());
+    if (!isSameUser)
+      throw new NotPermissionException();
+
+    commentRepository.delete(comment);
   }
 
-  public UserInfoForClientDto getUserForClientInfo(User user) {
+  private UserInfoForClientDto getUserForClientInfo(User user) {
     return UserInfoForClientDto.builder()
       .addUserId(user.getId())
       .addEmail(user.getEmail())
       .addUsername(user.getUsername())
       .build();
+  }
+
+  private User getUserIsTokenAble(String token) {
+    return userRepository.findByEmail(
+      jwtProvider.getUserEmailByToken(token)
+    ).orElseThrow(UserNotFoundException::new);
   }
 
 }
