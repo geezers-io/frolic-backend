@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/post")
+@RequestMapping("/api/posts")
 public class PostCrudApi {
 
   private final JwtProvider jwtProvider;
@@ -35,7 +35,9 @@ public class PostCrudApi {
       createPostRequestDto
     );
     responseData.put("data", post);
-    return ResponseEntity.ok(responseData); // TODO: 2022-11-12 201 status 수정 
+    return ResponseEntity
+      .status(HttpStatus.CREATED)
+      .body(responseData);
   }
 
   @GetMapping("/{postId}")
