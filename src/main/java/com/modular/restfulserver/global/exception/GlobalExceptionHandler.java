@@ -27,6 +27,13 @@ public class GlobalExceptionHandler {
     return ErrorResponse.toResponseEntityByMessage(ex.getMessage());
   }
 
+  @ExceptionHandler(CustomMessageException.class)
+  protected ResponseEntity<Map<String, String>> handleCustomMessageException(
+    CustomMessageException ex
+  ) {
+    return ErrorResponse.toResponseEntityByMessage(ex.getErrorMessage());
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   protected ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
     return ErrorResponse.toResponseEntityByArgumentNotValidException(ex);
