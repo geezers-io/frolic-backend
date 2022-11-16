@@ -32,10 +32,10 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @OneToMany(mappedBy = "article")
+  @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
   private final List<ArticleHashTag> articleHashTags = new ArrayList<>();
 
-  @OneToMany(mappedBy = "article")
+  @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
   private final List<Comment> comments = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
