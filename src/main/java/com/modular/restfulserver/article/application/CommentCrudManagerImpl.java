@@ -42,10 +42,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
   public List<SingleCommentInfoDto> getCommentsByArticlePagination(Long articleId, Pageable pageable) {
     Article article = articleRepository.findById(articleId)
       .orElseThrow(NotFoundResourceException::new);
-
-    Page<Comment> commentPage = commentRepository.findAllByArticleOrderByCreatedDate(
-      article, pageable
-    );
+    Page<Comment> commentPage = commentRepository.findAllByArticleOrderByCreatedDate(article, pageable);
 
     return commentPage.stream()
       .map(this::getSingleCommentInfoDto)
@@ -57,9 +54,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
     User user = userRepository.findByUsername(username)
       .orElseThrow(UserNotFoundException::new);
 
-    Page<Comment> commentPage = commentRepository.findAllByUserOrderByCreatedDate(
-      user, pageable
-    );
+    Page<Comment> commentPage = commentRepository.findAllByUserOrderByCreatedDate(user, pageable);
 
     return commentPage.stream()
       .map(this::getSingleCommentInfoDto)
