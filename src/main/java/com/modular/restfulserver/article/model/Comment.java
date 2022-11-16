@@ -38,9 +38,16 @@ public class Comment extends CreateAndModifiedTimeAuditEntity {
   private Article article;
 
   @Builder(setterPrefix = "add")
-  public Comment(String textContent, Long replyUserPkId) {
+  public Comment(
+    User user,
+    Article article,
+    String textContent,
+    Long replyUserPkId
+  ) {
     Assert.hasText(textContent, "textContent field must be string");
 
+    this.user = user;
+    this.article = article;
     this.textContent = textContent;
     this.replyUserPkId = replyUserPkId;
   }

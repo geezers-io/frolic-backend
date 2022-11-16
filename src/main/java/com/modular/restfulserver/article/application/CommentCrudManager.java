@@ -16,7 +16,7 @@ public interface CommentCrudManager {
 
   SingleCommentInfoDto createComment(String token, CreateCommentRequestDto dto);
 
-  SingleCommentInfoDto updateComment(String token, CreateCommentRequestDto dto);
+  SingleCommentInfoDto updateComment(String token, CreateCommentRequestDto dto, Long commentId);
 
   void deleteComment(String token, Long commentId);
 

@@ -35,13 +35,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
   public SingleCommentInfoDto getCommentById(Long commentId) {
     Comment comment = commentRepository.findById(commentId)
       .orElseThrow(NotFoundResourceException::new);
-    return SingleCommentInfoDto.builder()
-      .addCommentId(commentId)
-      .addTextContent(comment.getTextContent())
-      .addArticleId(comment.getArticle().getId())
-      .addReplyUserId(comment.getReplyUserPkId())
-      .addUserInfo(getUserForClientInfo(comment.getUser()))
-      .build();
+    return getSingleCommentInfoDto(comment);
   }
 
   @Override
@@ -54,14 +48,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
     );
 
     List<SingleCommentInfoDto> comments = commentPage.stream()
-      .map(comment -> SingleCommentInfoDto.builder()
-        .addArticleId(articleId)
-        .addCommentId(comment.getId())
-        .addReplyUserId(comment.getReplyUserPkId())
-        .addTextContent(comment.getTextContent())
-        .addUserInfo(getUserForClientInfo(comment.getUser()))
-        .build()
-      )
+      .map(this::getSingleCommentInfoDto)
       .collect(Collectors.toList());
 
     return comments;
@@ -76,28 +63,41 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       user, pageable
     );
 
-    List<SingleCommentInfoDto> comments = commentPage.stream()
-      .map(comment -> SingleCommentInfoDto.builder()
-        .addArticleId(comment.getArticle().getId())
-        .addCommentId(comment.getId())
-        .addReplyUserId(comment.getReplyUserPkId())
-        .addTextContent(comment.getTextContent())
-        .addUserInfo(getUserForClientInfo(comment.getUser()))
-        .build()
-      )
+    return commentPage.stream()
+      .map(this::getSingleCommentInfoDto)
       .collect(Collectors.toList());
-
-    return comments;
   }
 
   @Override
   public SingleCommentInfoDto createComment(String token, CreateCommentRequestDto dto) {
-    return null;
+    User user = getUserIsTokenAble(token);
+    Article article = articleRepository.findById(dto.getPostId())
+      .orElseThrow(NotFoundResourceException::new);
+
+    Comment newComment = Comment.builder()
+      .addTextContent(dto.getTextContent())
+      .addReplyUserPkId(dto.getReplyUserId())
+      .addUser(user)
+      .addArticle(article)
+      .build();
+
+    commentRepository.save(newComment);
+
+    return getSingleCommentInfoDto(newComment);
   }
 
   @Override
-  public SingleCommentInfoDto updateComment(String token, CreateCommentRequestDto dto) {
-    return null;
+  public SingleCommentInfoDto updateComment(String token, CreateCommentRequestDto dto, Long commentId) {
+    User tokenUser = getUserIsTokenAble(token);
+    boolean isSameUser = Objects.equals(
+      tokenUser.getId(), dto.getOwnerId()
+    );
+    if (!isSameUser)
+      throw new NotPermissionException();
+    Comment comment = commentRepository.findById(commentId)
+      .orElseThrow(NotFoundResourceException::new);
+    comment.updateTextContent(dto.getTextContent());
+    return getSingleCommentInfoDto(comment);
   }
 
   @Override
@@ -127,4 +127,13 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
     ).orElseThrow(UserNotFoundException::new);
   }
 
+  private SingleCommentInfoDto getSingleCommentInfoDto(Comment comment) {
+    return SingleCommentInfoDto.builder()
+      .addCommentId(comment.getId())
+      .addUserInfo(getUserForClientInfo(comment.getUser()))
+      .addArticleId(comment.getArticle().getId())
+      .addReplyUserId(comment.getReplyUserPkId())
+      .addTextContent(comment.getTextContent())
+      .build();
+  }
 }
