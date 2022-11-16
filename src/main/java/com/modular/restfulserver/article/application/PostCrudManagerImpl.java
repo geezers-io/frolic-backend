@@ -2,8 +2,10 @@ package com.modular.restfulserver.article.application;
 
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
+import com.modular.restfulserver.article.dto.SingleCommentInfoDto;
 import com.modular.restfulserver.article.model.Article;
 import com.modular.restfulserver.article.model.ArticleHashTag;
+import com.modular.restfulserver.article.model.Comment;
 import com.modular.restfulserver.article.model.Hashtag;
 import com.modular.restfulserver.article.repository.*;
 import com.modular.restfulserver.global.config.security.JwtProvider;
@@ -30,6 +32,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   private final ArticleRepository articleRepository;
   private final HashtagRepository hashtagRepository;
   private final ArticleHashtagRepository articleHashtagRepository;
+  private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
   private final JwtProvider jwtProvider;
@@ -38,24 +41,11 @@ public class PostCrudManagerImpl implements PostCrudManager {
   public SingleArticleInfoDto getPostById(Long id) {
     Article article = articleRepository.findById(id)
       .orElseThrow(NotFoundResourceException::new);
-    User user = article.getUser();
-    List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
-    UserInfoForClientDto userInfo = UserInfoForClientDto.builder()
-      .addUserId(user.getId())
-      .addEmail(user.getEmail())
-      .addUsername(user.getEmail())
-      .build();
-    Long likeCount = likeRepository.countAllByArticle(article);
 
-    return SingleArticleInfoDto.builder()
-      .addPostId(article.getId())
-      .addTitle(article.getTitle())
-      .addTextContent(article.getTextContent())
-      .addUserInfo(userInfo)
-      .addLikeCount(likeCount)
-      .addComments(article.getComments())
-      .addHashtags(hashtags)
-      .build();
+    List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
+    UserInfoForClientDto userInfo = getUserInfoForClientDto(article.getUser());
+
+    return getSingleArticleDto(article, hashtags, userInfo);
   }
 
   @Override
@@ -77,13 +67,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       jwtProvider.getUserEmailByToken(token)
     ).orElseThrow(UserNotFoundException::new);
     List<String> hashtags = dto.getHashTagList();
-
-    Article newArticle = Article.builder()
-      .addTitle(dto.getTitle())
-      .addTextContent(dto.getTextContent())
-      .addUser(user)
-      .build();
-    articleRepository.save(newArticle);
+    Article newArticle = createArticle(dto, user);
 
     hashtags.forEach(tag -> {
       if (!hashtagRepository.existsByName(tag)) {
@@ -103,11 +87,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       );
     });
 
-    UserInfoForClientDto userInfo = UserInfoForClientDto.builder()
-      .addUserId(user.getId())
-      .addEmail(user.getEmail())
-      .addUsername(user.getUsername())
-      .build();
+    UserInfoForClientDto userInfo = getUserInfoForClientDto(user);
 
     return SingleArticleInfoDto.builder()
       .addPostId(newArticle.getId())
@@ -126,62 +106,29 @@ public class PostCrudManagerImpl implements PostCrudManager {
       jwtProvider.getUserEmailByToken(token)
     ).orElseThrow(UserNotFoundException::new);
 
-    UserInfoForClientDto userInfo = UserInfoForClientDto.builder()
-      .addUserId(user.getId())
-      .addEmail(user.getEmail())
-      .addUsername(user.getUsername())
-      .build();
-
     Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDate(
       user,
       pageable
     );
-    List<SingleArticleInfoDto> articles = articlePage.stream()
+    return articlePage.stream()
       .map(article -> {
-        long likeCount = likeRepository.countAllByArticle(article);
         List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
-        return SingleArticleInfoDto.builder()
-          .addPostId(article.getId())
-          .addTitle(article.getTitle())
-          .addTextContent(article.getTextContent())
-          .addComments(article.getComments())
-          .addLikeCount(likeCount)
-          .addUserInfo(userInfo)
-          .addHashtags(hashtags)
-          .build();
+        UserInfoForClientDto userInfo = getUserInfoForClientDto(article.getUser());
+        return getSingleArticleDto(article, hashtags, userInfo);
       })
       .collect(Collectors.toList());
-
-    return articles;
   }
 
   @Override
   public List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable) {
     Page<Article> articlePage = articleRepository.findAll(pageable);
-    List<SingleArticleInfoDto> articles = articlePage.stream()
+    return articlePage.stream()
       .map(article -> {
-        long likeCount = likeRepository.countAllByArticle(article);
         List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
-        User articleOwner = article.getUser();
-        UserInfoForClientDto userInfo = UserInfoForClientDto.builder()
-          .addUserId(articleOwner.getId())
-          .addEmail(articleOwner.getEmail())
-          .addUsername(articleOwner.getUsername())
-          .build();
-
-        return SingleArticleInfoDto.builder()
-          .addPostId(article.getId())
-          .addTitle(article.getTitle())
-          .addTextContent(article.getTextContent())
-          .addComments(article.getComments())
-          .addLikeCount(likeCount)
-          .addUserInfo(userInfo)
-          .addHashtags(hashtags)
-          .build();
+        UserInfoForClientDto articleOwner = getUserInfoForClientDto(article.getUser());
+        return getSingleArticleDto(article,hashtags, articleOwner);
       })
       .collect(Collectors.toList());
-
-    return articles;
   }
 
   private Article verifyAndGetArticleIfUserRequestTargetHavePermission(String token, Long articleId) {
@@ -194,6 +141,56 @@ public class PostCrudManagerImpl implements PostCrudManager {
     if (!Objects.equals(user.getId(), articleUserId))
       throw new NotPermissionException();
     return article;
+  }
+
+  private User getUserIsTokenAble(String token) {
+    return userRepository.findByEmail(
+      jwtProvider.getUserEmailByToken(token)
+    ).orElseThrow(UserNotFoundException::new);
+  }
+
+  private SingleArticleInfoDto getSingleArticleDto(Article article, List<String> hashtags, UserInfoForClientDto userInfo) {
+    long likeCount = likeRepository.countAllByArticle(article);
+    List<SingleCommentInfoDto> comments = commentRepository.findAllByArticle(article)
+      .stream()
+      .map(comment -> getSingleCommentDtoByEntity(comment, article, userInfo))
+      .collect(Collectors.toList());
+
+    return SingleArticleInfoDto.builder()
+      .addPostId(article.getId())
+      .addHashtags(hashtags)
+      .addComments(comments)
+      .addUserInfo(userInfo)
+      .addLikeCount(likeCount)
+      .addTextContent(article.getTextContent())
+      .addTitle(article.getTitle())
+      .build();
+  }
+
+  private SingleCommentInfoDto getSingleCommentDtoByEntity(Comment comment, Article article, UserInfoForClientDto userInfo) {
+    return SingleCommentInfoDto.builder()
+      .addCommentId(comment.getId())
+      .addReplyUserId(comment.getReplyUserPkId())
+      .addArticleId(article.getId())
+      .addUserInfo(userInfo)
+      .addTextContent(comment.getTextContent())
+      .build();
+  }
+
+  private UserInfoForClientDto getUserInfoForClientDto(User user) {
+    return UserInfoForClientDto.builder()
+      .addUserId(user.getId())
+      .addEmail(user.getEmail())
+      .addUsername(user.getUsername())
+      .build();
+  }
+
+  private Article createArticle(CreatePostRequestDto dto, User user) {
+    return Article.builder()
+      .addTitle(dto.getTitle())
+      .addTextContent(dto.getTextContent())
+      .addUser(user)
+      .build();
   }
 
 }

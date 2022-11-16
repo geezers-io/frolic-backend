@@ -14,7 +14,7 @@ public class SingleArticleInfoDto {
   private final UserInfoForClientDto userInfo;
   private final String title;
   private final String textContent;
-  private final List<Comment> comments;
+  private final List<SingleCommentInfoDto> comments;
   private final List<String> hashtags;
   private final Long likeCount;
 
@@ -24,7 +24,7 @@ public class SingleArticleInfoDto {
     String title,
     String textContent,
     UserInfoForClientDto userInfo,
-    List<Comment> comments,
+    List<SingleCommentInfoDto> comments,
     List<String> hashtags,
     Long likeCount
   ) {
