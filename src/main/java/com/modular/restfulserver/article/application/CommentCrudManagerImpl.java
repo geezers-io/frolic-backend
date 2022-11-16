@@ -47,11 +47,9 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       article, pageable
     );
 
-    List<SingleCommentInfoDto> comments = commentPage.stream()
+    return commentPage.stream()
       .map(this::getSingleCommentInfoDto)
       .collect(Collectors.toList());
-
-    return comments;
   }
 
   @Override
@@ -70,19 +68,8 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
 
   @Override
   public SingleCommentInfoDto createComment(String token, CreateCommentRequestDto dto) {
-    User user = getUserIsTokenAble(token);
-    Article article = articleRepository.findById(dto.getPostId())
-      .orElseThrow(NotFoundResourceException::new);
-
-    Comment newComment = Comment.builder()
-      .addTextContent(dto.getTextContent())
-      .addReplyUserPkId(dto.getReplyUserId())
-      .addUser(user)
-      .addArticle(article)
-      .build();
-
+    Comment newComment = getCommentByCreateRequestDto(dto);
     commentRepository.save(newComment);
-
     return getSingleCommentInfoDto(newComment);
   }
 
@@ -96,6 +83,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       throw new NotPermissionException();
     Comment comment = commentRepository.findById(commentId)
       .orElseThrow(NotFoundResourceException::new);
+
     comment.updateTextContent(dto.getTextContent());
     return getSingleCommentInfoDto(comment);
   }
@@ -134,6 +122,20 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       .addArticleId(comment.getArticle().getId())
       .addReplyUserId(comment.getReplyUserPkId())
       .addTextContent(comment.getTextContent())
+      .build();
+  }
+
+  private Comment getCommentByCreateRequestDto(CreateCommentRequestDto dto) {
+    User user = userRepository.findById(dto.getOwnerId())
+      .orElseThrow(UserNotFoundException::new);
+    Article article = articleRepository.findById(dto.getPostId())
+      .orElseThrow(NotFoundResourceException::new);
+
+    return Comment.builder()
+      .addTextContent(dto.getTextContent())
+      .addReplyUserPkId(dto.getReplyUserId())
+      .addUser(user)
+      .addArticle(article)
       .build();
   }
 }
