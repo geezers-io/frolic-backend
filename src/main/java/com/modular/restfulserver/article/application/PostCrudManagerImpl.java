@@ -63,30 +63,10 @@ public class PostCrudManagerImpl implements PostCrudManager {
 
   @Override
   public SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto) {
-    User user = userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
+    User user = getUserIsTokenAble(token);
     List<String> hashtags = dto.getHashTagList();
     Article newArticle = createArticle(dto, user);
-
-    hashtags.forEach(tag -> {
-      if (!hashtagRepository.existsByName(tag)) {
-        hashtagRepository.save(
-          Hashtag.builder()
-            .addName(tag)
-            .build()
-        );
-      }
-      Hashtag tagEntity = hashtagRepository.findByName(tag)
-          .orElseThrow(NotFoundResourceException::new);
-      articleHashtagRepository.save(
-        ArticleHashTag.builder()
-          .addArticle(newArticle)
-          .addHashtag(tagEntity)
-          .build()
-      );
-    });
-
+    hashtags.forEach(tag -> relationHashtagWithArticleAndCreateHashtagIfNotExists(newArticle, tag));
     UserInfoForClientDto userInfo = getUserInfoForClientDto(user);
 
     return SingleArticleInfoDto.builder()
@@ -191,6 +171,24 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addTextContent(dto.getTextContent())
       .addUser(user)
       .build();
+  }
+
+  private void relationHashtagWithArticleAndCreateHashtagIfNotExists(Article article, String tag) {
+    if (!hashtagRepository.existsByName(tag)) {
+      hashtagRepository.save(
+        Hashtag.builder()
+          .addName(tag)
+          .build()
+      );
+    }
+    Hashtag tagEntity = hashtagRepository.findByName(tag)
+      .orElseThrow(NotFoundResourceException::new);
+    articleHashtagRepository.save(
+      ArticleHashTag.builder()
+        .addArticle(article)
+        .addHashtag(tagEntity)
+        .build()
+    );
   }
 
 }
