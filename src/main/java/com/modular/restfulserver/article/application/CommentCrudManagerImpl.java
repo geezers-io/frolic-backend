@@ -85,6 +85,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       .orElseThrow(NotFoundResourceException::new);
 
     comment.updateTextContent(dto.getTextContent());
+    commentRepository.save(comment);
     return getSingleCommentInfoDto(comment);
   }
 
@@ -138,4 +139,5 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       .addArticle(article)
       .build();
   }
+
 }

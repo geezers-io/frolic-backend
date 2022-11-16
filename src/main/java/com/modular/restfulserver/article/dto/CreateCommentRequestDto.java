@@ -19,7 +19,7 @@ public class CreateCommentRequestDto {
   private final Long ownerId;
 
   @NotNull
-  @Max(value = 500, message = "본문 데이터는 500자 이하여야 합니다.")
+//  @Max(value = 500, message = "본문 데이터는 500자 이하여야 합니다.")
   private final String textContent;
 
   @Builder(setterPrefix = "add")
