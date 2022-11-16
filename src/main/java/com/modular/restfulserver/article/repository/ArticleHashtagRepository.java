@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ArticleHashtagRepository extends JpaRepository<ArticleHashTag, Long> {
 
-  @Query("select h.name from hashtags h join article_hashtags ah on ah.article = ?1")
+  @Query("select h.name from hashtags h join article_hashtags ah on ah.hashtag = h.id where ah.article = ?1")
   List<String> findAllByArticle(Article article);
 
 }
