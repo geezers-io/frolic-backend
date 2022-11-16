@@ -66,7 +66,10 @@ public class PostCrudManagerImpl implements PostCrudManager {
     User user = getUserIsTokenAble(token);
     List<String> hashtags = dto.getHashTagList();
     Article newArticle = createArticle(dto, user);
-    hashtags.forEach(tag -> relationHashtagWithArticleAndCreateHashtagIfNotExists(newArticle, tag));
+    hashtags.forEach(tag -> {
+      createHashtagIfNotExists(tag);
+      setRelationTagWithArticle(newArticle, tag);
+    });
     UserInfoForClientDto userInfo = getUserInfoForClientDto(user);
 
     return SingleArticleInfoDto.builder()
@@ -86,10 +89,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       jwtProvider.getUserEmailByToken(token)
     ).orElseThrow(UserNotFoundException::new);
 
-    Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDate(
-      user,
-      pageable
-    );
+    Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDate(user, pageable);
     return articlePage.stream()
       .map(article -> {
         List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
@@ -173,7 +173,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .build();
   }
 
-  private void relationHashtagWithArticleAndCreateHashtagIfNotExists(Article article, String tag) {
+  private void createHashtagIfNotExists(String tag) {
     if (!hashtagRepository.existsByName(tag)) {
       hashtagRepository.save(
         Hashtag.builder()
@@ -181,6 +181,9 @@ public class PostCrudManagerImpl implements PostCrudManager {
           .build()
       );
     }
+  }
+
+  private void setRelationTagWithArticle(Article article, String tag) {
     Hashtag tagEntity = hashtagRepository.findByName(tag)
       .orElseThrow(NotFoundResourceException::new);
     articleHashtagRepository.save(
