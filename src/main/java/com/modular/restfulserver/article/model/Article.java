@@ -22,9 +22,6 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column
-  private String title;
-
   @Column(length = 1000)
   private String textContent;
 
@@ -40,18 +37,11 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
 
   @Builder(setterPrefix = "add")
   public Article(
-    String title,
     String textContent,
     User user
   ) {
-    this.title = title;
     this.textContent = textContent;
     this.user = user;
-  }
-
-  public void updateTitle(String title) {
-    // TODO: 2022-11-13 validation
-    this.title = title;
   }
 
   public void updateTextContent(String textContent) {

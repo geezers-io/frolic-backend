@@ -51,7 +51,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
   @Override
   public void updatePostById(String token, Long id, SingleArticleInfoDto singleArticleInfoDto) {
     Article article = verifyAndGetArticleIfUserRequestTargetHavePermission(token, id);
-    article.updateTitle(singleArticleInfoDto.getTitle());
     article.updateTextContent(singleArticleInfoDto.getTextContent());
   }
 
@@ -75,7 +74,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
 
     return SingleArticleInfoDto.builder()
       .addPostId(newArticle.getId())
-      .addTitle(newArticle.getTitle())
       .addTextContent(newArticle.getTextContent())
       .addComments(new ArrayList<>())
       .addHashtags(hashtags)
@@ -149,7 +147,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addUserInfo(userInfo)
       .addLikeCount(likeCount)
       .addTextContent(article.getTextContent())
-      .addTitle(article.getTitle())
       .build();
   }
 
@@ -173,7 +170,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
 
   private Article createArticle(CreatePostRequestDto dto, User user) {
     return Article.builder()
-      .addTitle(dto.getTitle())
       .addTextContent(dto.getTextContent())
       .addUser(user)
       .build();
