@@ -22,7 +22,7 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column
   private String title;
 
   @Column(length = 1000)
@@ -44,7 +44,6 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
     String textContent,
     User user
   ) {
-    Assert.hasText(title, "title field must be string");
     this.title = title;
     this.textContent = textContent;
     this.user = user;
