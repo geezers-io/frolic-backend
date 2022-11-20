@@ -66,6 +66,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     User user = getUserIsTokenAble(token);
     List<String> hashtags = dto.getHashTagList();
     Article newArticle = createArticle(dto, user);
+    articleRepository.save(newArticle);
     hashtags.forEach(tag -> {
       createHashtagIfNotExists(tag);
       setRelationTagWithArticle(newArticle, tag);
@@ -109,6 +110,11 @@ public class PostCrudManagerImpl implements PostCrudManager {
         return getSingleArticleDto(article,hashtags, articleOwner);
       })
       .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<SingleArticleInfoDto> getSearchParamByPagination(String[] searchs, Pageable pageable) {
+    return null;
   }
 
   private Article verifyAndGetArticleIfUserRequestTargetHavePermission(String token, Long articleId) {
