@@ -6,7 +6,9 @@ import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.UserInfoDto;
+import com.modular.restfulserver.user.dto.UserInfoForClientDto;
 import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
+import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.FollowRepository;
 import com.modular.restfulserver.user.repository.UserRepository;
@@ -30,10 +32,10 @@ public class UserManagerImpl implements UserManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public void updateUserInfo(String token, UserUpdateRequestDto dto) {
+  public UserInfoForClientDto updateUserInfo(String token, UserUpdateRequestDto dto) {
     User user = userRepository.findByEmail(
       jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
+    ).orElseThrow(UserNotFoundException::new);
 
     checkDuplicatedInfo(dto, user);
 
@@ -44,13 +46,15 @@ public class UserManagerImpl implements UserManager {
     user.changeEmail(dto.getEmail());
     user.changeUsername(dto.getUsername());
     userRepository.save(user);
+
+    return UserInfoForClientDto.from(user);
   }
 
   @Override
   public void deleteUser(String token, String password) {
     String email = jwtProvider.getUserEmailByToken(token);
     User user = userRepository.findByEmail(email)
-      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
+      .orElseThrow(UserNotFoundException::new);
     if (!passwordEncoder.matches(password, user.getPassword()))
       throw new PasswordNotMatchException();
     userRepository.delete(user);
@@ -59,7 +63,7 @@ public class UserManagerImpl implements UserManager {
   @Override
   public UserInfoDto getUserInfo(String username) {
     User user = userRepository.findByUsername(username)
-      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
+      .orElseThrow(UserNotFoundException::new);
 
     return getUserInfoDto(user);
   }
@@ -68,7 +72,7 @@ public class UserManagerImpl implements UserManager {
   public UserInfoDto getUserInfoByToken(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
     User user = userRepository.findByEmail(email)
-      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저이름입니다."));
+      .orElseThrow(UserNotFoundException::new);
 
     return getUserInfoDto(user);
   }
@@ -78,12 +82,14 @@ public class UserManagerImpl implements UserManager {
     long followingCount = followRepository.countByFollowerId(user);
     long postCount = articleRepository.countAllByUser(user);
     long likeCount = likeRepository.countAllByUser(user);
+    UserInfoForClientDto userInfo = UserInfoForClientDto.from(user);
 
     return UserInfoDto.builder()
       .addAllFollowerCount(followerCount)
       .addAllFollowingCount(followingCount)
       .addAllGivenLikeCount(likeCount)
       .addAllPostCount(postCount)
+      .addUserInfo(userInfo)
       .build();
   }
 
