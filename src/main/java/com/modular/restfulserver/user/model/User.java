@@ -42,9 +42,9 @@ public class User extends CreateAndModifiedTimeAuditEntity {
     String username,
     String password
   ) {
-    Assert.hasText(email, "email must not be null");
-    Assert.hasText(username, "username must not be null");
-    Assert.hasText(password, "password must not be null");
+    Assert.hasText(email, "email must not be empty");
+    Assert.hasText(username, "username must not be empty");
+    Assert.hasText(password, "password must not be empty");
 
     this.email = email;
     this.username = username;
@@ -56,8 +56,8 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   }
   public void changeUsername(String username) { this.username = username; }
   public void changeEmail(String email) { this.email = email; }
-
   public void updateRefreshToken(String token) {
     this.refreshToken = token;
   }
+
 }
