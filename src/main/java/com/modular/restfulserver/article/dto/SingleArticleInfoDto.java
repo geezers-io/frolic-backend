@@ -1,6 +1,5 @@
 package com.modular.restfulserver.article.dto;
 
-import com.modular.restfulserver.article.model.Comment;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;
 import lombok.Builder;
 import lombok.Getter;
