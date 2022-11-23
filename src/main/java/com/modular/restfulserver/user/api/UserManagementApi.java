@@ -1,9 +1,11 @@
 package com.modular.restfulserver.user.api;
 
+import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.application.UserManager;
 import com.modular.restfulserver.user.dto.UserDeletePasswordDto;
 import com.modular.restfulserver.user.dto.UserInfoDto;
+import com.modular.restfulserver.user.dto.UserInfoForClientDto;
 import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -30,11 +31,9 @@ public class UserManagementApi {
   public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByTokenApi(
     HttpServletRequest request
   ) {
-    Map<String, UserInfoDto> responseData = new HashMap<>();
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     UserInfoDto userInfo = userManager.getUserInfoByToken(token);
-    responseData.put("data", userInfo);
-    return ResponseEntity.ok(responseData);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
   @PreAuthorize("permitAll()")
@@ -42,20 +41,20 @@ public class UserManagementApi {
   public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByUsernameParamApi(
     @PathVariable String username
   ) {
-    Map<String, UserInfoDto> responseData = new HashMap<>();
     UserInfoDto userInfo = userManager.getUserInfo(username);
-    responseData.put("data", userInfo);
-    return ResponseEntity.ok(responseData);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
   @PutMapping("")
-  public ResponseEntity<Void> updateUserInfoApi(
+  public ResponseEntity<Map<String, UserInfoForClientDto>> updateUserInfoApi(
     HttpServletRequest request,
     @RequestBody @Valid UserUpdateRequestDto dto
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userManager.updateUserInfo(token, dto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    UserInfoForClientDto userInfo = userManager.updateUserInfo(token, dto);
+    return ResponseEntity
+      .status(HttpStatus.OK)
+      .body(ResponseHelper.createDataMap(userInfo));
   }
 
   @DeleteMapping("")
@@ -67,4 +66,5 @@ public class UserManagementApi {
     userManager.deleteUser(token, dto.getPassword());
     return ResponseEntity.status(HttpStatus.OK).build();
   }
+
 }
