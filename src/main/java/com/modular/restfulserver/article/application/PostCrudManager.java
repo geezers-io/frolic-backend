@@ -3,6 +3,7 @@ package com.modular.restfulserver.article.application;
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PostCrudManager {
 
   void deletePostById(String token, Long id);
 
-  SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto);
+  SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto, List<MultipartFile> files);
 
   List<SingleArticleInfoDto> getPostByTokenAndPagination(String token, Pageable pageable);
 

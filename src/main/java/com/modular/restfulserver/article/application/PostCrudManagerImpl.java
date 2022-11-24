@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
+  private final FileManager fileManager;
   private final JwtProvider jwtProvider;
 
   @Override
@@ -61,11 +63,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto) {
+  public SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto, List<MultipartFile> files) {
     User user = getUserIsTokenAble(token);
     List<String> hashtags = dto.getHashTagList();
-    Article newArticle = createArticle(dto, user);
+    Article newArticle = Article.createArticle(dto, user);
     articleRepository.save(newArticle);
+    fileManager.multipleFileUpload(files);
     hashtags.forEach(tag -> {
       createHashtagIfNotExists(tag);
       setRelationTagWithArticle(newArticle, tag);
@@ -165,13 +168,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addUserId(user.getId())
       .addEmail(user.getEmail())
       .addUsername(user.getUsername())
-      .build();
-  }
-
-  private Article createArticle(CreatePostRequestDto dto, User user) {
-    return Article.builder()
-      .addTextContent(dto.getTextContent())
-      .addUser(user)
       .build();
   }
 
