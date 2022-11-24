@@ -40,9 +40,7 @@ public class UserManagerImpl implements UserManager {
     checkDuplicatedInfo(dto, user);
 
     String newPassword =  passwordEncoder.encode(dto.getPassword());
-    user.changePassword(
-      newPassword
-    );
+    user.changePassword(newPassword);
     user.changeEmail(dto.getEmail());
     user.changeUsername(dto.getUsername());
     userRepository.save(user);
