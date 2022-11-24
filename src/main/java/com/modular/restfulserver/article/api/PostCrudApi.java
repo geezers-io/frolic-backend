@@ -5,10 +5,13 @@ import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -24,16 +27,15 @@ public class PostCrudApi {
   private final JwtProvider jwtProvider;
   private final PostCrudManager postCrudManager;
 
-  @PostMapping("")
+  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<Map<String, SingleArticleInfoDto>> createPostApi(
     HttpServletRequest request,
-    @RequestBody @Valid CreatePostRequestDto createPostRequestDto
+    @RequestPart @Valid CreatePostRequestDto createPostRequest,
+    @RequestPart List<MultipartFile> files
   ) {
+    files.forEach(System.out::println);
     var responseData = new HashMap<String, SingleArticleInfoDto>();
-    SingleArticleInfoDto post = postCrudManager.createPost(
-      getToken(request),
-      createPostRequestDto
-    );
+    SingleArticleInfoDto post = postCrudManager.createPost(getToken(request), createPostRequest, files);
     responseData.put("data", post);
     return ResponseEntity
       .status(HttpStatus.CREATED)
@@ -98,6 +100,15 @@ public class PostCrudApi {
     List<SingleArticleInfoDto> data = postCrudManager.getEntirePostByPagination(pageable);
     responseData.put("data", data);
     return ResponseEntity.ok(responseData);
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getPostBySearchParamPaginationApi(
+    Pageable pageable,
+    @RequestParam Map<String, String> reqParam
+  ) {
+    String[] params = (String[]) reqParam.values().toArray();
+    return null;
   }
 
   private String getToken(HttpServletRequest request) {
