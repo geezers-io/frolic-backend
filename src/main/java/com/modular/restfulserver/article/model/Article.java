@@ -5,7 +5,6 @@ import com.modular.restfulserver.user.model.User;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   private final List<ArticleHashTag> articleHashTags = new ArrayList<>();
 
   @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-  private final List<Comment> comments = new ArrayList<>();
+  private final List<File> files = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
   public Article(
