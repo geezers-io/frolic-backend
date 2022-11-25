@@ -1,5 +1,6 @@
 package com.modular.restfulserver.article.model;
 
+import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.global.utils.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
 import com.modular.restfulserver.user.model.User;
 import lombok.*;
@@ -41,6 +42,13 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   ) {
     this.textContent = textContent;
     this.user = user;
+  }
+
+  public static Article createArticle(CreatePostRequestDto dto, User user) {
+    return Article.builder()
+      .addUser(user)
+      .addTextContent(dto.getTextContent())
+      .build();
   }
 
   public void updateTextContent(String textContent) {
