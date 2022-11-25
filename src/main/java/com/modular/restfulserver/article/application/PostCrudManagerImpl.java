@@ -14,16 +14,17 @@ import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostCrudManagerImpl implements PostCrudManager {
@@ -98,8 +99,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public List<SingleArticleInfoDto> getSearchParamByPagination(String[] searchs, Pageable pageable) {
-    List<String> searchList = Arrays.asList(searchs);
+  public List<SingleArticleInfoDto> getSearchParamByPagination(List<String> searchList, Pageable pageable) {
     Page<Article> articlePage = articleRepository.findAllByHashtagByCreatedDate(searchList, pageable);
     return getListOfSingleArticleDtoByPageResults(articlePage);
   }

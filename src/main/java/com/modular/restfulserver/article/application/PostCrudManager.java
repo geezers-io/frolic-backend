@@ -22,6 +22,6 @@ public interface PostCrudManager {
 
   List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable);
 
-  List<SingleArticleInfoDto> getSearchParamByPagination(String[] searchs, Pageable pageable);
+  List<SingleArticleInfoDto> getSearchParamByPagination(List<String> searchList, Pageable pageable);
 
 }
