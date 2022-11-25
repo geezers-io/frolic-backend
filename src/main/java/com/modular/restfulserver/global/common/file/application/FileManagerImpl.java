@@ -1,7 +1,8 @@
-package com.modular.restfulserver.article.application;
+package com.modular.restfulserver.global.common.file;
 
-import com.modular.restfulserver.article.exception.FaultFilenameException;
-import com.modular.restfulserver.article.exception.FileSaveFailException;
+import com.modular.restfulserver.global.common.file.exception.FaultFilenameException;
+import com.modular.restfulserver.global.common.file.exception.FileDownloadFailureException;
+import com.modular.restfulserver.global.common.file.exception.FileSaveFailException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,13 +39,18 @@ public class FileManagerImpl implements FileManager {
 
   @Override
   public void multipleFileUpload(List<MultipartFile> files) {
-    for (var file : files)
-      store(file);
+    files.forEach(this::store);
   }
 
   @Override
   public byte[] download(String fileKey) {
-    return new byte[0];
+    Path filePath = Paths.get(this.uploadDirPath + "/" + fileKey);
+    try {
+      return Files.readAllBytes(filePath);
+    } catch (IOException ex) {
+      log.error(ex.getMessage());
+      throw new FileDownloadFailureException();
+    }
   }
 
   private void store(MultipartFile file) {

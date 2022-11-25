@@ -1,4 +1,4 @@
-package com.modular.restfulserver.article.application;
+package com.modular.restfulserver.global.common.file;
 
 import org.springframework.web.multipart.MultipartFile;
 
