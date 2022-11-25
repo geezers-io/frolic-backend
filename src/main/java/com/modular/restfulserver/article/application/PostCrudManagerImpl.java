@@ -8,7 +8,7 @@ import com.modular.restfulserver.article.model.ArticleHashTag;
 import com.modular.restfulserver.article.model.Comment;
 import com.modular.restfulserver.article.model.Hashtag;
 import com.modular.restfulserver.article.repository.*;
-import com.modular.restfulserver.global.common.file.application.FileManager;
+import com.modular.restfulserver.global.common.file.application.CustomFile;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.global.exception.NotFoundResourceException;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;
@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +30,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostCrudManagerImpl implements PostCrudManager {
 
+  private final ArticleFileManager articleFileManager;
   private final ArticleRepository articleRepository;
   private final HashtagRepository hashtagRepository;
   private final ArticleHashtagRepository articleHashtagRepository;
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
-  private final FileManager fileManager;
   private final JwtProvider jwtProvider;
 
   @Override
   public SingleArticleInfoDto getPostById(Long id) {
-    Article article = articleRepository.findById(id)
-      .orElseThrow(NotFoundResourceException::new);
+    Article article = articleRepository.findById(id).orElseThrow(NotFoundResourceException::new);
 
     List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
     UserInfoForClientDto userInfo = getUserInfoForClientDto(article.getUser());
@@ -64,12 +62,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto, List<MultipartFile> files) {
+  public SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto, List<CustomFile> files) {
     User user = getUserIsTokenAble(token);
     List<String> hashtags = dto.getHashTagList();
     Article newArticle = Article.createArticle(dto, user);
     articleRepository.save(newArticle);
-    fileManager.multipleFileUpload(files);
+    List<String> fileDownloadUrls = articleFileManager.saveFilesWithArticle(newArticle, files);
     hashtags.forEach(tag -> {
       createHashtagIfNotExists(tag);
       setRelationTagWithArticle(newArticle, tag);
@@ -83,6 +81,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addHashtags(hashtags)
       .addLikeCount(0L)
       .addUserInfo(userInfo)
+      .addFileDownloadUrls(fileDownloadUrls)
       .build();
   }
 
@@ -143,6 +142,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .stream()
       .map(comment -> getSingleCommentDtoByEntity(comment, article, userInfo))
       .collect(Collectors.toList());
+    List<String> fileDownloadUrls = articleFileManager.getFileDownloadUrlsByArticle(article);
 
     return SingleArticleInfoDto.builder()
       .addPostId(article.getId())
@@ -151,6 +151,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addUserInfo(userInfo)
       .addLikeCount(likeCount)
       .addTextContent(article.getTextContent())
+      .addFileDownloadUrls(fileDownloadUrls)
       .build();
   }
 
