@@ -1,4 +1,4 @@
-package com.modular.restfulserver.article.exception;
+package com.modular.restfulserver.global.common.file.exception;
 
 import com.modular.restfulserver.global.exception.CustomException;
 import com.modular.restfulserver.global.exception.ErrorCode;

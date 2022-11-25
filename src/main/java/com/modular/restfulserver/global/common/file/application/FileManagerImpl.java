@@ -1,4 +1,4 @@
-package com.modular.restfulserver.global.common.file;
+package com.modular.restfulserver.global.common.file.application;
 
 import com.modular.restfulserver.global.common.file.exception.FaultFilenameException;
 import com.modular.restfulserver.global.common.file.exception.FileDownloadFailureException;
