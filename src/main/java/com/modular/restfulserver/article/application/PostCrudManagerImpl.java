@@ -8,6 +8,7 @@ import com.modular.restfulserver.article.model.ArticleHashTag;
 import com.modular.restfulserver.article.model.Comment;
 import com.modular.restfulserver.article.model.Hashtag;
 import com.modular.restfulserver.article.repository.*;
+import com.modular.restfulserver.global.common.file.application.FileManager;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.global.exception.NotFoundResourceException;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;

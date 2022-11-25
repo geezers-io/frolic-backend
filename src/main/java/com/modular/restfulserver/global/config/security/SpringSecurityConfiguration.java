@@ -44,6 +44,7 @@ public class SpringSecurityConfiguration {
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     /* off security features **/
@@ -68,7 +69,8 @@ public class SpringSecurityConfiguration {
         "/api/auth/login",
         "/api/auth/signup",
         "/api/user/{username}",
-        "/api/post/list"
+        "/api/post/list",
+        "/api/download/{filename}"
       ).permitAll()
       .anyRequest().authenticated()
       .and()
