@@ -18,9 +18,10 @@ public class UserSignupRequestDto {
   @Email(message = "이메일 형식이 잘못되었습니다.")
   private String email;
 
+  // TODO: 2022-11-25 regexp 구문 파악하기 
   @NotNull
   @Pattern(
-    regexp = "(^[!@#$%^&*])([A-Z]{1,1})([a-z0-9]{8,15})",
+    regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$",
     message = "비밀번호 형식이 잘못되었습니다."
   )
   private String password;
