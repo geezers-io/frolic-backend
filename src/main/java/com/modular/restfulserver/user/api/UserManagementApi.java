@@ -3,10 +3,7 @@ package com.modular.restfulserver.user.api;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.application.UserManager;
-import com.modular.restfulserver.user.dto.UserDeletePasswordDto;
-import com.modular.restfulserver.user.dto.UserInfoDto;
-import com.modular.restfulserver.user.dto.UserInfoForClientDto;
-import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
+import com.modular.restfulserver.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -55,6 +52,16 @@ public class UserManagementApi {
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(userInfo));
+  }
+
+  @PatchMapping("/password")
+  public ResponseEntity<Void> updateUserPasswordApi(
+    HttpServletRequest request,
+    @RequestBody @Valid UserUpdatePasswordDto dto
+    ) {
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
+    userManager.updateUserPassword(token, dto);
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @DeleteMapping("")

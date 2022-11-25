@@ -7,6 +7,7 @@ import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.UserInfoDto;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;
+import com.modular.restfulserver.user.dto.UserUpdatePasswordDto;
 import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
@@ -33,14 +34,10 @@ public class UserManagerImpl implements UserManager {
 
   @Override
   public UserInfoForClientDto updateUserInfo(String token, UserUpdateRequestDto dto) {
-    User user = userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
+    User user = getUserByToken(token);
 
     checkDuplicatedInfo(dto, user);
 
-    String newPassword =  passwordEncoder.encode(dto.getPassword());
-    user.changePassword(newPassword);
     user.changeEmail(dto.getEmail());
     user.changeUsername(dto.getUsername());
     userRepository.save(user);
@@ -49,10 +46,20 @@ public class UserManagerImpl implements UserManager {
   }
 
   @Override
+  public void updateUserPassword(String token, UserUpdatePasswordDto dto) {
+    User user = getUserByToken(token);
+    boolean isMatchPassword = passwordEncoder.matches(dto.getPrevPassword(), user.getPassword());
+    if (!isMatchPassword)
+      throw new PasswordNotMatchException();
+
+    String newPassword = passwordEncoder.encode(dto.getNewPassword());
+    user.changePassword(newPassword);
+    userRepository.save(user);
+  }
+
+  @Override
   public void deleteUser(String token, String password) {
-    String email = jwtProvider.getUserEmailByToken(token);
-    User user = userRepository.findByEmail(email)
-      .orElseThrow(UserNotFoundException::new);
+    User user = getUserByToken(token);
     if (!passwordEncoder.matches(password, user.getPassword()))
       throw new PasswordNotMatchException();
     userRepository.delete(user);
@@ -60,9 +67,7 @@ public class UserManagerImpl implements UserManager {
 
   @Override
   public UserInfoDto getUserInfo(String username) {
-    User user = userRepository.findByUsername(username)
-      .orElseThrow(UserNotFoundException::new);
-
+    User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     return getUserInfoDto(user);
   }
 
@@ -100,7 +105,11 @@ public class UserManagerImpl implements UserManager {
 
     if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
       throw new AlreadyExistsUserException();
+  }
 
+  private User getUserByToken(String token) {
+    String email = jwtProvider.getUserEmailByToken(token);
+    return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
 }
