@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -104,18 +105,14 @@ public class PostCrudManagerImpl implements PostCrudManager {
   @Override
   public List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable) {
     Page<Article> articlePage = articleRepository.findAll(pageable);
-    return articlePage.stream()
-      .map(article -> {
-        List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
-        UserInfoForClientDto articleOwner = getUserInfoForClientDto(article.getUser());
-        return getSingleArticleDto(article,hashtags, articleOwner);
-      })
-      .collect(Collectors.toList());
+    return getListOfSingleArticleDtoByPageResults(articlePage);
   }
 
   @Override
   public List<SingleArticleInfoDto> getSearchParamByPagination(String[] searchs, Pageable pageable) {
-    return null;
+    List<String> searchList = Arrays.asList(searchs);
+    Page<Article> articlePage = articleRepository.findAllByHashtagByCreatedDate(searchList, pageable);
+    return getListOfSingleArticleDtoByPageResults(articlePage);
   }
 
   private Article verifyAndGetArticleIfUserRequestTargetHavePermission(String token, Long articleId) {
@@ -189,6 +186,16 @@ public class PostCrudManagerImpl implements PostCrudManager {
         .addHashtag(tagEntity)
         .build()
     );
+  }
+
+  private List<SingleArticleInfoDto> getListOfSingleArticleDtoByPageResults(Page<Article> articlePage) {
+    return articlePage.stream()
+      .map(article -> {
+        List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
+        UserInfoForClientDto articleOwner = getUserInfoForClientDto(article.getUser());
+        return getSingleArticleDto(article,hashtags, articleOwner);
+      })
+      .collect(Collectors.toList());
   }
 
 }

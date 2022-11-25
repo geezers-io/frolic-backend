@@ -21,7 +21,7 @@ public class CustomFile {
     if (splitIndex == -1)
       throw new FaultFileExtensionException();
     String ext = filename.substring(splitIndex);
-    this.customFilename = filename.substring(0, splitIndex) + "_" + UUID.randomUUID() + ext;
+    this.customFilename = filename.substring(0, splitIndex) + "_" + UUID.randomUUID() + System.currentTimeMillis() + ext;
   }
 
   public String getDownloadUrl() {

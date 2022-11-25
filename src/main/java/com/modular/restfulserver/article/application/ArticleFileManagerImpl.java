@@ -8,6 +8,7 @@ import com.modular.restfulserver.global.common.file.application.FileManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ public class ArticleFileManagerImpl implements ArticleFileManager {
 
   @Override
   public List<String> saveFilesWithArticle(Article article, List<CustomFile> files) {
+    if (files.size() == 0) return new ArrayList<>();
+
     fileManager.multipleFileUpload(files);
 
     files.forEach(customFile -> {

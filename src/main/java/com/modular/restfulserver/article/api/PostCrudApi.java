@@ -5,6 +5,7 @@ import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.common.file.application.CustomFile;
+import com.modular.restfulserver.global.common.file.application.FileManager;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class PostCrudApi {
     @RequestPart @Valid CreatePostRequestDto createPostRequest,
     @RequestPart List<MultipartFile> files
   ) {
-    List<CustomFile> customFiles = files.stream().map(CustomFile::new).collect(Collectors.toList());
+    List<CustomFile> customFiles = FileManager.createCustomFileList(files);
     SingleArticleInfoDto post = postCrudManager.createPost(getToken(request), createPostRequest, customFiles);
     return ResponseEntity
       .status(HttpStatus.CREATED)
@@ -100,7 +101,8 @@ public class PostCrudApi {
     @RequestParam Map<String, String> reqParam
   ) {
     String[] params = (String[]) reqParam.values().toArray();
-    return null;
+    List<SingleArticleInfoDto> data = postCrudManager.getSearchParamByPagination(params, pageable);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
   private String getToken(HttpServletRequest request) {
