@@ -3,10 +3,7 @@ package com.modular.restfulserver.article.application;
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.article.dto.SingleCommentInfoDto;
-import com.modular.restfulserver.article.model.Article;
-import com.modular.restfulserver.article.model.ArticleHashTag;
-import com.modular.restfulserver.article.model.Comment;
-import com.modular.restfulserver.article.model.Hashtag;
+import com.modular.restfulserver.article.model.*;
 import com.modular.restfulserver.article.repository.*;
 import com.modular.restfulserver.global.common.file.application.CustomFile;
 import com.modular.restfulserver.global.config.security.JwtProvider;
@@ -88,18 +85,10 @@ public class PostCrudManagerImpl implements PostCrudManager {
 
   @Override
   public List<SingleArticleInfoDto> getPostByTokenAndPagination(String token, Pageable pageable) {
-    User user = userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
 
     Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDate(user, pageable);
-    return articlePage.stream()
-      .map(article -> {
-        List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
-        UserInfoForClientDto userInfo = getUserInfoForClientDto(article.getUser());
-        return getSingleArticleDto(article, hashtags, userInfo);
-      })
-      .collect(Collectors.toList());
+    return getListOfSingleArticleDtoByPageResults(articlePage);
   }
 
   @Override
