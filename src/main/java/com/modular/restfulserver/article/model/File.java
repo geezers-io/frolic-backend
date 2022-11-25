@@ -20,10 +20,10 @@ public class File {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true)
+  // TODO: 2022-11-25 키 공부 좀 더 해보고 적용해보기 
+//  @Column(unique = true)
   private String name;
 
-  @Column(unique = true)
   private Long size;
 
   @ManyToOne
