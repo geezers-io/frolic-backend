@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface FileManager {
 
-  void singleFileUpload(MultipartFile file);
+  void singleFileUpload(CustomFile file);
 
-  void multipleFileUpload(List<MultipartFile> files);
+  void multipleFileUpload(List<CustomFile> files);
 
   byte[] download(String fileKey);
 

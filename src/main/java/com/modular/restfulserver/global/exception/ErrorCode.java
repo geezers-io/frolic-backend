@@ -14,6 +14,8 @@ public enum ErrorCode {
   FILE_SAVE_FAILURE(INTERNAL_SERVER_ERROR, "요청 파일 저장이 실패하였습니다."),
   FILE_DOWNLOAD_FAILURE(INTERNAL_SERVER_ERROR, "파일 다운로드에 실패하였습니다."),
   FAULT_FILENAME_REQUEST(BAD_REQUEST, "파일 이름 형식이 잘못되었습니다."),
+
+  FAULT_FILE_EXTENSION_REQUEST(BAD_REQUEST, "파일 확장자 형식이 잘못되었습니다."),
   ALREADY_LIKE_INFO(BAD_REQUEST, "이미 좋아요 한 게시글입니다."),
   PASSWORD_NOT_MATCH(BAD_REQUEST, "패스워드 정보가 일치하지 않습니다."),
   USER_NOT_FOUND(BAD_REQUEST, "존재하지 않는 유저입니다."),

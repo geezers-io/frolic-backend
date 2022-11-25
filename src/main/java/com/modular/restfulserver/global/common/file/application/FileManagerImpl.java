@@ -33,12 +33,12 @@ public class FileManagerImpl implements FileManager {
   }
 
   @Override
-  public void singleFileUpload(MultipartFile file) {
+  public void singleFileUpload(CustomFile file) {
     store(file);
   }
 
   @Override
-  public void multipleFileUpload(List<MultipartFile> files) {
+  public void multipleFileUpload(List<CustomFile> files) {
     files.forEach(this::store);
   }
 
@@ -53,12 +53,12 @@ public class FileManagerImpl implements FileManager {
     }
   }
 
-  private void store(MultipartFile file) {
-    if (Objects.isNull(file.getOriginalFilename()))
+  private void store(CustomFile file) {
+    if (Objects.isNull(file.getCustomFilename()))
       throw new FaultFilenameException();
 
-    try (InputStream inputStream = file.getInputStream()) {
-      Files.copy(inputStream, uploadDirPath.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+    try (InputStream inputStream = file.getFile().getInputStream()) {
+      Files.copy(inputStream, uploadDirPath.resolve(file.getCustomFilename()), StandardCopyOption.REPLACE_EXISTING);
     } catch (Exception ex) {
       log.error(ex.toString());
       throw new FileSaveFailException();
