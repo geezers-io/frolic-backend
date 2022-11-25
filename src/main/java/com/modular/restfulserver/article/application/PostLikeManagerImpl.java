@@ -27,10 +27,8 @@ public class PostLikeManagerImpl implements PostLikeManager {
   @Override
   public Long likePostByTokenUser(String token, Long postId) {
 
-
     User user = getUserByToken(token);
-    Article article = articleRepository.findById(postId)
-        .orElseThrow(NotFoundResourceException::new);
+    Article article = articleRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
     if (likeRepository.existsByArticleAndUser(article, user))
       throw new AlreadyExistsLikeException();
 
@@ -43,20 +41,15 @@ public class PostLikeManagerImpl implements PostLikeManager {
   @Override
   public Long unLikePostByTokenUser(String token, Long postId) {
     User user = getUserByToken(token);
-    Article article = articleRepository.findById(postId)
-      .orElseThrow(NotFoundResourceException::new);
+    Article article = articleRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
+    Like like = likeRepository.findByArticleAndUser(article, user).orElseThrow(NotFoundResourceException::new);
 
-    Like like = likeRepository.findByArticleAndUser(article, user)
-        .orElseThrow(NotFoundResourceException::new);
     likeRepository.delete(like);
-
     return likeRepository.countAllByArticle(article);
   }
 
   private User getUserByToken(String token) {
-    return userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
+    return userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
   }
 
 }

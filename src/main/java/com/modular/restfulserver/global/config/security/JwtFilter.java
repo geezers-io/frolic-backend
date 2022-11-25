@@ -28,10 +28,8 @@ public class JwtFilter extends GenericFilterBean {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     String token = resolveToken(httpRequest);
     if (token != null && jwtProvider.validateToken(token)) {
-      Authentication authentication =
-        jwtProvider.getAuthentication(token);
-      SecurityContextHolder.getContext()
-        .setAuthentication(authentication);
+      Authentication authentication = jwtProvider.getAuthentication(token);
+      SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     chain.doFilter(request, response);
@@ -42,9 +40,9 @@ public class JwtFilter extends GenericFilterBean {
     if (
       bearerToken != null
       && bearerToken.startsWith(JwtConstants.TOKEN_HEADER_PREFIX)
-    ) {
+    )
       return bearerToken.substring(JwtConstants.TOKEN_HEADER_PREFIX.length());
-    }
+
     return null;
   }
 }

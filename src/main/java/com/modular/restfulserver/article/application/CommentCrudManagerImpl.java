@@ -33,15 +33,13 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
 
   @Override
   public SingleCommentInfoDto getCommentById(Long commentId) {
-    Comment comment = commentRepository.findById(commentId)
-      .orElseThrow(NotFoundResourceException::new);
+    Comment comment = commentRepository.findById(commentId).orElseThrow(NotFoundResourceException::new);
     return getSingleCommentInfoDto(comment);
   }
 
   @Override
   public List<SingleCommentInfoDto> getCommentsByArticlePagination(Long articleId, Pageable pageable) {
-    Article article = articleRepository.findById(articleId)
-      .orElseThrow(NotFoundResourceException::new);
+    Article article = articleRepository.findById(articleId).orElseThrow(NotFoundResourceException::new);
     Page<Comment> commentPage = commentRepository.findAllByArticleOrderByCreatedDate(article, pageable);
 
     return commentPage.stream()
