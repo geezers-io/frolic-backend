@@ -8,6 +8,7 @@ import com.modular.restfulserver.global.common.file.application.CustomFile;
 import com.modular.restfulserver.global.common.file.application.FileManager;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,10 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -100,7 +103,7 @@ public class PostCrudApi {
     Pageable pageable,
     @RequestParam Map<String, String> reqParam
   ) {
-    String[] params = (String[]) reqParam.values().toArray();
+    List<String> params = new ArrayList<>(reqParam.values());
     List<SingleArticleInfoDto> data = postCrudManager.getSearchParamByPagination(params, pageable);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
