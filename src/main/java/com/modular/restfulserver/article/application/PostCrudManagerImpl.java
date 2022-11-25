@@ -119,21 +119,18 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   private Article verifyAndGetArticleIfUserRequestTargetHavePermission(String token, Long articleId) {
-    User user = userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
-    Article article = articleRepository.findById(articleId)
-      .orElseThrow(NotFoundResourceException::new);
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
+    Article article = articleRepository.findById(articleId).orElseThrow(NotFoundResourceException::new);
     Long articleUserId = article.getUser().getId();
+
     if (!Objects.equals(user.getId(), articleUserId))
       throw new NotPermissionException();
+
     return article;
   }
 
   private User getUserIsTokenAble(String token) {
-    return userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
+    return userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
   }
 
   private SingleArticleInfoDto getSingleArticleDto(Article article, List<String> hashtags, UserInfoForClientDto userInfo) {
