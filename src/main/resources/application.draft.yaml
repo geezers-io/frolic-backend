@@ -2,6 +2,11 @@ jwt:
   secret: {key}
   accessTokenExpTime: {ms}
   refreshTokenExpTime: {ms}
+
+# 임의로 관리 중인 값 임
+host: "http://localhost"
+port: 8080
+
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
