@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
@@ -18,19 +20,19 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     "select u.username" +
     " from users u" +
     " left join follows f" +
-    " on f.followingId = u.id " +
-    "where f.followingId = ?1"+
+    " on f.followerId = u " +
+    "where f.followerId = ?1"+
     "")
-  String[] getAllByFollowerId(User user);
+  List<String> findAllNameByUserFollowerInfo(User user);
 
   @Query("" +
     "select u.username" +
     " from users u" +
     " left join follows f" +
-    " on f.followerId = u.id " +
-    "where f.followerId = ?1" +
+    " on f.followingId = u" +
+    " where f.followingId = ?1" +
     "")
-  String[] getAllByFollowingId(User user);
+  List<String> findAllNameByUserFollowingInfo(User user);
 
   @Modifying
   @Query("delete from follows f where f.followerId = ?1 and f.followingId = ?2")

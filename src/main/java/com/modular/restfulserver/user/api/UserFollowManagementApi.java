@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,21 +21,21 @@ public class UserFollowManagementApi {
   private final JwtProvider jwtProvider;
 
   @GetMapping("/follower")
-  public ResponseEntity<Map<String, String[]>> getFollowerListBySelfApi(
+  public ResponseEntity<Map<String, List<String>>> getFollowerListBySelfApi(
     HttpServletRequest request
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    String[] followList = userFollowManager.getFollowerListBySelf(token);
+    List<String> followList = userFollowManager.getFollowerListBySelf(token);
     return ResponseEntity
       .ok(getWrappingResponseData(followList));
   }
 
   @GetMapping("/following")
-  public ResponseEntity<Map<String, String[]>> getFollowingListBySelfApi(
+  public ResponseEntity<Map<String, List<String>>> getFollowingListBySelfApi(
     HttpServletRequest request
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    String[] followerList = userFollowManager.getFollowingListBySelf(token);
+    List<String> followerList = userFollowManager.getFollowingListBySelf(token);
     return ResponseEntity
       .ok(getWrappingResponseData(followerList));
   }
@@ -63,8 +64,8 @@ public class UserFollowManagementApi {
       .build();
   }
 
-  private Map<String, String[]> getWrappingResponseData(String[] list) {
-    Map<String, String[]> responseData = new HashMap<>();
+  private Map<String, List<String>> getWrappingResponseData(List<String> list) {
+    Map<String, List<String>> responseData = new HashMap<>();
     responseData.put("data", list);
     return responseData;
   }

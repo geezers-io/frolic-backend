@@ -1,14 +1,16 @@
 package com.modular.restfulserver.user.application;
 
+import java.util.List;
+
 public interface UserFollowManager {
 
-  String[] getFollowerListBySelf(String token);
+  List<String> getFollowerListBySelf(String token);
 
-  String[] getFollowerListByUsername(String token, String username);
+  List<String> getFollowerListByUsername(String token, String username);
 
-  String[] getFollowingListBySelf(String token);
+  List<String> getFollowingListBySelf(String token);
 
-  String[] getFollowingListByUsername(String token, String username);
+  List<String> getFollowingListByUsername(String token, String username);
 
   void addFollowToUsername(String token, String username);
 

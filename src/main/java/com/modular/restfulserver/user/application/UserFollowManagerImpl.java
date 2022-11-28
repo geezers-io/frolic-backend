@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,27 +23,27 @@ public class UserFollowManagerImpl implements UserFollowManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public String[] getFollowerListBySelf(String token) {
+  public List<String> getFollowerListBySelf(String token) {
     User tokenUser = getUserByParsingToken(token);
-    return followRepository.getAllByFollowerId(tokenUser);
+    return followRepository.findAllNameByUserFollowerInfo(tokenUser);
   }
 
   @Override
-  public String[] getFollowerListByUsername(String token, String username) {
+  public List<String> getFollowerListByUsername(String token, String username) {
     User user = getUserByUsername(username);
-    return followRepository.getAllByFollowerId(user);
+    return followRepository.findAllNameByUserFollowerInfo(user);
   }
 
   @Override
-  public String[] getFollowingListBySelf(String token) {
+  public List<String> getFollowingListBySelf(String token) {
     User tokenUser = getUserByParsingToken(token);
-    return followRepository.getAllByFollowingId(tokenUser);
+    return followRepository.findAllNameByUserFollowingInfo(tokenUser);
   }
 
   @Override
-  public String[] getFollowingListByUsername(String token, String username) {
+  public List<String> getFollowingListByUsername(String token, String username) {
     User user = getUserByUsername(username);
-    return followRepository.getAllByFollowingId(user);
+    return followRepository.findAllNameByUserFollowingInfo(user);
   }
 
   @Override
@@ -49,13 +51,13 @@ public class UserFollowManagerImpl implements UserFollowManager {
     User tokenUser = getUserByParsingToken(token);
     User usernameUser = getUserByUsername(username);
     boolean isExistsFollow = followRepository
-      .existsFollowByFollowerIdAndFollowingId(tokenUser, usernameUser);
+      .existsFollowByFollowerIdAndFollowingId(usernameUser, tokenUser);
     if (isExistsFollow)
       throw new AlreadyExistsFollowException();
 
     Follow newFollow = new Follow();
-    newFollow.setFollowerId(tokenUser);
-    newFollow.setFollowingId(usernameUser);
+    newFollow.setFollowerId(usernameUser);
+    newFollow.setFollowingId(tokenUser);
     followRepository.save(newFollow);
   }
 
@@ -63,10 +65,7 @@ public class UserFollowManagerImpl implements UserFollowManager {
   public void removeFollowToUsername(String token, String username) {
     User tokenUser = getUserByParsingToken(token);
     User usernameUser = getUserByUsername(username);
-    followRepository.deleteFollowByFollowerIdAndFollowingId(
-      tokenUser,
-      usernameUser
-    );
+    followRepository.deleteFollowByFollowerIdAndFollowingId(usernameUser, tokenUser);
   }
 
   private User getUserByParsingToken(String token) {
