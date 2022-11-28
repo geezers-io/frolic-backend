@@ -28,6 +28,12 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   )
   private String username;
 
+  @Column(
+    length = 30,
+    nullable = false
+  )
+  private String realname;
+
   @Column(nullable = false)
   private String password;
 
@@ -40,14 +46,17 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   public User(
     String email,
     String username,
+    String realname,
     String password
   ) {
     Assert.hasText(email, "email must not be empty");
     Assert.hasText(username, "username must not be empty");
     Assert.hasText(password, "password must not be empty");
+    Assert.hasText(realname, "realname must not be empty");
 
     this.email = email;
     this.username = username;
+    this.realname = realname;
     this.password = password;
   }
 

@@ -153,6 +153,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addUserId(user.getId())
       .addEmail(user.getEmail())
       .addUsername(user.getUsername())
+      .addRealname(user.getRealname())
       .build();
   }
 

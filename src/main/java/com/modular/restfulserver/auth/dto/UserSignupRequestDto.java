@@ -28,15 +28,23 @@ public class UserSignupRequestDto {
 
   @NotNull
   @Pattern(
-    regexp = "[^!@#$%^&]([a-zA-Z가-힣0-9]){3,10}",
+    regexp = "^(?=.*\\w)\\w{4,15}$",
     message = "사용자 이름 형식이 잘못되었습니다."
   )
   private String username;
+
+  @NotNull
+  @Pattern(
+    regexp = "^(?=.*\\w)\\w{4,15}$",
+    message = "사용자 이름 형식이 잘못되었습니다."
+  )
+  private String realname;
 
   public User toEntity() {
     return User.builder()
       .addEmail(email)
       .addUsername(username)
+      .addRealname(realname)
       .addPassword(password)
       .build();
   }
