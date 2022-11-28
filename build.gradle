@@ -1,9 +1,16 @@
+buildscript {
+  ext {
+    queryDslVersion = "5.0.0"
+  }
+}
+
 plugins {
   id 'org.springframework.boot' version '2.7.5'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'java'
   id 'org.springframework.experimental.aot' version '0.12.1'
   id 'org.hibernate.orm'
+  id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.modular'
@@ -14,6 +21,7 @@ configurations {
   compileOnly {
     extendsFrom annotationProcessor
   }
+  querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -37,7 +45,9 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
   implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
   runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-  implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
+
+  implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // querydsl 라이브러리
+  annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}" //  Querydsl 관련 코드 생성
 }
 
 tasks.named('test') {
@@ -48,6 +58,25 @@ tasks.named('bootBuildImage') {
   builder = 'paketobuildpacks/builder:tiny'
   environment = ['BP_NATIVE_IMAGE': 'true']
 }
+
+//querydsl 추가 시작 (위에 plugin 추가 부분과 맞물림)
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+  jpa = true
+  querydslSourcesDir = querydslDir
+}
+
+sourceSets { // IDE의 소스 폴더에 자동으로 넣어준다.
+  main.java.srcDir querydslDir
+}
+
+compileQuerydsl {
+  options.annotationProcessorPath = configurations.querydsl // Q파일을 생성해준다.
+}
+
+
+
+
 
 //tasks.named('hibernate') {
 //  enhance {
