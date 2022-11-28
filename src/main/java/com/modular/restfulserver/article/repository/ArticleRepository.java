@@ -19,7 +19,13 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, JpaSpec
 
   Page<Article> findAllByUserOrderByCreatedDate(User user, Pageable pageable);
 
-  @Query("select at from articles at join article_hashtags ah on at = ah.article where ah.hashtag = (select h from hashtags h where h.name in ?1) order by at.createdDate desc")
-  Page<Article> findAllByHashtagByCreatedDate(List<String> searchList, Pageable pageable);
+  @Query(value = "" +
+    "select posts from articles posts " +
+    "join article_hashtags post_tags on posts = post_tags.article " +
+    "where post_tags.hashtag in (" +
+    "select h from hashtags h where h.name in (?1)" +
+    ") order by posts.createdDate asc" +
+    "")
+  Page<Article> findAllByHashtagsAndPagination(List<String> searchHashtagList, Pageable pageable);
 
 }

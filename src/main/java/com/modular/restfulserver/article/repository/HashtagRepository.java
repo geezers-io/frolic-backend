@@ -12,6 +12,8 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
 
   boolean existsByName(String name);
 
+  List<Hashtag> findAllByNameIn(List<String> name);
+
   Optional<Hashtag> findByName(String tagName);
 
 }

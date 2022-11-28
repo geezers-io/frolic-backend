@@ -100,7 +100,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
 
   @Override
   public List<SingleArticleInfoDto> getSearchParamByPagination(List<String> searchList, Pageable pageable) {
-    Page<Article> articlePage = articleRepository.findAllByHashtagByCreatedDate(searchList, pageable);
+    Page<Article> articlePage = articleRepository.findAllByHashtagsAndPagination(searchList, pageable);
     return getListOfSingleArticleDtoByPageResults(articlePage);
   }
 
