@@ -81,6 +81,8 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addLikeCount(0L)
       .addUserInfo(userInfo)
       .addFileDownloadUrls(fileDownloadUrls)
+      .addCreatedDate(newArticle.getCreatedDate())
+      .addUpdatedDate(newArticle.getUpdatedDate())
       .build();
   }
 
@@ -135,6 +137,8 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addLikeCount(likeCount)
       .addTextContent(article.getTextContent())
       .addFileDownloadUrls(fileDownloadUrls)
+      .addCreatedDate(article.getCreatedDate())
+      .addUpdatedDate(article.getUpdatedDate())
       .build();
   }
 

@@ -5,6 +5,7 @@ import com.modular.restfulserver.user.dto.UserInfoForClientDto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,6 +18,8 @@ public class SingleArticleInfoDto {
   private final List<String> hashtags;
   private final Long likeCount;
   private final List<String> fileDownloadUrls;
+  private final LocalDateTime createdDate;
+  private final LocalDateTime updatedDate;
 
   @Builder(setterPrefix = "add")
   public SingleArticleInfoDto(
@@ -26,7 +29,9 @@ public class SingleArticleInfoDto {
     List<SingleCommentInfoDto> comments,
     List<String> hashtags,
     Long likeCount,
-    List<String> fileDownloadUrls
+    List<String> fileDownloadUrls,
+    LocalDateTime createdDate,
+    LocalDateTime updatedDate
   ) {
     if (fileDownloadUrls == null)
       throw new BuilderArgumentNotValidException("[SingleArticleInfoDto] fileDownloadUrls is null");
@@ -38,6 +43,8 @@ public class SingleArticleInfoDto {
     this.hashtags = hashtags;
     this.likeCount = likeCount;
     this.fileDownloadUrls = fileDownloadUrls;
+    this.createdDate = createdDate;
+    this.updatedDate = updatedDate;
   }
 
 }
