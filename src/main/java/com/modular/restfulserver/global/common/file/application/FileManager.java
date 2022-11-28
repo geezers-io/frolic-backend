@@ -15,7 +15,7 @@ public interface FileManager {
   byte[] download(String fileKey);
 
   static List<CustomFile> createCustomFileList(List<MultipartFile> multipartFiles) {
-    if (multipartFiles.get(0).isEmpty()) return new ArrayList<>();
+    if (multipartFiles == null || multipartFiles.get(0).isEmpty()) return new ArrayList<>();
     return multipartFiles.stream().map(CustomFile::new).collect(Collectors.toList());
   }
 

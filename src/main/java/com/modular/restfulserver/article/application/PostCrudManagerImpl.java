@@ -88,13 +88,13 @@ public class PostCrudManagerImpl implements PostCrudManager {
   public List<SingleArticleInfoDto> getPostByTokenAndPagination(String token, Pageable pageable) {
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
 
-    Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDate(user, pageable);
+    Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDateDesc(user, pageable);
     return getListOfSingleArticleDtoByPageResults(articlePage);
   }
 
   @Override
   public List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable) {
-    Page<Article> articlePage = articleRepository.findAll(pageable);
+    Page<Article> articlePage = articleRepository.findAllCreatedDateDesc(pageable);
     return getListOfSingleArticleDtoByPageResults(articlePage);
   }
 

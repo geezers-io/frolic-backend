@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -32,11 +31,11 @@ public class PostCrudApi {
   private final JwtProvider jwtProvider;
   private final PostCrudManager postCrudManager;
 
-  @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+  @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<Map<String, SingleArticleInfoDto>> createPostApi(
     HttpServletRequest request,
     @RequestPart @Valid CreatePostRequestDto createPostRequest,
-    @RequestPart List<MultipartFile> files
+    @RequestPart(required = false) List<MultipartFile> files
   ) {
     List<CustomFile> customFiles = FileManager.createCustomFileList(files);
     SingleArticleInfoDto post = postCrudManager.createPost(getToken(request), createPostRequest, customFiles);
