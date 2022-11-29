@@ -54,6 +54,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   // TODO: 2022-11-29 여러 번 발생하는 쿼리를 하나로 줄일 수 없을까? 
+  // TODO: 2022-11-29 복잡한 코드를 줄이자
   @Override
   public SingleArticleInfoDto updatePostById(String token, Long id, UpdateArticleRequestDto singleArticleInfoDto) {
     Article article = verifyAndGetArticleIfUserRequestTargetHavePermission(token, id);
@@ -68,11 +69,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
       List<String> updatedFilenames = singleArticleInfoDto.getFileDownloadUrls().stream()
         .map(CustomFile::parseFilenameByDownloadUrls)
         .collect(Collectors.toList());
-      List<File> filteredFiles = article.getFiles().stream()
+      List<File> filteredFiles = fileRepository.findAllByArticle(article).stream()
         .filter(file -> !updatedFilenames.contains(file.getName()))
         .collect(Collectors.toList());
-      log.error(filteredFiles.toString());
       fileRepository.deleteAll(filteredFiles);
+      // TODO: 2022-11-29 POINT
+      article.updateFiles(fileRepository.findAllByArticle(article));
       articleRepository.save(article);
     }
 
