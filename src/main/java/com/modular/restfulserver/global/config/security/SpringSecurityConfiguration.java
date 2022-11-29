@@ -71,7 +71,10 @@ public class SpringSecurityConfiguration {
         "/api/users/{username}",
         "/api/posts/list",
         "/api/download/{filename}",
-        "/api/posts/{postId}"
+        "/api/posts/{postId}",
+        "/api/comments/{commentId}",
+        "/api/comments/posts/{postId}",
+        "/api/comments/username/{username}"
       ).permitAll()
       .anyRequest().authenticated()
       .and()
