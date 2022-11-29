@@ -1,5 +1,6 @@
 package com.modular.restfulserver.user.api;
 
+import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.application.UserFollowManager;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserFollowManagementApi {
 
@@ -27,7 +28,7 @@ public class UserFollowManagementApi {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     List<String> followList = userFollowManager.getFollowerListBySelf(token);
     return ResponseEntity
-      .ok(getWrappingResponseData(followList));
+      .ok(ResponseHelper.createDataMap(followList));
   }
 
   @GetMapping("/following")
@@ -37,7 +38,7 @@ public class UserFollowManagementApi {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     List<String> followerList = userFollowManager.getFollowingListBySelf(token);
     return ResponseEntity
-      .ok(getWrappingResponseData(followerList));
+      .ok(ResponseHelper.createDataMap(followerList));
   }
 
   @GetMapping("/follow")
@@ -62,12 +63,6 @@ public class UserFollowManagementApi {
     return ResponseEntity
       .status(HttpStatus.OK)
       .build();
-  }
-
-  private Map<String, List<String>> getWrappingResponseData(List<String> list) {
-    Map<String, List<String>> responseData = new HashMap<>();
-    responseData.put("data", list);
-    return responseData;
   }
 
 }
