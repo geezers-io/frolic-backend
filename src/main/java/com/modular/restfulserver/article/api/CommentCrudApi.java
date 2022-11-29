@@ -69,22 +69,24 @@ public class CommentCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(info));
   }
 
-  @GetMapping("")
-  public ResponseEntity<Map<String, List<SingleCommentInfoDto>>>
-  getCommentsByArticleIdPaginationApi(
-    @RequestParam(name = "postId") Long postId,
-    @RequestParam(name = "username") String username,
+  @GetMapping("/posts/{postId}")
+  public ResponseEntity<Map<String, List<SingleCommentInfoDto>>> getCommentByArticleIdPaginationApi(
+    @PathVariable(name = "postId") Long postId,
     Pageable pageable
   ) {
-    if (username != null) {
-      List<SingleCommentInfoDto> comments = commentCrudManager
-        .getCommentsByUserPagination(username, pageable);
-      return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
-    }
-
     List<SingleCommentInfoDto> comments = commentCrudManager
       .getCommentsByArticlePagination(postId, pageable);
     return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
+  }
+
+  @GetMapping("/username/{username}")
+  public ResponseEntity<Map<String, List<SingleCommentInfoDto>>> getCommentsByUsernamePaginationApi(
+    @PathVariable String username,
+    Pageable pageable
+    ) {
+      List<SingleCommentInfoDto> comments = commentCrudManager
+        .getCommentsByUserPagination(username, pageable);
+      return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
   }
 
 }
