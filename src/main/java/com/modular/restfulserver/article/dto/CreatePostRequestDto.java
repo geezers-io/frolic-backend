@@ -14,16 +14,16 @@ public class CreatePostRequestDto {
 //  @Max(value = 1000, message = "게시글 본문은 1000글자 미만이어야 합니다.")
   private final String textContent;
   // TODO: 2022-11-13 Validation 제대로 작성하기 
-  private final List<String> hashTagList;
+  private final List<String> hashtags;
 
   @Builder(setterPrefix = "add")
   public CreatePostRequestDto(
     String textContent,
-    List<String> hashTagList
+    List<String> hashtags
   ) {
     Assert.hasText(textContent, "textContent field must be not empty");
     this.textContent = textContent;
-    this.hashTagList = hashTagList;
+    this.hashtags = hashtags;
   }
 
   public Article toEntity() {
