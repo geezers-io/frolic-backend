@@ -3,6 +3,7 @@ package com.modular.restfulserver.article.api;
 import com.modular.restfulserver.article.application.PostCrudManager;
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
+import com.modular.restfulserver.article.dto.UpdateArticleRequestDto;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.common.file.application.CustomFile;
 import com.modular.restfulserver.global.common.file.application.FileManager;
@@ -53,14 +54,14 @@ public class PostCrudApi {
   }
 
   @PutMapping("/{postId}")
-  public ResponseEntity<Void> updatePostByIdApi(
+  public ResponseEntity<Map<String, SingleArticleInfoDto>> updatePostByIdApi(
     HttpServletRequest request,
     @PathVariable(name = "postId") Long postId,
-    @RequestBody @Valid SingleArticleInfoDto dto
+    @RequestBody @Valid UpdateArticleRequestDto dto
   ) {
     String token = getToken(request);
-    postCrudManager.updatePostById(token, postId, dto);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+    SingleArticleInfoDto articleInfoDto = postCrudManager.updatePostById(token, postId, dto);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfoDto));
   }
 
   @DeleteMapping("/{postId}")

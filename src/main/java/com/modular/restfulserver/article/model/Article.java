@@ -33,7 +33,7 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   private final List<ArticleHashTag> articleHashTags = new ArrayList<>();
 
   @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-  private final List<File> files = new ArrayList<>();
+  private List<File> files = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
   public Article(
@@ -54,6 +54,10 @@ public class Article extends CreateAndModifiedTimeAuditEntity {
   public void updateTextContent(String textContent) {
     // TODO: 2022-11-13 validation
     this.textContent = textContent;
+  }
+
+  public void updateFiles(List<File> files) {
+    this.files = files;
   }
 
 }
