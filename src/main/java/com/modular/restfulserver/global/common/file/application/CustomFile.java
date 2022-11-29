@@ -13,6 +13,11 @@ public class CustomFile {
   private final MultipartFile file;
   private final String customFilename;
 
+  public static String parseFilenameByDownloadUrls(String downloadUrl) {
+    String[] chunks = downloadUrl.split("/");
+    return chunks[chunks.length - 1]; // return filename
+  }
+
   public CustomFile(MultipartFile file) {
     this.file = file;
     String filename = file.getOriginalFilename();
