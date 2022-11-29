@@ -3,6 +3,7 @@ package com.modular.restfulserver.article.application;
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.article.dto.SingleCommentInfoDto;
+import com.modular.restfulserver.article.dto.UpdateArticleRequestDto;
 import com.modular.restfulserver.article.model.*;
 import com.modular.restfulserver.article.repository.*;
 import com.modular.restfulserver.global.common.file.application.CustomFile;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostCrudManagerImpl implements PostCrudManager {
 
@@ -36,6 +39,8 @@ public class PostCrudManagerImpl implements PostCrudManager {
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
+
+  private final FileRepository fileRepository;
   private final JwtProvider jwtProvider;
 
   @Override
@@ -48,10 +53,46 @@ public class PostCrudManagerImpl implements PostCrudManager {
     return getSingleArticleDto(article, hashtags, userInfo);
   }
 
+  // TODO: 2022-11-29 여러 번 발생하는 쿼리를 하나로 줄일 수 없을까? 
   @Override
-  public void updatePostById(String token, Long id, SingleArticleInfoDto singleArticleInfoDto) {
+  public SingleArticleInfoDto updatePostById(String token, Long id, UpdateArticleRequestDto singleArticleInfoDto) {
     Article article = verifyAndGetArticleIfUserRequestTargetHavePermission(token, id);
-    article.updateTextContent(singleArticleInfoDto.getTextContent());
+
+    article.updateTextContent(singleArticleInfoDto.getTextContent()); // 본문 갱신
+
+    // 파일 삭제내용이 있다면 게시글 연관 파일 삭제
+    int articleOwnedFileSize = article.getFiles().size();
+    int updateRequestFileSize = singleArticleInfoDto.getFileDownloadUrls().size();
+
+    if (articleOwnedFileSize != updateRequestFileSize) {
+      List<String> updatedFilenames = singleArticleInfoDto.getFileDownloadUrls().stream()
+        .map(CustomFile::parseFilenameByDownloadUrls)
+        .collect(Collectors.toList());
+      List<File> filteredFiles = article.getFiles().stream()
+        .filter(file -> !updatedFilenames.contains(file.getName()))
+        .collect(Collectors.toList());
+      log.error(filteredFiles.toString());
+      fileRepository.deleteAll(filteredFiles);
+      articleRepository.save(article);
+    }
+
+    // 해시태그 삭제된 리스트 검사 및 삭제
+    List<String> updatedHashtagsNames = singleArticleInfoDto.getHashtags();
+    List<String> articleOwnedHashtagNames = articleHashtagRepository.findAllByArticle(article);
+
+    List<String> deletionHashtagNames = articleOwnedHashtagNames.stream()
+        .filter(articleHashtag -> !updatedHashtagsNames.contains(articleHashtag))
+        .collect(Collectors.toList());
+    List<Hashtag> deletionHashtags = hashtagRepository.findAllByNameIn(deletionHashtagNames);
+    deletionHashtags.forEach(hashtag -> articleHashtagRepository.deleteByArticleAndHashtag(article, hashtag));
+
+    // 신규 등록된 해시태그 생성 및 게시글과 관계 생성
+    updatedHashtagsNames.forEach(hashtag -> {
+      createHashtagIfNotExists(hashtag);
+      setRelationTagWithArticle(article, hashtag);
+    });
+
+    return getSingleArticleDto(article, updatedHashtagsNames, getUserInfoForClientDto(article.getUser()));
   }
 
   @Override
@@ -63,7 +104,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   @Override
   public SingleArticleInfoDto createPost(String token, CreatePostRequestDto dto, List<CustomFile> files) {
     User user = getUserIsTokenAble(token);
-    List<String> hashtags = dto.getHashTagList();
+    List<String> hashtags = dto.getHashtags();
     Article newArticle = Article.createArticle(dto, user);
     articleRepository.save(newArticle);
     List<String> fileDownloadUrls = articleFileManager.saveFilesWithArticle(newArticle, files);
@@ -174,12 +215,14 @@ public class PostCrudManagerImpl implements PostCrudManager {
   private void setRelationTagWithArticle(Article article, String tag) {
     Hashtag tagEntity = hashtagRepository.findByName(tag)
       .orElseThrow(NotFoundResourceException::new);
-    articleHashtagRepository.save(
-      ArticleHashTag.builder()
-        .addArticle(article)
-        .addHashtag(tagEntity)
-        .build()
-    );
+    boolean isAlreadyExistsRelation = articleHashtagRepository.existsByArticleAndHashtag(article, tagEntity);
+    if (!isAlreadyExistsRelation)
+      articleHashtagRepository.save(
+        ArticleHashTag.builder()
+          .addArticle(article)
+          .addHashtag(tagEntity)
+          .build()
+      );
   }
 
   private List<SingleArticleInfoDto> getListOfSingleArticleDtoByPageResults(Page<Article> articlePage) {
