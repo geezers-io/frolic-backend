@@ -13,7 +13,7 @@ public interface PostCrudManager {
 
   SingleArticleInfoDto getPostById(Long id);
 
-  SingleArticleInfoDto updatePostById(String token, Long id, UpdateArticleRequestDto singleArticleInfoDto);
+  SingleArticleInfoDto updatePostById(String token, Long id, UpdateArticleRequestDto singleArticleInfoDto, List<CustomFile> customFiles);
 
   void deletePostById(String token, Long id);
 

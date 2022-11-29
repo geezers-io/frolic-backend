@@ -57,18 +57,17 @@ public class PostCrudApi {
   public ResponseEntity<Map<String, SingleArticleInfoDto>> updatePostByIdApi(
     HttpServletRequest request,
     @PathVariable(name = "postId") Long postId,
-    @RequestBody @Valid UpdateArticleRequestDto dto
+    @RequestPart @Valid UpdateArticleRequestDto updateRequest,
+    @RequestPart(required = false) List<MultipartFile> files
   ) {
     String token = getToken(request);
-    SingleArticleInfoDto articleInfoDto = postCrudManager.updatePostById(token, postId, dto);
+    List<CustomFile> customFiles = FileManager.createCustomFileList(files);
+    SingleArticleInfoDto articleInfoDto = postCrudManager.updatePostById(token, postId, updateRequest, customFiles);
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfoDto));
   }
 
   @DeleteMapping("/{postId}")
-  public ResponseEntity<Void> deletePostByIdApi(
-    HttpServletRequest request,
-    @PathVariable(name = "postId") Long postId
-  ) {
+  public ResponseEntity<Void> deletePostByIdApi(HttpServletRequest request, @PathVariable(name = "postId") Long postId) {
     String token = getToken(request);
     postCrudManager.deletePostById(token, postId);
     return ResponseEntity.status(HttpStatus.OK).build();

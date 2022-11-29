@@ -56,10 +56,17 @@ public class PostCrudManagerImpl implements PostCrudManager {
   // TODO: 2022-11-29 여러 번 발생하는 쿼리를 하나로 줄일 수 없을까? 
   // TODO: 2022-11-29 복잡한 코드를 줄이자
   @Override
-  public SingleArticleInfoDto updatePostById(String token, Long id, UpdateArticleRequestDto singleArticleInfoDto) {
+  public SingleArticleInfoDto updatePostById(
+    String token,
+    Long id,
+    UpdateArticleRequestDto singleArticleInfoDto,
+    List<CustomFile> files
+  ) {
     Article article = verifyAndGetArticleIfUserRequestTargetHavePermission(token, id);
+    List<String> createdFileDownloadUrls = articleFileManager.saveFilesWithArticle(article, files);
 
     article.updateTextContent(singleArticleInfoDto.getTextContent()); // 본문 갱신
+
 
     // 파일 삭제내용이 있다면 게시글 연관 파일 삭제
     int articleOwnedFileSize = article.getFiles().size();
@@ -69,11 +76,18 @@ public class PostCrudManagerImpl implements PostCrudManager {
       List<String> updatedFilenames = singleArticleInfoDto.getFileDownloadUrls().stream()
         .map(CustomFile::parseFilenameByDownloadUrls)
         .collect(Collectors.toList());
+
+      if (files != null) {
+        List<String> createdFilenames = createdFileDownloadUrls.stream()
+          .map(CustomFile::parseFilenameByDownloadUrls)
+          .collect(Collectors.toList());
+        updatedFilenames.addAll(createdFilenames);
+      }
+
       List<File> filteredFiles = fileRepository.findAllByArticle(article).stream()
         .filter(file -> !updatedFilenames.contains(file.getName()))
         .collect(Collectors.toList());
       fileRepository.deleteAll(filteredFiles);
-      // TODO: 2022-11-29 POINT
       article.updateFiles(fileRepository.findAllByArticle(article));
       articleRepository.save(article);
     }
