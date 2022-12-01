@@ -14,10 +14,13 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.frameoptions.WhiteListedAllowFromStrategy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +65,15 @@ public class SpringSecurityConfiguration {
     /* config **/
     http
       .headers().disable()
-      .headers().frameOptions().disable().and()
+      .headers().frameOptions().disable()
+      .addHeaderWriter(
+        new XFrameOptionsHeaderWriter(
+            new WhiteListedAllowFromStrategy(
+              Arrays.asList("http://localhost:3000", "*")
+            )
+        )
+      )
+      .and()
       .exceptionHandling()
       .authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
