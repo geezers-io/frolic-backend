@@ -61,6 +61,7 @@ public class SpringSecurityConfiguration {
 
     /* config **/
     http
+      .headers().frameOptions().disable().and()
       .exceptionHandling()
       .authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
@@ -72,10 +73,11 @@ public class SpringSecurityConfiguration {
         "/api/posts/list",
         "/api/download/{filename}",
         "/api/posts/{postId}",
+        "/api/posts/search",
         "/api/comments/{commentId}",
         "/api/comments/posts/{postId}",
         "/api/comments/username/{username}"
-      ).permitAll()
+        ).permitAll()
       .anyRequest().authenticated()
       .and()
       .httpBasic()
