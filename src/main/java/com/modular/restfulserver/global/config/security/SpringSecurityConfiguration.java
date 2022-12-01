@@ -61,7 +61,8 @@ public class SpringSecurityConfiguration {
 
     /* config **/
     http
-      .headers().frameOptions().sameOrigin().and()
+      .headers().disable()
+      .headers().frameOptions().disable().and()
       .exceptionHandling()
       .authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
