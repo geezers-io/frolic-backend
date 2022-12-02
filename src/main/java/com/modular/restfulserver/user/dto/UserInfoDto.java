@@ -1,6 +1,6 @@
 package com.modular.restfulserver.user.dto;
 
-import com.modular.restfulserver.global.exception.BuilderArgumentNotValidException;
+import static com.modular.restfulserver.global.utils.message.FieldError.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -22,12 +22,11 @@ public class UserInfoDto {
     Long allGivenLikeCount,
     UserInfoForClientDto userInfo
   ) {
-    Assert.isInstanceOf(Long.class, allPostCount, "allPostCount field must be long");
-    Assert.isInstanceOf(Long.class, allFollowerCount, "allFollowerCount field must be long");
-    Assert.isInstanceOf(Long.class, allFollowingCount, "allFollowingCount field must be long");
-    Assert.isInstanceOf(Long.class, allGivenLikeCount, "allGivenLikeCount field must be long");
-    if (userInfo == null)
-      throw new BuilderArgumentNotValidException("[UserInfoDto] userInfo must not null");
+    Assert.isInstanceOf(Long.class, allPostCount, getIllegalFieldError("allPostCount"));
+    Assert.isInstanceOf(Long.class, allFollowerCount, getIllegalFieldError("allFollowerCount"));
+    Assert.isInstanceOf(Long.class, allFollowingCount, getIllegalFieldError("allFollowingCount"));
+    Assert.isInstanceOf(Long.class, allGivenLikeCount, getIllegalFieldError("allGivenLikeCount"));
+    Assert.isInstanceOf(UserInfoForClientDto.class, userInfo, getIllegalFieldError("userInfo"));
 
     this.allPostCount = allPostCount;
     this.allFollowerCount = allFollowerCount;
