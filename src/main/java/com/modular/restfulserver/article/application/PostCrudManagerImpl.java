@@ -50,7 +50,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
     UserInfoForClientDto userInfo = getUserInfoForClientDto(article.getUser());
 
-    return getSingleArticleDto(article, hashtags, userInfo);
+    return getSingleArticleDto(article, hashtags, userInfo, article.getUser());
   }
 
   // TODO: 2022-11-29 여러 번 발생하는 쿼리를 하나로 줄일 수 없을까? 
@@ -101,6 +101,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
         .collect(Collectors.toList());
     List<Hashtag> deletionHashtags = hashtagRepository.findAllByNameIn(deletionHashtagNames);
     deletionHashtags.forEach(hashtag -> articleHashtagRepository.deleteByArticleAndHashtag(article, hashtag));
+    User articleUser = article.getUser();
 
     // 신규 등록된 해시태그 생성 및 게시글과 관계 생성
     updatedHashtagsNames.forEach(hashtag -> {
@@ -108,7 +109,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       setRelationTagWithArticle(article, hashtag);
     });
 
-    return getSingleArticleDto(article, updatedHashtagsNames, getUserInfoForClientDto(article.getUser()));
+    return getSingleArticleDto(article, updatedHashtagsNames, getUserInfoForClientDto(articleUser), articleUser);
   }
 
   @Override
@@ -140,6 +141,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addFileDownloadUrls(fileDownloadUrls)
       .addCreatedDate(newArticle.getCreatedDate())
       .addUpdatedDate(newArticle.getUpdatedDate())
+      .addIsLikeUp(false)
       .build();
   }
 
@@ -178,19 +180,21 @@ public class PostCrudManagerImpl implements PostCrudManager {
     return userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
   }
 
-  private SingleArticleInfoDto getSingleArticleDto(Article article, List<String> hashtags, UserInfoForClientDto userInfo) {
+  private SingleArticleInfoDto getSingleArticleDto(Article article, List<String> hashtags, UserInfoForClientDto userInfo, User user) {
     long likeCount = likeRepository.countAllByArticle(article);
     List<SingleCommentInfoDto> comments = commentRepository.findAllByArticle(article)
       .stream()
       .map(comment -> getSingleCommentDtoByEntity(comment, article, userInfo))
       .collect(Collectors.toList());
     List<String> fileDownloadUrls = articleFileManager.getFileDownloadUrlsByArticle(article);
+    boolean isLikeUp = likeRepository.existsByArticleAndUser(article, user);
 
     return SingleArticleInfoDto.builder()
       .addPostId(article.getId())
       .addHashtags(hashtags)
       .addComments(comments)
       .addUserInfo(userInfo)
+      .addIsLikeUp(isLikeUp)
       .addLikeCount(likeCount)
       .addTextContent(article.getTextContent())
       .addFileDownloadUrls(fileDownloadUrls)
@@ -246,7 +250,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .map(article -> {
         List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
         UserInfoForClientDto articleOwner = getUserInfoForClientDto(article.getUser());
-        return getSingleArticleDto(article,hashtags, articleOwner);
+        return getSingleArticleDto(article,hashtags, articleOwner, article.getUser());
       })
       .collect(Collectors.toList());
   }
