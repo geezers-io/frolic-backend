@@ -25,19 +25,14 @@ public class UserManagementApi {
   private final JwtProvider jwtProvider;
 
   @GetMapping("")
-  public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByTokenApi(
-    HttpServletRequest request
-  ) {
+  public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByTokenApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     UserInfoDto userInfo = userManager.getUserInfoByToken(token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
-  @PreAuthorize("permitAll()")
   @GetMapping("/{username}")
-  public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByUsernameParamApi(
-    @PathVariable String username
-  ) {
+  public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByUsernameParamApi(@PathVariable String username) {
     UserInfoDto userInfo = userManager.getUserInfo(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }

@@ -1,4 +1,4 @@
-package unit.restfulserver.model.builder;
+package builder;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,4 +1,4 @@
-package unit.restfulserver.user.dto;
+package dto;
 
 import com.modular.restfulserver.user.dto.UserInfoDto;
 import com.modular.restfulserver.user.dto.UserInfoForClientDto;
