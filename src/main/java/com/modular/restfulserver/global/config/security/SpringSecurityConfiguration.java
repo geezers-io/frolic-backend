@@ -64,16 +64,6 @@ public class SpringSecurityConfiguration {
 
     /* config **/
     http
-      .headers().disable()
-      .headers().frameOptions().disable()
-      .addHeaderWriter(
-        new XFrameOptionsHeaderWriter(
-            new WhiteListedAllowFromStrategy(
-              Arrays.asList("http://localhost:3000", "*")
-            )
-        )
-      )
-      .and()
       .exceptionHandling()
       .authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
