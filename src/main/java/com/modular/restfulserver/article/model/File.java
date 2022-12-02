@@ -48,7 +48,7 @@ public class File {
   }
 
   public String getDownloadUrl() {
-    return HOST + ":" + PORT + "/download/" + name;
+    return HOST + ":" + PORT + "/api/download/" + name;
   }
 
 }

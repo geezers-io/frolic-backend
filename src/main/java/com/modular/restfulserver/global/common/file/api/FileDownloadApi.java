@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("download")
+@RequestMapping("/api/download")
 @RequiredArgsConstructor
 public class FileDownloadApi {
 
