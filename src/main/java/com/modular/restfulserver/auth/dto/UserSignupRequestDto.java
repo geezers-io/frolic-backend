@@ -28,14 +28,14 @@ public class UserSignupRequestDto {
 
   @NotNull
   @Pattern(
-    regexp = "^(?=.*\\w)\\w{4,15}$",
+    regexp = "^(?=.*[a-zA-Z0-9])(?=.*_?)[a-zA-Z0-9_]{4,15}$",
     message = "사용자 이름 형식이 잘못되었습니다."
   )
   private String username;
 
   @NotNull
   @Pattern(
-    regexp = "^(?=.*\\w)\\w{4,15}$",
+    regexp = "^(?=.[가-힣ㄱ-ㅎa-zA-Z])[가-힣ㄱ-ㅎa-zA-Z]{1,12}$",
     message = "사용자 이름 형식이 잘못되었습니다."
   )
   private String realname;

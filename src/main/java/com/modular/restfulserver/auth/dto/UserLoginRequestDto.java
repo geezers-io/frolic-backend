@@ -22,7 +22,7 @@ public class UserLoginRequestDto {
   )
   private String password;
 
-  @Pattern(regexp = "[^!@#$%^&]([a-zA-Z가-힣0-9]){3,10}")
+  @Pattern(regexp = "^(?=.*[a-zA-Z0-9])(?=.*_?)[a-zA-Z0-9_]{4,15}$")
   private String username;
 
   public User toEntity() {
