@@ -1,6 +1,7 @@
 package com.modular.restfulserver.user.application;
 
 import com.modular.restfulserver.global.config.security.JwtProvider;
+import com.modular.restfulserver.user.dto.FollowUserDto;
 import com.modular.restfulserver.user.exception.AlreadyExistsFollowException;
 import com.modular.restfulserver.user.model.Follow;
 import com.modular.restfulserver.user.model.User;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,27 +25,35 @@ public class UserFollowManagerImpl implements UserFollowManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public List<String> getFollowerListBySelf(String token) {
+  public List<FollowUserDto> getFollowerListBySelf(String token) {
     User tokenUser = getUserByParsingToken(token);
-    return followRepository.findAllNameByUserFollowerInfo(tokenUser);
+    return followRepository.findAllNameByUserFollowerInfo(tokenUser).stream()
+      .map(this::createFollowUser)
+      .collect(Collectors.toList());
   }
 
   @Override
-  public List<String> getFollowerListByUsername(String token, String username) {
+  public List<FollowUserDto> getFollowerListByUsername(String token, String username) {
     User user = getUserByUsername(username);
-    return followRepository.findAllNameByUserFollowerInfo(user);
+    return followRepository.findAllNameByUserFollowerInfo(user).stream()
+      .map(this::createFollowUser)
+      .collect(Collectors.toList());
   }
 
   @Override
-  public List<String> getFollowingListBySelf(String token) {
+  public List<FollowUserDto> getFollowingListBySelf(String token) {
     User tokenUser = getUserByParsingToken(token);
-    return followRepository.findAllNameByUserFollowingInfo(tokenUser);
+    return followRepository.findAllNameByUserFollowingInfo(tokenUser).stream()
+      .map(this::createFollowUser)
+      .collect(Collectors.toList());
   }
 
   @Override
-  public List<String> getFollowingListByUsername(String token, String username) {
+  public List<FollowUserDto> getFollowingListByUsername(String token, String username) {
     User user = getUserByUsername(username);
-    return followRepository.findAllNameByUserFollowingInfo(user);
+    return followRepository.findAllNameByUserFollowingInfo(user).stream()
+      .map(this::createFollowUser)
+      .collect(Collectors.toList());
   }
 
   @Override
@@ -91,6 +101,10 @@ public class UserFollowManagerImpl implements UserFollowManager {
   private User getUserByUsername(String username) {
     return userRepository.findByUsername(username)
       .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+  }
+
+  private FollowUserDto createFollowUser(User user) {
+    return new FollowUserDto(user.getUsername(), user.getRealname());
   }
 
 }
