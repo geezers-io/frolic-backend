@@ -17,4 +17,10 @@ public class UserUpdateRequestDto {
   )
   private String username;
 
+  @Pattern(
+    regexp = "^(?=.[가-힣ㄱ-ㅎa-zA-Z])[가-힣ㄱ-ㅎa-zA-Z]{1,12}$",
+    message = "실명 형식이 잘못되었습니다."
+  )
+  private String realname;
+
 }

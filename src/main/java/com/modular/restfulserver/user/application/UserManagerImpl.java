@@ -40,6 +40,7 @@ public class UserManagerImpl implements UserManager {
 
     user.changeEmail(dto.getEmail());
     user.changeUsername(dto.getUsername());
+    user.changeRealname(dto.getRealname());
     userRepository.save(user);
 
     return UserInfoForClientDto.from(user);
