@@ -47,9 +47,11 @@ public class PostCrudApi {
 
   @GetMapping("/{postId}")
   public ResponseEntity<Map<String, SingleArticleInfoDto>> getPostByIdApi(
+    HttpServletRequest request,
     @PathVariable(name = "postId") Long postId
   ) {
-    SingleArticleInfoDto articleInfo = postCrudManager.getPostById(postId);
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
+    SingleArticleInfoDto articleInfo = postCrudManager.getPostById(postId, token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfo));
   }
 
@@ -80,30 +82,29 @@ public class PostCrudApi {
   ) {
     String token = getToken(request);
 
-    if (token == null) {
-      List<SingleArticleInfoDto> data = postCrudManager.getEntirePostByPagination(pageable);
-      return ResponseEntity.ok(ResponseHelper.createDataMap(data));
-    }
-
     List<SingleArticleInfoDto> data = postCrudManager.getPostByTokenAndPagination(token, pageable);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
   @GetMapping("/list")
-  public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getEntirePostByTokenPaginationApi(
+  public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getEntirePostByPaginationApi(
+    HttpServletRequest request,
     Pageable pageable
   ) {
-    List<SingleArticleInfoDto> data = postCrudManager.getEntirePostByPagination(pageable);
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
+    List<SingleArticleInfoDto> data = postCrudManager.getEntirePostByPagination(pageable, token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
   @GetMapping("/search")
   public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getPostBySearchParamPaginationApi(
+    HttpServletRequest request,
     Pageable pageable,
     @RequestParam Map<String, String> reqParam
   ) {
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
     List<String> params = new ArrayList<>(reqParam.values());
-    List<SingleArticleInfoDto> data = postCrudManager.getSearchParamByPagination(params, pageable);
+    List<SingleArticleInfoDto> data = postCrudManager.getSearchParamByPagination(params, pageable, token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 

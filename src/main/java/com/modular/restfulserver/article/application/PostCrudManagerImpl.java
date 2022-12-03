@@ -44,13 +44,15 @@ public class PostCrudManagerImpl implements PostCrudManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public SingleArticleInfoDto getPostById(Long id) {
+  public SingleArticleInfoDto getPostById(Long id, String token) {
     Article article = articleRepository.findById(id).orElseThrow(NotFoundResourceException::new);
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
+      .orElseThrow(UserNotFoundException::new);
 
     List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
     UserInfoForClientDto userInfo = getUserInfoForClientDto(article.getUser());
 
-    return getSingleArticleDto(article, hashtags, userInfo, article.getUser());
+    return getSingleArticleDto(article, hashtags, userInfo, user);
   }
 
   // TODO: 2022-11-29 여러 번 발생하는 쿼리를 하나로 줄일 수 없을까? 
@@ -63,10 +65,11 @@ public class PostCrudManagerImpl implements PostCrudManager {
     List<CustomFile> files
   ) {
     Article article = verifyAndGetArticleIfUserRequestTargetHavePermission(token, id);
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
+      .orElseThrow(UserNotFoundException::new);
     List<String> createdFileDownloadUrls = articleFileManager.saveFilesWithArticle(article, files);
 
     article.updateTextContent(singleArticleInfoDto.getTextContent()); // 본문 갱신
-
 
     // 파일 삭제내용이 있다면 게시글 연관 파일 삭제
     int articleOwnedFileSize = article.getFiles().size();
@@ -109,7 +112,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       setRelationTagWithArticle(article, hashtag);
     });
 
-    return getSingleArticleDto(article, updatedHashtagsNames, getUserInfoForClientDto(articleUser), articleUser);
+    return getSingleArticleDto(article, updatedHashtagsNames, getUserInfoForClientDto(articleUser), user);
   }
 
   @Override
@@ -150,19 +153,22 @@ public class PostCrudManagerImpl implements PostCrudManager {
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
 
     Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDateDesc(user, pageable);
-    return getListOfSingleArticleDtoByPageResults(articlePage);
+    return getListOfSingleArticleDtoByPageResults(articlePage, user);
   }
 
   @Override
-  public List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable) {
+  public List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable, String token) {
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
+      .orElseThrow(UserNotFoundException::new);
     Page<Article> articlePage = articleRepository.findAllCreatedDateDesc(pageable);
-    return getListOfSingleArticleDtoByPageResults(articlePage);
+    return getListOfSingleArticleDtoByPageResults(articlePage, user);
   }
 
   @Override
-  public List<SingleArticleInfoDto> getSearchParamByPagination(List<String> searchList, Pageable pageable) {
+  public List<SingleArticleInfoDto> getSearchParamByPagination(List<String> searchList, Pageable pageable, String token) {
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
     Page<Article> articlePage = articleRepository.findAllByHashtagsAndPagination(searchList, pageable);
-    return getListOfSingleArticleDtoByPageResults(articlePage);
+    return getListOfSingleArticleDtoByPageResults(articlePage, user);
   }
 
   private Article verifyAndGetArticleIfUserRequestTargetHavePermission(String token, Long articleId) {
@@ -247,12 +253,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
       );
   }
 
-  private List<SingleArticleInfoDto> getListOfSingleArticleDtoByPageResults(Page<Article> articlePage) {
+  private List<SingleArticleInfoDto> getListOfSingleArticleDtoByPageResults(Page<Article> articlePage, User user) {
     return articlePage.stream()
       .map(article -> {
         List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
         UserInfoForClientDto articleOwner = getUserInfoForClientDto(article.getUser());
-        return getSingleArticleDto(article,hashtags, articleOwner, article.getUser());
+        return getSingleArticleDto(article,hashtags, articleOwner, user);
       })
       .collect(Collectors.toList());
   }
