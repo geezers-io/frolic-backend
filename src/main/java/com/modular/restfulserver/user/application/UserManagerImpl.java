@@ -101,11 +101,15 @@ public class UserManagerImpl implements UserManager {
     boolean isAlreadyExistsEmail = userRepository.existsByEmail(dto.getEmail());
     boolean isAlreadyExistsUsername = userRepository.existsByUsername(dto.getUsername());
 
-    if (isAlreadyExistsEmail && !dto.getEmail().equals(targetUser.getEmail()))
-      throw new AlreadyExistsUserException();
+    if (!dto.getEmail().equals(targetUser.getEmail())) {
+      if (isAlreadyExistsEmail && !dto.getEmail().equals(targetUser.getEmail()))
+        throw new AlreadyExistsUserException();
+    }
 
-    if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
-      throw new AlreadyExistsUserException();
+    if (!dto.getUsername().equals(targetUser.getUsername())) {
+      if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
+        throw new AlreadyExistsUserException();
+    }
   }
 
   private User getUserByToken(String token) {
