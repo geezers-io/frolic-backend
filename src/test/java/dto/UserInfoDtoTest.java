@@ -5,6 +5,8 @@ import com.modular.restfulserver.user.dto.UserInfoForClientDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserInfoDtoTest {
@@ -14,8 +16,8 @@ class UserInfoDtoTest {
     .addUsername("mock")
     .addEmail("mock@mockito.com")
     .addRealname("mockReal")
-    .addCreatedDate(null)
-    .addUpdatedDate(null)
+    .addCreatedDate(LocalDateTime.now())
+    .addUpdatedDate(LocalDateTime.now())
     .build();
 
   @Test
