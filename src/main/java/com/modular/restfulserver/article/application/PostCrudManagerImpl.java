@@ -220,7 +220,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addUsername(user.getUsername())
       .addRealname(user.getRealname())
       .addCreatedDate(user.getCreatedDate())
-      .addCreatedDate(user.getUpdatedDate())
+      .addUpdatedDate(user.getUpdatedDate())
       .build();
   }
 
