@@ -67,15 +67,17 @@ public class UserFollowManagementApi {
   }
 
   @GetMapping("/follow/exists")
-  public ResponseEntity<Boolean> checkFollowExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
+  public ResponseEntity<Map<String, Boolean>> checkFollowExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    return ResponseEntity.ok(userFollowManager.checkExistsFollow(token, username));
+    boolean isFollow = userFollowManager.checkExistsFollow(token, username);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(isFollow));
   }
 
   @GetMapping("/following/exists")
-  public ResponseEntity<Boolean> checkFollowingExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
+  public ResponseEntity<Map<String, Boolean>> checkFollowingExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    return ResponseEntity.ok(userFollowManager.checkExistsFollowing(token, username));
+    boolean isFollowing = userFollowManager.checkExistsFollowing(token, username);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(isFollowing));
   }
 
 }
