@@ -14,6 +14,8 @@ class UserInfoDtoTest {
     .addUsername("mock")
     .addEmail("mock@mockito.com")
     .addRealname("mockReal")
+    .addCreatedDate(null)
+    .addUpdatedDate(null)
     .build();
 
   @Test
