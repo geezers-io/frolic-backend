@@ -65,4 +65,14 @@ public class UserFollowManagementApi {
       .build();
   }
 
+  @GetMapping("/follow/exists")
+  public ResponseEntity<Void> checkFollowExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @GetMapping("/following/exists")
+  public ResponseEntity<Void> checkFollowingExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
 }

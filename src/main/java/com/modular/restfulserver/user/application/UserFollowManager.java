@@ -16,4 +16,7 @@ public interface UserFollowManager {
 
   void removeFollowToUsername(String token, String username);
 
+  boolean checkExistsFollow(String token, String username);
+  boolean checkExistsFollowing(String token, String username);
+
 }

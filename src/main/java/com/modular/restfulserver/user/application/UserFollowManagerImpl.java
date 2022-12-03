@@ -68,6 +68,20 @@ public class UserFollowManagerImpl implements UserFollowManager {
     followRepository.deleteFollowByFollowerIdAndFollowingId(usernameUser, tokenUser);
   }
 
+  @Override
+  public boolean checkExistsFollow(String token, String username) {
+    User tokenUser = getUserByParsingToken(token);
+    User targetUser = getUserByUsername(username);
+    return followRepository.existsFollowByFollowerIdAndFollowingId(targetUser, tokenUser);
+  }
+
+  @Override
+  public boolean checkExistsFollowing(String token, String username) {
+    User tokenUser = getUserByParsingToken(token);
+    User targetUser = getUserByUsername(username);
+    return followRepository.existsFollowByFollowerIdAndFollowingId(tokenUser, targetUser);
+  }
+
   private User getUserByParsingToken(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
     return userRepository.findByEmail(email)
