@@ -101,6 +101,8 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       .addEmail(user.getEmail())
       .addUsername(user.getUsername())
       .addRealname(user.getRealname())
+      .addCreatedDate(user.getCreatedDate())
+      .addUpdatedDate(user.getUpdatedDate())
       .build();
   }
 

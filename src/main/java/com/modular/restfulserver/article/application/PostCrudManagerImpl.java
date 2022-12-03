@@ -219,6 +219,8 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addEmail(user.getEmail())
       .addUsername(user.getUsername())
       .addRealname(user.getRealname())
+      .addCreatedDate(user.getCreatedDate())
+      .addCreatedDate(user.getUpdatedDate())
       .build();
   }
 
