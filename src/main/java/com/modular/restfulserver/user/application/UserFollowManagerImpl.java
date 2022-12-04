@@ -3,6 +3,7 @@ package com.modular.restfulserver.user.application;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.FollowUserDto;
 import com.modular.restfulserver.user.exception.AlreadyExistsFollowException;
+import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.Follow;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.FollowRepository;
@@ -33,9 +34,9 @@ public class UserFollowManagerImpl implements UserFollowManager {
   }
 
   @Override
-  public List<FollowUserDto> getFollowerListByUsername(String token, String username) {
+  public List<FollowUserDto> getFollowerListByUsername(String username) {
     User user = getUserByUsername(username);
-    return followRepository.findAllNameByUserFollowerInfo(user).stream()
+    return followRepository.findAllFollowerUserByUsername(user).stream()
       .map(this::createFollowUser)
       .collect(Collectors.toList());
   }
@@ -49,9 +50,9 @@ public class UserFollowManagerImpl implements UserFollowManager {
   }
 
   @Override
-  public List<FollowUserDto> getFollowingListByUsername(String token, String username) {
+  public List<FollowUserDto> getFollowingListByUsername(String username) {
     User user = getUserByUsername(username);
-    return followRepository.findAllNameByUserFollowingInfo(user).stream()
+    return followRepository.findAllFollowingUserByUsername(user).stream()
       .map(this::createFollowUser)
       .collect(Collectors.toList());
   }
@@ -94,13 +95,11 @@ public class UserFollowManagerImpl implements UserFollowManager {
 
   private User getUserByParsingToken(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
-    return userRepository.findByEmail(email)
-      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+    return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
   private User getUserByUsername(String username) {
-    return userRepository.findByUsername(username)
-      .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+    return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
   }
 
   private FollowUserDto createFollowUser(User user) {

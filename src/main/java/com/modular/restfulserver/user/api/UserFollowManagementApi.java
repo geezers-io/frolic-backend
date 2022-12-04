@@ -32,6 +32,19 @@ public class UserFollowManagementApi {
       .ok(ResponseHelper.createDataMap(followList));
   }
 
+  @GetMapping("/follower/{username}")
+  public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowerListByUsernameApi(@PathVariable String username) {
+    List<FollowUserDto> followerList = userFollowManager.getFollowerListByUsername(username);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(followerList));
+  }
+
+  @GetMapping("/following/{username}")
+  public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowingListByUsernameApi(@PathVariable String username) {
+    List<FollowUserDto> followingList = userFollowManager.getFollowingListByUsername(username);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(followingList));
+  }
+
+
   @GetMapping("/following")
   public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowingListBySelfApi(
     HttpServletRequest request

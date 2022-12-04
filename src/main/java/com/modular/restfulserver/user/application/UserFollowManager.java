@@ -8,11 +8,11 @@ public interface UserFollowManager {
 
   List<FollowUserDto> getFollowerListBySelf(String token);
 
-  List<FollowUserDto> getFollowerListByUsername(String token, String username);
+  List<FollowUserDto> getFollowerListByUsername(String username);
 
   List<FollowUserDto> getFollowingListBySelf(String token);
 
-  List<FollowUserDto> getFollowingListByUsername(String token, String username);
+  List<FollowUserDto> getFollowingListByUsername(String username);
 
   void addFollowToUsername(String token, String username);
 
