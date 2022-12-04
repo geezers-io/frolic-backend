@@ -153,19 +153,23 @@ public class PostCrudManagerImpl implements PostCrudManager {
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
 
     Page<Article> articlePage = articleRepository.findAllByUserOrderByCreatedDateDesc(user, pageable);
-    return getListOfSingleArticleDtoByPageResults(articlePage);
+    return getListOfSingleArticleDtoByPageResults(articlePage, user);
   }
 
   @Override
   public List<SingleArticleInfoDto> getEntirePostByPagination(Pageable pageable, String token) {
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
+      .orElseThrow(UserNotFoundException::new);
     Page<Article> articlePage = articleRepository.findAllCreatedDateDesc(pageable);
-    return getListOfSingleArticleDtoByPageResults(articlePage);
+    return getListOfSingleArticleDtoByPageResults(articlePage, user);
   }
 
   @Override
   public List<SingleArticleInfoDto> getSearchParamByPagination(List<String> searchList, Pageable pageable, String token) {
+    User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
+      .orElseThrow(UserNotFoundException::new);
     Page<Article> articlePage = articleRepository.findAllByHashtagsAndPagination(searchList, pageable);
-    return getListOfSingleArticleDtoByPageResults(articlePage);
+    return getListOfSingleArticleDtoByPageResults(articlePage, user);
   }
 
   private Article verifyAndGetArticleIfUserRequestTargetHavePermission(String token, Long articleId) {
@@ -250,12 +254,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
       );
   }
 
-  private List<SingleArticleInfoDto> getListOfSingleArticleDtoByPageResults(Page<Article> articlePage) {
+  private List<SingleArticleInfoDto> getListOfSingleArticleDtoByPageResults(Page<Article> articlePage, User user) {
     return articlePage.stream()
       .map(article -> {
         List<String> hashtags = articleHashtagRepository.findAllByArticle(article);
         UserInfoForClientDto articleOwner = getUserInfoForClientDto(article.getUser());
-        return getSingleArticleDto(article,hashtags, articleOwner, article.getUser());
+        return getSingleArticleDto(article,hashtags, articleOwner, user);
       })
       .collect(Collectors.toList());
   }
