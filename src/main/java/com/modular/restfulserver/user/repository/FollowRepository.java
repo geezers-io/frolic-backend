@@ -25,11 +25,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     "")
   List<User> findAllNameByUserFollowerInfo(User user);
 
-  @Query("select u from users u left join follows f on f.followerId = ?1 where f.followingId = ?1")
+  @Query("select u from users u left join follows f on f.followerId = u where f.followingId = ?1")
   List<User> findAllFollowerUserByUsername(User user);
 
 
-  @Query("select u from users u left join follows f on f.followingId = ?1 where f.followerId = ?1")
+  @Query("select u from users u left join follows f on f.followingId = u where f.followerId = ?1")
   List<User> findAllFollowingUserByUsername(User user);
 
   @Query("" +
