@@ -191,7 +191,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     long likeCount = likeRepository.countAllByArticle(article);
     List<SingleCommentInfoDto> comments = commentRepository.findAllByArticle(article)
       .stream()
-      .map(comment -> getSingleCommentDtoByEntity(comment, article, getUserInfoForClientDto(comment.getUser())))
+      .map(comment -> getSingleCommentDtoByEntity(comment, article))
       .collect(Collectors.toList());
     List<String> fileDownloadUrls = articleFileManager.getFileDownloadUrlsByArticle(article);
     boolean isLikeUp = likeRepository.existsByArticleAndUser(article, user);
@@ -210,12 +210,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .build();
   }
 
-  private SingleCommentInfoDto getSingleCommentDtoByEntity(Comment comment, Article article, UserInfoForClientDto userInfo) {
+  private SingleCommentInfoDto getSingleCommentDtoByEntity(Comment comment, Article article) {
     return SingleCommentInfoDto.builder()
       .addCommentId(comment.getId())
       .addReplyUserId(comment.getReplyUserPkId())
       .addArticleId(article.getId())
-      .addUserInfo(userInfo)
+      .addUserInfo(getUserInfoForClientDto(comment.getUser()))
       .addTextContent(comment.getTextContent())
       .build();
   }
