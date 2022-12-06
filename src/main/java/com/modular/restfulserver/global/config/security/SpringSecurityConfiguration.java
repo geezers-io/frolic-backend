@@ -71,14 +71,7 @@ public class SpringSecurityConfiguration {
       .antMatchers(
         "/api/auth/login",
         "/api/auth/signup",
-        "/api/users/{username}",
-        "/api/posts/list",
-        "/api/download/{filename}",
-        "/api/posts/{postId}",
-        "/api/posts/search",
-        "/api/comments/{commentId}",
-        "/api/comments/posts/{postId}",
-        "/api/comments/username/{username}"
+        "/api/download/{filename}"
         ).permitAll()
       .anyRequest().authenticated()
       .and()
