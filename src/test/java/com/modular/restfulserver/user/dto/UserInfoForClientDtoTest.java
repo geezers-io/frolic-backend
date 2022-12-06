@@ -1,7 +1,5 @@
-package dto;
+package com.modular.restfulserver.user.dto;
 
-import com.modular.restfulserver.user.dto.UserInfoDto;
-import com.modular.restfulserver.user.dto.UserInfoForClientDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +7,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserInfoDtoTest {
+class UserInfoForClientDtoTest {
 
   UserInfoForClientDto mockUserInfoForClient = UserInfoForClientDto.builder()
     .addUserId(0L)
