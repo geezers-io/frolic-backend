@@ -15,7 +15,7 @@ public class FileUtilTest {
   @DisplayName("파일 다운로드 주소에서 파일이름을 정상적으로 가져온다.")
   public void successfulGetFilename() {
     String filename = CustomFile.parseFilenameByDownloadUrls(fileDownloadUrl);
-    assertThat(filename).contains("KakaoTalk_20210130_201328352_8d5a64ed-8db9-4077-90c6-a3424eae00601669379150304.jpg");
+    assertThat(filename).isEqualTo("KakaoTalk_20210130_201328352_8d5a64ed-8db9-4077-90c6-a3424eae00601669379150304.jpg");
   }
 
 }
