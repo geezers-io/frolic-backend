@@ -1,7 +1,9 @@
 package com.modular.restfulserver.auth.dto;
 
+import static com.modular.restfulserver.global.utils.message.FieldError.*;
 import com.modular.restfulserver.user.model.User;
-import lombok.AllArgsConstructor;
+import io.jsonwebtoken.lang.Assert;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserSignupRequestDto {
 
@@ -40,6 +41,19 @@ public class UserSignupRequestDto {
   )
   private String realname;
 
+  @Builder(setterPrefix = "add")
+  public UserSignupRequestDto(String email, String password, String username, String realname) {
+    Assert.isInstanceOf(String.class, email, getIllegalFieldError("email"));
+    Assert.isInstanceOf(String.class, password, getIllegalFieldError("password"));
+    Assert.isInstanceOf(String.class, username, getIllegalFieldError("username"));
+    Assert.isInstanceOf(String.class, realname, getIllegalFieldError("realname"));
+
+    this.email = email;
+    this.password = password;
+    this.username = username;
+    this.realname = realname;
+  }
+
   public User toEntity() {
     return User.builder()
       .addEmail(email)
@@ -55,6 +69,18 @@ public class UserSignupRequestDto {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setRealname(String realname) {
+    this.realname = realname;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
 }
