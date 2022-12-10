@@ -44,7 +44,6 @@ public class AuthService {
     userRepository.save(dto.toEntity());
 
     UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
-      .addUsername(dto.getUsername())
       .addEmail(dto.getEmail())
       .addPassword(rawPassword)
       .build();

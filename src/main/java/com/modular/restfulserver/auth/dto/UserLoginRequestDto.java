@@ -22,13 +22,10 @@ public class UserLoginRequestDto {
   )
   private String password;
 
-  @Pattern(regexp = "^(?=.*[a-zA-Z0-9])(?=.*_?)[a-zA-Z0-9_]{4,15}$")
-  private String username;
 
   public User toEntity() {
     return User.builder()
       .addEmail(email)
-      .addUsername(username)
       .addPassword(password)
       .build();
   }
@@ -37,11 +34,9 @@ public class UserLoginRequestDto {
   public UserLoginRequestDto(String email, String password, String username) {
     Assert.hasText(email, "[UserLoginRequestDto] email must be not empty");
     Assert.hasText(password, "[UserLoginRequestDto] password must be not empty");
-    Assert.hasText(username, "[UserLoginRequestDto] username must be not empty");
 
     this.email = email;
     this.password = password;
-    this.username = username;
   }
 
   // TODO: 2022-11-24 validation
@@ -49,16 +44,11 @@ public class UserLoginRequestDto {
     this.password = encodePassword;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
   @Override
   public String toString() {
     return "UserLoginRequestDto{" +
       "email='" + email + '\'' +
       ", password='" + password + '\'' +
-      ", username='" + username + '\'' +
       '}';
   }
 
