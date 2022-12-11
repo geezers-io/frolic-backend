@@ -10,9 +10,9 @@ port: 8080
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/{데이터베이스이름}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: {username}
-    password: {password}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     open-in-view: true
@@ -33,4 +33,13 @@ spring:
 
 logging:
   level:
-    org.hibernate.sql: debug
+    org.hibernate.sql: DEBUG
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
