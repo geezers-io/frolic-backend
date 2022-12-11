@@ -1,0 +1,50 @@
+jwt:
+  secret: Z2FsYXh5NDI2N2dhbGF4eTQyNjdnYWxheHk0MjY3Z2FsYXh5NDI2N2dhbGF4eTQyNjdnYWxheHk0MjY3Z2FsYXh5NDI2N2dhbGF4eTQyNjdnYWxheHk0MjY3
+  accessTokenExpTime: 600000
+  refreshTokenExpTime: 604800016
+
+# 임의로 관리 중인 값 임
+host: "http://localhost"
+port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL} # jdbc:mariadb://3.35.123.154:3306/sns
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+        format_sql: true
+
+  security:
+    user:
+      password: development
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 50MB
+      max-request-size: 50MB
+      location: /uploads
+
+logging:
+  level:
+    org.hibernate.sql: DEBUG
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
