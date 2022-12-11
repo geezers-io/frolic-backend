@@ -51,6 +51,10 @@ dependencies {
 }
 
 tasks.named('test') {
+  file('.env').readLines().each {
+    def (key, value) = it.tokenize("=")
+    environment key, value
+  }
   useJUnitPlatform()
 }
 
@@ -73,16 +77,3 @@ sourceSets { // IDE의 소스 폴더에 자동으로 넣어준다.
 compileQuerydsl {
   options.annotationProcessorPath = configurations.querydsl // Q파일을 생성해준다.
 }
-
-
-
-
-
-//tasks.named('hibernate') {
-//  enhance {
-//    enableLazyInitialization = true
-//    enableDirtyTracking = true
-//    enableAssociationManagement = true
-//    enableExtendedEnhancement = false
-//  }
-//}
