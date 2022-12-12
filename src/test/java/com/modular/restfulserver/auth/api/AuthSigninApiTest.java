@@ -1,20 +1,19 @@
 package com.modular.restfulserver.auth.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
 import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -113,14 +112,21 @@ class AuthSigninApiTest {
   }
 
   @Test
+  @DisplayName("검증 토큰이 잘못된 액세스 토큰 갱신 요청은 실패한다.")
+  void reissue_access_token_failed_invalid_refresh_token() throws Exception {
+    getReissueTokenActions("Bearer setaccesstoken")
+      .andExpect(status().isUnauthorized())
+      .andExpect(jsonPath("$.error").value("토큰이 유효하지 않습니다."));
+  }
+
+  @Test
   @DisplayName("정상적인 액세스 토큰 갱신 요청이 성공적으로 수행된다.")
   void reissue_access_token_success() {
-
   }
 
   @Test
   @DisplayName("검증 토큰이 만료된 액세스 토큰 갱신 요청은 실패한다.")
-  void reissue_accessToken_failed_invalid_refresh_token() {
+  void reissue_accessToken_failed_expired_refresh_token() {
 
   }
 
@@ -130,6 +136,13 @@ class AuthSigninApiTest {
       .accept(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(userLoginRequest))
     );
+  }
+
+  private ResultActions getReissueTokenActions(String token) throws Exception {
+    return mvc.perform(get("/api/auth/reissue")
+      .header(HttpHeaders.AUTHORIZATION, token)
+    )
+      .andDo(print());
   }
 
 }
