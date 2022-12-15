@@ -14,8 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+
+import java.util.Objects;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +37,9 @@ class AuthSigninApiTest {
 
   @Autowired
   protected AuthApi authApi;
+
+  @Autowired
+  protected EntityManager entityManager;
 
   final String username = "testuser";
   final String realname = "안드레킴";
@@ -127,16 +133,10 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("정상적인 액세스 토큰 갱신 요청이 성공적으로 수행된다.")
   void reissue_access_token_success() throws Exception {
-    TokenResponseDto tokenResponse = authApi.login(userLoginRequest).getBody().get("data");
+    TokenResponseDto tokenResponse = getLoginData();
     getReissueTokenActions(tokenResponse.getRefreshToken())
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.accessToken").isString());
-  }
-
-  @Test
-  @DisplayName("검증 토큰이 만료된 액세스 토큰 갱신 요청은 실패한다.")
-  void reissue_accessToken_failed_expired_refresh_token() {
-
   }
 
   private ResultActions getLoginResultActions(UserLoginRequestDto userLoginRequest) throws Exception {
@@ -152,6 +152,10 @@ class AuthSigninApiTest {
       .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
     )
       .andDo(print());
+  }
+
+  private TokenResponseDto getLoginData() {
+    return Objects.requireNonNull(authApi.login(userLoginRequest).getBody()).get("data");
   }
 
 }
