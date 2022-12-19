@@ -2,9 +2,8 @@ package com.modular.restfulserver.global.common.file.application;
 
 import com.modular.restfulserver.global.common.file.exception.FaultFileExtensionException;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
-
-import static com.modular.restfulserver.global.config.spring.ApplicationConstant.*;
 
 import java.util.UUID;
 
@@ -12,6 +11,12 @@ import java.util.UUID;
 public class CustomFile {
   private final MultipartFile file;
   private final String customFilename;
+
+  @Value("server.address")
+  private String HOST;
+
+  @Value("server.port")
+  private String PORT;
 
   public static String parseFilenameByDownloadUrls(String downloadUrl) {
     String[] chunks = downloadUrl.split("/");

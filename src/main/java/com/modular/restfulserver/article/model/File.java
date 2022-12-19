@@ -1,12 +1,11 @@
 package com.modular.restfulserver.article.model;
 
-import static com.modular.restfulserver.global.config.spring.ApplicationConstant.*;
-
 import com.modular.restfulserver.global.common.file.application.CustomFile;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -25,6 +24,12 @@ public class File {
   private String name;
 
   private Long size;
+
+  @Value("server.address")
+  private String HOST;
+
+  @Value("server.port")
+  private String PORT;
 
   @ManyToOne
   @JoinColumn(name = "article_id")
