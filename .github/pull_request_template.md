@@ -9,5 +9,5 @@ Jira Ticket [issue #ISSUE_NUMBER](https://geezers.atlassian.net/browse/ISSUE_NUM
 <!-- What changes are being made? -->
 <!-- Why are these changes necessary? -->
 
-## Checklist
-- [ ] If there is a related ticket(Jira), did you insert the ticket(Jira)?
+## Test Result
+<!-- Please fill out the test results. -->
