@@ -3,7 +3,8 @@
 - [ ] Fix
 
 <!-- Jira Ticket - If the issue does not exist, remove it. -->
-Jira Ticket [issue #ISSUE_NUMBER](https://geezers.atlassian.net/browse/ISSUE_NUMBER)
+**Jira Tickets** 
+[issue #ISSUE_NUMBER](https://geezers.atlassian.net/browse/ISSUE_NUMBER)
 
 ## What & Why
 <!-- What changes are being made? -->
