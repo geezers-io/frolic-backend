@@ -44,28 +44,28 @@ class AuthSignupApiTest {
       .build();
   }
 
-//  @Test
-//  @DisplayName("사용자가 정상적으로 생성된다.")
-//  public void createUser() throws Exception {
-//    // given
-//        // signupRequest
-//
-//    // when
-//    ResultActions resultActions = getSignupResultActions(signupRequest);
-//
-//    // then
-//    resultActions
-//      .andExpect(status().isCreated())
-//      .andExpect(jsonPath("$.data.accessToken").isString())
-//      .andExpect(jsonPath("$.data.refreshToken").isString())
-//      .andExpect(jsonPath("$.data.userInfo.userId").isNumber())
-//      .andExpect(jsonPath("$.data.userInfo.email").value(email))
-//      .andExpect(jsonPath("$.data.userInfo.username").value(username))
-//      .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
-//      .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
-//      .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
-//
-//  }
+  @Test
+  @DisplayName("사용자가 정상적으로 생성된다.")
+  public void createUser() throws Exception {
+    // given
+        // signupRequest
+
+    // when
+    ResultActions resultActions = getSignupResultActions(signupRequest);
+
+    // then
+    resultActions
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.data.accessToken").isString())
+      .andExpect(jsonPath("$.data.refreshToken").isString())
+      .andExpect(jsonPath("$.data.userInfo.userId").isNumber())
+      .andExpect(jsonPath("$.data.userInfo.email").value(email))
+      .andExpect(jsonPath("$.data.userInfo.username").value(username))
+      .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
+      .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
+      .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
+
+  }
 
   @Test
   @DisplayName("username 이 형식에 맞지 않은 회원가입 요청은 실패한다.")
