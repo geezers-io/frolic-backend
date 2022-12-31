@@ -4,6 +4,11 @@ import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.application.UserManager;
 import com.modular.restfulserver.user.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +29,12 @@ public class UserManagementApi {
   private final UserManager userManager;
   private final JwtProvider jwtProvider;
 
+  @Operation(summary = "회원 정보 요청", description = "회원 자신의 정보가 제공됩니다.", tags = { "사용자 관리 API" })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation =
+      UserInfoDto.class
+    ))),
+  })
   @GetMapping("")
   public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByTokenApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
