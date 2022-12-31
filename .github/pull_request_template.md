@@ -3,7 +3,7 @@
 - [ ] Fix
 
 <!-- Jira Ticket - If the issue does not exist, remove it. -->
-Jira Ticket [issue #ISSUE_NUMBER](https://chequer.atlassian.net/browse/ISSUE_NUMBER)
+Jira Ticket [issue #ISSUE_NUMBER](https://geezers.atlassian.net/jira/software/projects/FL/issues/?filter=myopenissues)
 
 ## What & Why
 <!-- What changes are being made? -->
