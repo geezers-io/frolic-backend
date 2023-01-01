@@ -27,3 +27,11 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
       location: /uploads
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8080
+  address: "127.0.0.1"
