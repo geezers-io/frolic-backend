@@ -64,16 +64,20 @@ public class SpringSecurityConfiguration {
 
     /* config **/
     http
-      .exceptionHandling()
-      .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-      .and()
       .authorizeRequests()
       .antMatchers(
         "/api/auth/login",
         "/api/auth/signup",
-        "/api/download/{filename}"
+        "/api/download/{filename}",
+        "/swagger-ui.html",
+        "/swagger-ui/**",
+        "/api-docs",
+        "/api-docs/**"
         ).permitAll()
       .anyRequest().authenticated()
+      .and()
+      .exceptionHandling()
+      .authenticationEntryPoint(jwtAuthenticationEntryPoint)
       .and()
       .httpBasic()
       .and()

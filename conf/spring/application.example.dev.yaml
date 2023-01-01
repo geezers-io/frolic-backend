@@ -48,3 +48,11 @@ logging:
           descriptor:
             sql:
               BasicBinder: trace
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8080
+  address: "127.0.0.1"
