@@ -2,6 +2,8 @@ package com.modular.restfulserver.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.user.model.User;
+import com.modular.restfulserver.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,9 @@ class AuthSignupApiTest {
   @Autowired
   protected ObjectMapper objectMapper;
 
+  @Autowired
+  protected UserRepository userRepository;
+
   UserSignupRequestDto signupRequest;
   final String username = "testuser";
   final String realname = "안드레킴";
@@ -44,28 +49,33 @@ class AuthSignupApiTest {
       .build();
   }
 
-//  @Test
-//  @DisplayName("사용자가 정상적으로 생성된다.")
-//  public void createUser() throws Exception {
-//    // given
-//        // signupRequest
-//
-//    // when
-//    ResultActions resultActions = getSignupResultActions(signupRequest);
-//
-//    // then
-//    resultActions
-//      .andExpect(status().isCreated())
-//      .andExpect(jsonPath("$.data.accessToken").isString())
-//      .andExpect(jsonPath("$.data.refreshToken").isString())
-//      .andExpect(jsonPath("$.data.userInfo.userId").isNumber())
-//      .andExpect(jsonPath("$.data.userInfo.email").value(email))
-//      .andExpect(jsonPath("$.data.userInfo.username").value(username))
-//      .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
-//      .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
-//      .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
-//
-//  }
+  @Test
+  @DisplayName("사용자가 정상적으로 생성된다.")
+  public void createUser() throws Exception {
+    if (userRepository.existsByUsername(username)) {
+      User existsUser = userRepository.findByUsername(username).get();
+      userRepository.delete(existsUser);
+    }
+
+    // given
+        // signupRequest
+
+    // when
+    ResultActions resultActions = getSignupResultActions(signupRequest);
+
+    // then
+    resultActions
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.data.accessToken").isString())
+      .andExpect(jsonPath("$.data.refreshToken").isString())
+      .andExpect(jsonPath("$.data.userInfo.userId").isNumber())
+      .andExpect(jsonPath("$.data.userInfo.email").value(email))
+      .andExpect(jsonPath("$.data.userInfo.username").value(username))
+      .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
+      .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
+      .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
+
+  }
 
   @Test
   @DisplayName("username 이 형식에 맞지 않은 회원가입 요청은 실패한다.")
