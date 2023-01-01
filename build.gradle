@@ -45,9 +45,9 @@ dependencies {
   implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
   implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
   runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-
-  implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // querydsl 라이브러리
-  implementation "com.querydsl:querydsl-apt:${queryDslVersion}" //  Querydsl 관련 코드 생성
+  implementation "com.querydsl:querydsl-core:${queryDslVersion}"
+  implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+  implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 }
 
 test {
@@ -67,19 +67,21 @@ bootBuildImage {
   environment = ['BP_NATIVE_IMAGE': 'true']
 }
 
-//querydsl 추가 시작 (위에 plugin 추가 부분과 맞물림)
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
   jpa = true
   querydslSourcesDir = querydslDir
 }
 
-sourceSets { // IDE의 소스 폴더에 자동으로 넣어준다.
+sourceSets {
   main.java.srcDir querydslDir
 }
 
 compileQuerydsl {
-  options.annotationProcessorPath = configurations.querydsl // Q파일을 생성해준다.
+  doFirst {
+    delete "$buildDir/generated/querydsl/com"
+  }
+  options.annotationProcessorPath = configurations.querydsl
 }
 
 configurations {
