@@ -4,6 +4,7 @@ import com.modular.restfulserver.auth.application.AuthService;
 import com.modular.restfulserver.auth.dto.TokenResponseDto;
 import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
 import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.auth.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class AuthApi {
   private final JwtProvider jwtProvider;
   private final AuthService authService;
 
+
+  @SignupDocs
   @PostMapping("/signup")
   public ResponseEntity<Map<String, TokenResponseDto>> signup(@RequestBody @Valid UserSignupRequestDto dto) {
     TokenResponseDto loginInfo = authService.saveUser(dto);
@@ -31,6 +34,7 @@ public class AuthApi {
       .body(ResponseHelper.createDataMap(loginInfo));
   }
 
+  @LoginDocs
   @PostMapping("/login")
   public ResponseEntity<Map<String, TokenResponseDto>> login(@RequestBody @Valid UserLoginRequestDto dto) {
     var loginInfo = authService.loginUser(dto);
@@ -39,6 +43,7 @@ public class AuthApi {
       .body(ResponseHelper.createDataMap(loginInfo));
   }
 
+  @ReissueTokenDocs
   @GetMapping("/reissue")
   public ResponseEntity<Map<String, Map<String, String>>> refresh(HttpServletRequest req) {
     String refreshToken = jwtProvider.getTokenByHttpRequestHeader(req);
@@ -46,6 +51,7 @@ public class AuthApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(tokens));
   }
 
+  @LogoutDocs
   @GetMapping("/logout")
   public ResponseEntity<Void> logoutApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
