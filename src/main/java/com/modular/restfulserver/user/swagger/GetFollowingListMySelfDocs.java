@@ -12,18 +12,18 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.lang.annotation.*;
 
 @Operation(
-  summary = "회원 정보 요청 API",
-  description = "회원 자신의 정보가 제공됩니다.",
-  tags = SwaggerMessageUtils.UserManagementApi,
+  summary = "본인 팔로잉 리스트 조회 API",
+  description = "요청한 사용자의 팔로잉 리스트를 반환합니다.",
+  tags = SwaggerMessageUtils.FollowApi,
   security = { @SecurityRequirement(name = "bearer-key") }
 )
 @ApiResponses({
   @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation =
-    UserManagementSchemas.UserInfoSchema.class
+    FollowSchemas.FollowUserSchema.class
   ))),
 })
 @CommonAuthError
 @Target(ElementType.METHOD)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserInfoDocs {}
+public @interface GetFollowingListMySelfDocs {}
