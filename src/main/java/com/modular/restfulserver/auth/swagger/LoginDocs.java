@@ -1,6 +1,7 @@
 package com.modular.restfulserver.auth.swagger;
 
 import com.modular.restfulserver.global.swagger.SwaggerCommonErrorSchema;
+import com.modular.restfulserver.global.swagger.SwaggerMessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +13,7 @@ import java.lang.annotation.*;
 @Operation(
   summary = "로그인 요청",
   description = "로그인 요청에 의해 액세스 토큰과 검증 토큰을 발행합니다.",
-  tags = "인증 및 인가 API"
+  tags = SwaggerMessageUtils.AuthApi
 )
 @ApiResponses({
   @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation =

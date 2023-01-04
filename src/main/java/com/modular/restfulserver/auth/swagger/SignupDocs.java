@@ -1,6 +1,7 @@
 package com.modular.restfulserver.auth.swagger;
 
 import com.modular.restfulserver.global.swagger.SwaggerCommonErrorSchema;
+import com.modular.restfulserver.global.swagger.SwaggerMessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.lang.annotation.*;
 
-@Operation(summary = "회원가입 요청", description = "사용자 요청에 의해 회원가입을 처리합니다.", tags = "인증 및 인가 API")
+@Operation(summary = "회원가입 요청", description = "사용자 요청에 의해 회원가입을 처리합니다.", tags = SwaggerMessageUtils.AuthApi)
 @ApiResponses(value = {
   @ApiResponse(
     responseCode = "201",
