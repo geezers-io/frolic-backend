@@ -4,6 +4,7 @@ import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.application.UserFollowManager;
 import com.modular.restfulserver.user.dto.FollowUserDto;
+import com.modular.restfulserver.user.swagger.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ public class UserFollowManagementApi {
   private final UserFollowManager userFollowManager;
   private final JwtProvider jwtProvider;
 
+
+  @GetFollowerListMySelfDocs
   @GetMapping("/follower")
   public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowerListBySelfApi(
     HttpServletRequest request
@@ -32,12 +35,14 @@ public class UserFollowManagementApi {
       .ok(ResponseHelper.createDataMap(followList));
   }
 
+  @GetFollowerListByUsernameDocs
   @GetMapping("/follower/{username}")
   public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowerListByUsernameApi(@PathVariable String username) {
     List<FollowUserDto> followerList = userFollowManager.getFollowerListByUsername(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(followerList));
   }
 
+  @GetFollowingListByUsernameDocs
   @GetMapping("/following/{username}")
   public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowingListByUsernameApi(@PathVariable String username) {
     List<FollowUserDto> followingList = userFollowManager.getFollowingListByUsername(username);
@@ -45,6 +50,7 @@ public class UserFollowManagementApi {
   }
 
 
+  @GetFollowingListMySelfDocs
   @GetMapping("/following")
   public ResponseEntity<Map<String, List<FollowUserDto>>> getFollowingListBySelfApi(
     HttpServletRequest request
@@ -55,6 +61,7 @@ public class UserFollowManagementApi {
       .ok(ResponseHelper.createDataMap(followerList));
   }
 
+  @UserFollowerDocs
   @GetMapping("/follow")
   public ResponseEntity<Void> addFollowToUsernameApi(
     HttpServletRequest request,
@@ -67,6 +74,7 @@ public class UserFollowManagementApi {
       .build();
   }
 
+  @DeleteFollowDocs
   @DeleteMapping("/follow")
   public ResponseEntity<Void> removeFollowToUsernameApi(
     HttpServletRequest request,
@@ -79,6 +87,7 @@ public class UserFollowManagementApi {
       .build();
   }
 
+  @isFollowDocs
   @GetMapping("/follow/exists")
   public ResponseEntity<Map<String, Boolean>> checkFollowExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
@@ -86,6 +95,7 @@ public class UserFollowManagementApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(isFollow));
   }
 
+  @isFollowingDocs
   @GetMapping("/following/exists")
   public ResponseEntity<Map<String, Boolean>> checkFollowingExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
