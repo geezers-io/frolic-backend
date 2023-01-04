@@ -3,6 +3,7 @@ package com.modular.restfulserver.article.api;
 import com.modular.restfulserver.article.application.CommentCrudManager;
 import com.modular.restfulserver.article.dto.CreateCommentRequestDto;
 import com.modular.restfulserver.article.dto.SingleCommentInfoDto;
+import com.modular.restfulserver.article.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class CommentCrudApi {
   private final JwtProvider jwtProvider;
   private final CommentCrudManager commentCrudManager;
 
+  @CreateCommentDocs
   @PostMapping("")
   public ResponseEntity<Map<String, SingleCommentInfoDto>> createCommentApi(
     HttpServletRequest request,
@@ -38,6 +40,7 @@ public class CommentCrudApi {
       .body(ResponseHelper.createDataMap(commentInfo));
   }
 
+  @DeleteCommentDocs
   @DeleteMapping("/{commentId}")
   public ResponseEntity<Void> deleteCommentApi(
     HttpServletRequest request,
@@ -48,6 +51,7 @@ public class CommentCrudApi {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
+  @UpdateCommentDocs
   @PutMapping("/{commentId}")
   public ResponseEntity<Map<String, SingleCommentInfoDto>> updateCommentApi(
     HttpServletRequest request,
@@ -61,6 +65,7 @@ public class CommentCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(commentInfo));
   }
 
+  @GetCommentDocs
   @GetMapping("/{commentId}")
   public ResponseEntity<Map<String, SingleCommentInfoDto>> getCommentByIdApi(
     @PathVariable(name = "commentId") Long commentId
@@ -69,6 +74,7 @@ public class CommentCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(info));
   }
 
+  @GetCommentListDocs
   @GetMapping("/posts/{postId}")
   public ResponseEntity<Map<String, List<SingleCommentInfoDto>>> getCommentByArticleIdPaginationApi(
     @PathVariable(name = "postId") Long postId,
@@ -79,6 +85,7 @@ public class CommentCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
   }
 
+  @GetCommentListByUsernameDocs
   @GetMapping("/username/{username}")
   public ResponseEntity<Map<String, List<SingleCommentInfoDto>>> getCommentsByUsernamePaginationApi(
     @PathVariable String username,
