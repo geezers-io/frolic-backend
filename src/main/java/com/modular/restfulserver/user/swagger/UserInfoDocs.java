@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.lang.annotation.*;
 
 @Operation(
-  summary = "회원 정보 요청",
+  summary = "회원 정보 요청 API",
   description = "회원 자신의 정보가 제공됩니다.",
   tags = SwaggerMessageUtils.UserManagementApi,
   security = { @SecurityRequirement(name = "bearer-key") }
