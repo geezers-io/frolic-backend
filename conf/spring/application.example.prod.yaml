@@ -33,8 +33,8 @@ spring:
       matching-strategy: ant_path_matcher
 
 server:
-  port: 8080
-  address: "127.0.0.1"
+  port: 80
+  address: "https://galaxyhi4276.co"
 
 springdoc:
   swagger-ui:
