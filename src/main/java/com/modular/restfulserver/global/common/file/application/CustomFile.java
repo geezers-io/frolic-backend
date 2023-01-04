@@ -12,10 +12,10 @@ public class CustomFile {
   private final MultipartFile file;
   private final String customFilename;
 
-  @Value("server.address")
+  @Value("${server.address}")
   private String HOST;
 
-  @Value("server.port")
+  @Value("${server.port}")
   private String PORT;
 
   public static String parseFilenameByDownloadUrls(String downloadUrl) {

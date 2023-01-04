@@ -3,9 +3,6 @@ jwt:
   accessTokenExpTime: 600000
   refreshTokenExpTime: 604800016
 
-# 임의로 관리 중인 값 임
-host: "http://localhost"
-port: 8080
 
 spring:
   datasource:
@@ -56,3 +53,15 @@ logging:
 server:
   port: 8080
   address: "127.0.0.1"
+
+springdoc:
+  swagger-ui:
+    path: '/swagger-ui.html'
+    groups-order: desc
+    operations-sorter: method
+    disable-swagger-default-url: true
+  api-docs:
+    path: '/api-docs'
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

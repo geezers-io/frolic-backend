@@ -25,10 +25,10 @@ public class File {
 
   private Long size;
 
-  @Value("server.address")
+  @Value("${server.address}")
   private String HOST;
 
-  @Value("server.port")
+  @Value("${server.port}")
   private String PORT;
 
   @ManyToOne
