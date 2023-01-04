@@ -4,6 +4,7 @@ import com.modular.restfulserver.article.application.PostCrudManager;
 import com.modular.restfulserver.article.dto.CreatePostRequestDto;
 import com.modular.restfulserver.article.dto.SingleArticleInfoDto;
 import com.modular.restfulserver.article.dto.UpdateArticleRequestDto;
+import com.modular.restfulserver.article.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.common.file.application.CustomFile;
 import com.modular.restfulserver.global.common.file.application.FileManager;
@@ -32,6 +33,7 @@ public class PostCrudApi {
   private final JwtProvider jwtProvider;
   private final PostCrudManager postCrudManager;
 
+  @CreateArticleDocs
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<Map<String, SingleArticleInfoDto>> createPostApi(
     HttpServletRequest request,
@@ -45,6 +47,7 @@ public class PostCrudApi {
       .body(ResponseHelper.createDataMap(post));
   }
 
+  @GetArticleDocs
   @GetMapping("/{postId}")
   public ResponseEntity<Map<String, SingleArticleInfoDto>> getPostByIdApi(
     HttpServletRequest request,
@@ -55,6 +58,7 @@ public class PostCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfo));
   }
 
+  @UpdateArticleDocs
   @PutMapping("/{postId}")
   public ResponseEntity<Map<String, SingleArticleInfoDto>> updatePostByIdApi(
     HttpServletRequest request,
@@ -68,6 +72,7 @@ public class PostCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfoDto));
   }
 
+  @DeleteArticleDocs
   @DeleteMapping("/{postId}")
   public ResponseEntity<Void> deletePostByIdApi(HttpServletRequest request, @PathVariable(name = "postId") Long postId) {
     String token = getToken(request);
@@ -75,6 +80,7 @@ public class PostCrudApi {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
+  @GetArticleListMySelfDocs
   @GetMapping("/list/token")
   public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getEntirePostByTokenPaginationApi(
     HttpServletRequest request,
@@ -86,6 +92,7 @@ public class PostCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
+  @GetMainArticleListDocs
   @GetMapping("/list")
   public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getEntirePostByPaginationApi(
     HttpServletRequest request,
@@ -96,6 +103,7 @@ public class PostCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
+  @SearchArticleDocs
   @GetMapping("/search")
   public ResponseEntity<Map<String, List<SingleArticleInfoDto>>> getPostBySearchParamPaginationApi(
     HttpServletRequest request,

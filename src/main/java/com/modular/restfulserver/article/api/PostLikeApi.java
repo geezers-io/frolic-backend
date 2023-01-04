@@ -1,6 +1,8 @@
 package com.modular.restfulserver.article.api;
 
 import com.modular.restfulserver.article.application.PostLikeManager;
+import com.modular.restfulserver.article.swagger.ArticleDisLikeDocs;
+import com.modular.restfulserver.article.swagger.ArticleLikeDocs;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class PostLikeApi {
   private final PostLikeManager postLikeManager;
 
 
+  @ArticleLikeDocs
   @GetMapping("/like")
   public ResponseEntity<Map<String, Long>> likeApi(
     HttpServletRequest request,
@@ -33,6 +36,7 @@ public class PostLikeApi {
       .body(ResponseHelper.createDataMap(count));
   }
 
+  @ArticleDisLikeDocs
   @DeleteMapping("/like")
   public ResponseEntity<Map<String, Long>> unLikeApi(
     HttpServletRequest request,
@@ -41,7 +45,7 @@ public class PostLikeApi {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     Long count =  this.postLikeManager.unLikePostByTokenUser(token, postId);
     return ResponseEntity
-      .status(HttpStatus.CREATED)
+      .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(count));
   }
 
