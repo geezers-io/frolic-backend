@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Operation(
   summary = "댓글 삭제 API",
   description = "댓글을 삭제합니다.",
-  tags = SwaggerMessageUtils.ArticleManagementApi,
+  tags = SwaggerMessageUtils.CommentApi,
   security = { @SecurityRequirement(name = "bearer-key") },
   responses = {
     @ApiResponse(

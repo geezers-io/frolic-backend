@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Operation(
   summary = "사용자 댓글 목록 조회 API",
   description = "사용자의 모든 댓글 정보를 조회합니다.",
-  tags = SwaggerMessageUtils.ArticleManagementApi,
+  tags = SwaggerMessageUtils.CommentApi,
   security = { @SecurityRequirement(name = "bearer-key") },
   responses = {
     @ApiResponse(
