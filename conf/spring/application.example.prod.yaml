@@ -34,7 +34,7 @@ spring:
 
 server:
   port: 80
-  address: "https://galaxyhi4276.co"
+  address: "127.0.0.1"
 
 springdoc:
   swagger-ui:
