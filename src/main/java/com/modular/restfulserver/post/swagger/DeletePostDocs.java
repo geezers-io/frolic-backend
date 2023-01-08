@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.lang.annotation.*;
 
 @Operation(
-  summary = "피드 수정 API",
-  description = "피드를 수정합니다.",
+  summary = "피드 삭제 API",
+  description = "피드를 삭제합니다.",
   tags = SwaggerMessageUtils.ArticleManagementApi,
   security = { @SecurityRequirement(name = "bearer-key") },
   responses = {
