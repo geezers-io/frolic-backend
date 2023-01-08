@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public class PostInfo {
 
-  private final Long postId;
+  private final Long id;
   private final UserInfo userInfo;
   private final String textContent;
   private final List<CommentInfo> comments;
@@ -25,7 +25,7 @@ public class PostInfo {
 
   @Builder(setterPrefix = "add")
   public PostInfo(
-    Long postId,
+    Long id,
     String textContent,
     UserInfo userInfo,
     List<CommentInfo> comments,
@@ -36,7 +36,7 @@ public class PostInfo {
     LocalDateTime createdDate,
     LocalDateTime updatedDate
   ) {
-    Assert.isInstanceOf(Long.class, postId, getIllegalFieldError("postId"));
+    Assert.isInstanceOf(Long.class, id, getIllegalFieldError("postId"));
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
     Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
     Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
@@ -47,7 +47,7 @@ public class PostInfo {
     Assert.isInstanceOf(LocalDateTime.class, createdDate, getIllegalFieldError("createdDate"));
     Assert.isInstanceOf(LocalDateTime.class, updatedDate, getIllegalFieldError("updatedDate"));
 
-    this.postId = postId;
+    this.id = id;
     this.textContent = textContent;
     this.userInfo = userInfo;
     this.comments = comments;

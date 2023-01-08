@@ -135,7 +135,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     UserInfo userInfo = UserInfo.from(user);
 
     return PostInfo.builder()
-      .addPostId(newPost.getId())
+      .addId(newPost.getId())
       .addTextContent(newPost.getTextContent())
       .addComments(new ArrayList<>())
       .addHashtags(hashtags)
@@ -197,7 +197,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
 
     return PostInfo.builder()
-      .addPostId(post.getId())
+      .addId(post.getId())
       .addHashtags(hashtags)
       .addComments(comments)
       .addUserInfo(userInfo)
