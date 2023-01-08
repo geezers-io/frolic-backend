@@ -8,6 +8,7 @@ services:
     volumes:
       - "./conf/mariadb/conf.d:/etc/mysql/conf.d"
     env_file: ./conf/mariadb/.env
+    container_name: mariadb
     environment:
       TZ: Asia/Seoul
     restart: always
