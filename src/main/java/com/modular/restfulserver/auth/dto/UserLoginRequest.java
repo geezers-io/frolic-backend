@@ -1,17 +1,18 @@
 package com.modular.restfulserver.auth.dto;
 
+import com.modular.restfulserver.auth.util.AuthConstant;
+import com.modular.restfulserver.auth.util.AuthValidationMessages;
 import com.modular.restfulserver.user.model.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
-
 import javax.validation.constraints.*;
+import static java.util.regex.Pattern.*;
 
 @Getter
 @NoArgsConstructor
-public class UserLoginRequestDto {
+public class UserLoginRequest {
 
   @Email
   private String email;
@@ -31,17 +32,22 @@ public class UserLoginRequestDto {
   }
 
   @Builder(setterPrefix = "add")
-  public UserLoginRequestDto(String email, String password, String username) {
-    Assert.hasText(email, "[UserLoginRequestDto] email must be not empty");
-    Assert.hasText(password, "[UserLoginRequestDto] password must be not empty");
+  public UserLoginRequest(String email, String password) {
+    Assert.hasText(email, AuthValidationMessages.hashTextEmail);
+    Assert.hasText(password, AuthValidationMessages.hasTextPassword);
+    validPassword(password);
 
     this.email = email;
     this.password = password;
   }
 
-  // TODO: 2022-11-24 validation
   public void setEncodePassword(String encodePassword) {
     this.password = encodePassword;
+  }
+
+  private void validPassword(String password) {
+    if (!matches(AuthConstant.passwordRegex, password))
+      throw new IllegalArgumentException();
   }
 
   @Override
