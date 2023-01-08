@@ -1,7 +1,7 @@
 package com.modular.restfulserver.auth.swagger;
 
 import com.modular.restfulserver.auth.dto.TokenResponseDto;
-import com.modular.restfulserver.user.dto.UserInfoForClientDto;
+import com.modular.restfulserver.user.dto.UserInfo;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -12,8 +12,8 @@ public class AuthSchemas {
   public static class Signup {
     TokenResponseDto data = TokenResponseDto.builder()
       .addAccessToken("eyAccessToken")
-      .addUserInfo(UserInfoForClientDto.builder()
-        .addUserId(627L)
+      .addUserInfo(UserInfo.builder()
+        .addId(627L)
         .addUsername("galaxy4276")
         .addRealname("은기최")
         .addEmail("galaxyhi4276@gmail.com")

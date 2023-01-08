@@ -1,6 +1,6 @@
 package com.modular.restfulserver.user.swagger;
 
-import com.modular.restfulserver.user.dto.FollowUserDto;
+import com.modular.restfulserver.user.dto.FollowUserRequest;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,7 +9,7 @@ public class FollowSchemas {
 
   @Getter
   public static class FollowUserSchema {
-    List<FollowUserDto> data;
+    List<FollowUserRequest> data;
   }
 
   @Getter

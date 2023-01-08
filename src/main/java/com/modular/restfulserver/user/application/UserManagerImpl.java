@@ -1,21 +1,20 @@
 package com.modular.restfulserver.user.application;
 
-import com.modular.restfulserver.article.repository.ArticleRepository;
-import com.modular.restfulserver.article.repository.LikeRepository;
+import com.modular.restfulserver.post.repository.PostRepository;
+import com.modular.restfulserver.post.repository.LikeRepository;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
-import com.modular.restfulserver.user.dto.UserInfoDto;
-import com.modular.restfulserver.user.dto.UserInfoForClientDto;
-import com.modular.restfulserver.user.dto.UserUpdatePasswordDto;
-import com.modular.restfulserver.user.dto.UserUpdateRequestDto;
+import com.modular.restfulserver.user.dto.UserIntegrationInfo;
+import com.modular.restfulserver.user.dto.UserInfo;
+import com.modular.restfulserver.user.dto.PasswordUpdateRequest;
+import com.modular.restfulserver.user.dto.UserUpdateRequest;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.FollowRepository;
 import com.modular.restfulserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +25,14 @@ public class UserManagerImpl implements UserManager {
 
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
-  private final ArticleRepository articleRepository;
+  private final PostRepository postRepository;
   private final FollowRepository followRepository;
   private final PasswordEncoder passwordEncoder;
 
   private final JwtProvider jwtProvider;
 
   @Override
-  public UserInfoForClientDto updateUserInfo(String token, UserUpdateRequestDto dto) {
+  public UserInfo updateUserInfo(String token, UserUpdateRequest dto) {
     User user = getUserByToken(token);
 
     checkDuplicatedInfo(dto, user);
@@ -43,11 +42,11 @@ public class UserManagerImpl implements UserManager {
     user.changeRealname(dto.getRealname());
     userRepository.save(user);
 
-    return UserInfoForClientDto.from(user);
+    return UserInfo.from(user);
   }
 
   @Override
-  public void updateUserPassword(String token, UserUpdatePasswordDto dto) {
+  public void updateUserPassword(String token, PasswordUpdateRequest dto) {
     User user = getUserByToken(token);
     boolean isMatchPassword = passwordEncoder.matches(dto.getPrevPassword(), user.getPassword());
     if (!isMatchPassword)
@@ -67,13 +66,13 @@ public class UserManagerImpl implements UserManager {
   }
 
   @Override
-  public UserInfoDto getUserInfo(String username) {
+  public UserIntegrationInfo getUserInfo(String username) {
     User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     return getUserInfoDto(user);
   }
 
   @Override
-  public UserInfoDto getUserInfoByToken(String token) {
+  public UserIntegrationInfo getUserInfoByToken(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
     User user = userRepository.findByEmail(email)
       .orElseThrow(UserNotFoundException::new);
@@ -81,14 +80,14 @@ public class UserManagerImpl implements UserManager {
     return getUserInfoDto(user);
   }
 
-  private UserInfoDto getUserInfoDto(User user) {
+  private UserIntegrationInfo getUserInfoDto(User user) {
     long followerCount = followRepository.countByFollowingId(user);
     long followingCount = followRepository.countByFollowerId(user);
-    long postCount = articleRepository.countAllByUser(user);
+    long postCount = postRepository.countAllByUser(user);
     long likeCount = likeRepository.countAllByUser(user);
-    UserInfoForClientDto userInfo = UserInfoForClientDto.from(user);
+    UserInfo userInfo = UserInfo.from(user);
 
-    return UserInfoDto.builder()
+    return UserIntegrationInfo.builder()
       .addAllFollowerCount(followerCount)
       .addAllFollowingCount(followingCount)
       .addAllGivenLikeCount(likeCount)
@@ -97,7 +96,7 @@ public class UserManagerImpl implements UserManager {
       .build();
   }
 
-  private void checkDuplicatedInfo(UserUpdateRequestDto dto, User targetUser) {
+  private void checkDuplicatedInfo(UserUpdateRequest dto, User targetUser) {
     boolean isAlreadyExistsEmail = userRepository.existsByEmail(dto.getEmail());
     boolean isAlreadyExistsUsername = userRepository.existsByUsername(dto.getUsername());
 

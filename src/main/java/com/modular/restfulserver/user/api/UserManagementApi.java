@@ -27,27 +27,27 @@ public class UserManagementApi {
 
   @UserInfoDocs
   @GetMapping("")
-  public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByTokenApi(HttpServletRequest request) {
+  public ResponseEntity<Map<String, UserIntegrationInfo>> getUserInfoByTokenApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserInfoDto userInfo = userManager.getUserInfoByToken(token);
+    UserIntegrationInfo userInfo = userManager.getUserInfoByToken(token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
   @GetUserByUsernameDocs
   @GetMapping("/{username}")
-  public ResponseEntity<Map<String, UserInfoDto>> getUserInfoByUsernameParamApi(@PathVariable String username) {
-    UserInfoDto userInfo = userManager.getUserInfo(username);
+  public ResponseEntity<Map<String, UserIntegrationInfo>> getUserInfoByUsernameParamApi(@PathVariable String username) {
+    UserIntegrationInfo userInfo = userManager.getUserInfo(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
   @UserUpdateDocs
   @PutMapping("")
-  public ResponseEntity<Map<String, UserInfoForClientDto>> updateUserInfoApi(
+  public ResponseEntity<Map<String, UserInfo>> updateUserInfoApi(
     HttpServletRequest request,
-    @RequestBody @Valid UserUpdateRequestDto dto
+    @RequestBody @Valid UserUpdateRequest dto
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserInfoForClientDto userInfo = userManager.updateUserInfo(token, dto);
+    UserInfo userInfo = userManager.updateUserInfo(token, dto);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(userInfo));
@@ -57,7 +57,7 @@ public class UserManagementApi {
   @PatchMapping("/password")
   public ResponseEntity<Void> updateUserPasswordApi(
     HttpServletRequest request,
-    @RequestBody @Valid UserUpdatePasswordDto dto
+    @RequestBody @Valid PasswordUpdateRequest dto
     ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     userManager.updateUserPassword(token, dto);
@@ -68,7 +68,7 @@ public class UserManagementApi {
   @DeleteMapping("")
   public ResponseEntity<Void> deleteUserApi(
     HttpServletRequest request,
-    @RequestBody @Valid UserDeletePasswordDto dto
+    @RequestBody @Valid UserDeleteRequest dto
     ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     userManager.deleteUser(token, dto.getPassword());

@@ -8,7 +8,7 @@ import com.modular.restfulserver.auth.exception.InvalidTokenException;
 import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.CustomEmailPasswordAuthToken;
 import com.modular.restfulserver.global.config.security.JwtProvider;
-import com.modular.restfulserver.user.dto.UserInfoForClientDto;
+import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.UserRepository;
@@ -68,7 +68,7 @@ public class AuthService {
     return TokenResponseDto.builder()
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
-      .addUserInfo(UserInfoForClientDto.from(user))
+      .addUserInfo(UserInfo.from(user))
       .build();
   }
 
