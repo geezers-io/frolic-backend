@@ -1,4 +1,4 @@
-package com.modular.restfulserver.global.utils.models.BaseTimeAuditing;
+package com.modular.restfulserver.global.util.models.BaseTimeAuditing;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

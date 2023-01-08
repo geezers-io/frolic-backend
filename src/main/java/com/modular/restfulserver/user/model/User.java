@@ -1,6 +1,6 @@
 package com.modular.restfulserver.user.model;
 
-import com.modular.restfulserver.global.utils.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
+import com.modular.restfulserver.global.util.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;

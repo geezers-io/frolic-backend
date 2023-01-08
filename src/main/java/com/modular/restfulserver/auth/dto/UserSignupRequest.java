@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @NoArgsConstructor
-public class UserSignupRequestDto {
+public class UserSignupRequest {
 
   @NotNull
   @Email(message = "이메일 형식이 잘못되었습니다.")
@@ -42,7 +42,7 @@ public class UserSignupRequestDto {
   private String realname;
 
   @Builder(setterPrefix = "add")
-  public UserSignupRequestDto(String email, String password, String username, String realname) {
+  public UserSignupRequest(String email, String password, String username, String realname) {
     Assert.isInstanceOf(String.class, email, getIllegalFieldError("email"));
     Assert.isInstanceOf(String.class, password, getIllegalFieldError("password"));
     Assert.isInstanceOf(String.class, username, getIllegalFieldError("username"));

@@ -2,9 +2,7 @@ package com.modular.restfulserver.user.dto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.MockData;
-
-import java.time.LocalDateTime;
+import util.MockData;
 
 import static org.junit.jupiter.api.Assertions.*;
 

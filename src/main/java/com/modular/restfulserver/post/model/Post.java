@@ -1,7 +1,7 @@
 package com.modular.restfulserver.post.model;
 
 import com.modular.restfulserver.post.dto.CreatePostRequest;
-import com.modular.restfulserver.global.utils.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
+import com.modular.restfulserver.global.util.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
 import com.modular.restfulserver.user.model.User;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
