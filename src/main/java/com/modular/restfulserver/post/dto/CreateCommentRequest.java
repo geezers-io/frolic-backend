@@ -1,7 +1,6 @@
 package com.modular.restfulserver.post.dto;
 
-import static com.modular.restfulserver.global.utils.message.FieldError.*;
-import com.modular.restfulserver.post.util.ValidationMessages;
+import com.modular.restfulserver.post.util.PostValidationMessages;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,9 +29,9 @@ public class CreateCommentRequest {
     String textContent,
     Long postOwnerId
   ) {
-    Assert.notNull(postId, ValidationMessages.notNullPostId);
-    Assert.notNull(textContent, ValidationMessages.notNullPostId);
-    Assert.notNull(postOwnerId, ValidationMessages.notNullOwnerId);
+    Assert.notNull(postId, PostValidationMessages.notNullPostId);
+    Assert.notNull(textContent, PostValidationMessages.notNullPostId);
+    Assert.notNull(postOwnerId, PostValidationMessages.notNullOwnerId);
     this.postId = postId;
     this.replyUserId = replyUserId;
     this.textContent = textContent;
