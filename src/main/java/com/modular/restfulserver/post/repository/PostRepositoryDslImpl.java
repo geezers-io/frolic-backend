@@ -8,22 +8,22 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.modular.restfulserver.post.model.QArticle.*;
-import static com.modular.restfulserver.post.model.QArticleHashTag.*;
+import static com.modular.restfulserver.post.model.QPost.*;
+import static com.modular.restfulserver.post.model.QPostHashTag.*;
 import static com.modular.restfulserver.post.model.QHashtag.*;
 
 @Repository
 @RequiredArgsConstructor
-public class ArticleRepositoryDslImpl implements PostDslRepository {
+public class PostRepositoryDslImpl implements PostDslRepository {
 
   private final JPAQueryFactory queryFactory;
 
   @Override
   public List<Post> findBySearchParamsByPagination(List<String> searchParams, Pageable pageable) {
-    return queryFactory.selectFrom(article)
-      .join(articleHashTag)
-      .on(articleHashTag.id.eq(article.id))
-      .where(articleHashTag.id.in(
+    return queryFactory.selectFrom(post)
+      .join(postHashTag)
+      .on(postHashTag.id.eq(post.id))
+      .where(postHashTag.id.in(
         queryFactory.select(hashtag.id)
           .from(hashtag)
           .where(hashtag.name.in(searchParams))
