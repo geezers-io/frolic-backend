@@ -1,12 +1,13 @@
 package com.modular.restfulserver.auth.application;
 
-import com.modular.restfulserver.auth.dto.TokenResponseDto;
-import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
-import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.auth.dto.TokenInfo;
+import com.modular.restfulserver.auth.dto.UserLoginRequest;
+import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.auth.exception.InvalidTokenException;
 import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.CustomEmailPasswordAuthToken;
+import com.modular.restfulserver.global.config.security.JwtConstants;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
@@ -25,38 +26,39 @@ import java.util.Map;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthManager implements AuthManageable {
 
   private final UserRepository userRepository;
   private final JwtProvider jwtProvider;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
 
-  public TokenResponseDto saveUser(UserSignupRequestDto dto) {
-    boolean isExistsEmail = userRepository.existsByEmail(dto.getEmail());
-    boolean isExistsUsername = userRepository.existsByUsername(dto.getUsername());
+  public TokenInfo saveUser(UserSignupRequest userSignupRequest) {
+    boolean isExistsEmail = userRepository.existsByEmail(userSignupRequest.getEmail());
+    boolean isExistsUsername = userRepository.existsByUsername(userSignupRequest.getUsername());
     if (isExistsEmail || isExistsUsername)
       throw new AlreadyExistsUserException();
 
-    String rawPassword = dto.getPassword();
+    String rawPassword = userSignupRequest.getPassword();
     String encodedPassword = passwordEncoder.encode(rawPassword);
-    dto.setEncodePassword(encodedPassword);
-    userRepository.save(dto.toEntity());
+    userSignupRequest.setEncodePassword(encodedPassword);
+    userRepository.save(userSignupRequest.toEntity());
 
-    UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto.builder()
-      .addEmail(dto.getEmail())
+    UserLoginRequest userLoginRequest = UserLoginRequest.builder()
+      .addEmail(userSignupRequest.getEmail())
       .addPassword(rawPassword)
       .build();
-    return this.loginUser(userLoginRequestDto);
+
+    return this.loginUser(userLoginRequest);
   }
 
-  public TokenResponseDto loginUser(UserLoginRequestDto dto) {
-    User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(UserNotFoundException::new);
+  public TokenInfo loginUser(UserLoginRequest userLoginRequest) {
+    User user = userRepository.findByEmail(userLoginRequest.getEmail()).orElseThrow(UserNotFoundException::new);
 
-    if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
+    if (!passwordEncoder.matches(userLoginRequest.getPassword(), user.getPassword()))
       throw new PasswordNotMatchException();
 
-    CustomEmailPasswordAuthToken emailPasswordAuthToken = new CustomEmailPasswordAuthToken(dto.getEmail());
+    CustomEmailPasswordAuthToken emailPasswordAuthToken = new CustomEmailPasswordAuthToken(userLoginRequest.getEmail());
     Authentication authentication = authenticationManager.authenticate(emailPasswordAuthToken);
 
     String email = authentication.getName();
@@ -65,7 +67,7 @@ public class AuthService {
     String refreshToken = jwtProvider.createRefreshToken(email);
     user.updateRefreshToken(refreshToken);
 
-    return TokenResponseDto.builder()
+    return TokenInfo.builder()
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
       .addUserInfo(UserInfo.from(user))
@@ -77,16 +79,17 @@ public class AuthService {
     Map<String, String> response = new HashMap<>();
     String newAccessToken = jwtProvider.createAccessToken(email);
     String userRegisteredToken = userRepository.getUserRefreshToken(email);
+
     if (!refreshToken.equals(userRegisteredToken))
       throw new InvalidTokenException();
-    response.put("accessToken", newAccessToken);
+    response.put(JwtConstants.ACCESS_TOKEN, newAccessToken);
+
     return response;
   }
 
   public void logout(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
-    User user = userRepository.findByEmail(email)
-      .orElseThrow(UserNotFoundException::new);
+    User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     user.updateRefreshToken(null);
   }
 

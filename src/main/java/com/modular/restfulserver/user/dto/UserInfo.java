@@ -1,6 +1,6 @@
 package com.modular.restfulserver.user.dto;
 
-import static com.modular.restfulserver.global.utils.message.FieldError.*;
+import static com.modular.restfulserver.global.util.message.FieldError.*;
 import com.modular.restfulserver.user.model.User;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;

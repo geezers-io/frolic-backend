@@ -1,4 +1,4 @@
-package com.modular.restfulserver.global.utils.message;
+package com.modular.restfulserver.global.util.message;
 
 public class FieldError {
 

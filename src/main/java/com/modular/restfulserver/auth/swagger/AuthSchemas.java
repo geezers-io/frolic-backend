@@ -1,6 +1,6 @@
 package com.modular.restfulserver.auth.swagger;
 
-import com.modular.restfulserver.auth.dto.TokenResponseDto;
+import com.modular.restfulserver.auth.dto.TokenInfo;
 import com.modular.restfulserver.user.dto.UserInfo;
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ public class AuthSchemas {
 
   @Getter
   public static class Signup {
-    TokenResponseDto data = TokenResponseDto.builder()
+    TokenInfo data = TokenInfo.builder()
       .addAccessToken("eyAccessToken")
       .addUserInfo(UserInfo.builder()
         .addId(627L)

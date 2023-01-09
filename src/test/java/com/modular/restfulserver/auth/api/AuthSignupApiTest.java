@@ -1,7 +1,7 @@
 package com.modular.restfulserver.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,14 +34,14 @@ class AuthSignupApiTest {
   @Autowired
   protected UserRepository userRepository;
 
-  UserSignupRequestDto signupRequest;
+  UserSignupRequest signupRequest;
   final String username = "testuser";
   final String realname = "안드레킴";
   final String email = "testuser@test.com";
 
   @BeforeEach
   public void beforeEach() {
-    signupRequest = UserSignupRequestDto.builder()
+    signupRequest = UserSignupRequest.builder()
       .addUsername(username)
       .addRealname(realname)
       .addEmail(email)

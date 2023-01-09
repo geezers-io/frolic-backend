@@ -1,7 +1,7 @@
 package com.modular.restfulserver.post.dto;
 
 import com.modular.restfulserver.post.model.Comment;
-import com.modular.restfulserver.post.util.ValidationMessages;
+import com.modular.restfulserver.post.util.PostValidationMessages;
 import com.modular.restfulserver.user.dto.UserInfo;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
@@ -28,10 +28,10 @@ public class CommentInfo {
     String textContent,
     UserInfo userInfo
   ) {
-    Assert.notNull(id, ValidationMessages.notNullId);
-    Assert.notNull(postId, ValidationMessages.notNullPostId);
-    Assert.notNull(textContent, ValidationMessages.notNullTextContent);
-    Assert.notNull(userInfo, ValidationMessages.notNullUserInfo);
+    Assert.notNull(id, PostValidationMessages.notNullId);
+    Assert.notNull(postId, PostValidationMessages.notNullPostId);
+    Assert.notNull(textContent, PostValidationMessages.notNullTextContent);
+    Assert.notNull(userInfo, PostValidationMessages.notNullUserInfo);
 
     this.id = id;
     this.postId = postId;

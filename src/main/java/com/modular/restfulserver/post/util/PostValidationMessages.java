@@ -1,8 +1,8 @@
 package com.modular.restfulserver.post.util;
 
-import com.modular.restfulserver.global.utils.message.ValidationMessage;
+import com.modular.restfulserver.global.util.message.ValidationMessage;
 
-public class ValidationMessages implements ValidationMessage {
+public class PostValidationMessages implements ValidationMessage {
 
   public static String notNullId = "id" + mustBeNotNullMessage;
 

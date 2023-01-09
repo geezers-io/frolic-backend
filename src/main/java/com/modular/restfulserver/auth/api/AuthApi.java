@@ -1,9 +1,9 @@
 package com.modular.restfulserver.auth.api;
 
-import com.modular.restfulserver.auth.application.AuthService;
-import com.modular.restfulserver.auth.dto.TokenResponseDto;
-import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
-import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.auth.application.AuthManager;
+import com.modular.restfulserver.auth.dto.TokenInfo;
+import com.modular.restfulserver.auth.dto.UserLoginRequest;
+import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import com.modular.restfulserver.auth.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
@@ -22,13 +22,13 @@ import java.util.Map;
 public class AuthApi {
 
   private final JwtProvider jwtProvider;
-  private final AuthService authService;
+  private final AuthManager authManager;
 
 
   @SignupDocs
   @PostMapping("/signup")
-  public ResponseEntity<Map<String, TokenResponseDto>> signup(@RequestBody @Valid UserSignupRequestDto dto) {
-    TokenResponseDto loginInfo = authService.saveUser(dto);
+  public ResponseEntity<Map<String, TokenInfo>> signup(@RequestBody @Valid UserSignupRequest dto) {
+    TokenInfo loginInfo = authManager.saveUser(dto);
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(loginInfo));
@@ -36,8 +36,8 @@ public class AuthApi {
 
   @LoginDocs
   @PostMapping("/login")
-  public ResponseEntity<Map<String, TokenResponseDto>> login(@RequestBody @Valid UserLoginRequestDto dto) {
-    var loginInfo = authService.loginUser(dto);
+  public ResponseEntity<Map<String, TokenInfo>> login(@RequestBody @Valid UserLoginRequest dto) {
+    TokenInfo loginInfo = authManager.loginUser(dto);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(loginInfo));
@@ -47,7 +47,7 @@ public class AuthApi {
   @GetMapping("/reissue")
   public ResponseEntity<Map<String, Map<String, String>>> refresh(HttpServletRequest req) {
     String refreshToken = jwtProvider.getTokenByHttpRequestHeader(req);
-    Map<String, String> tokens = authService.refresh(refreshToken);
+    Map<String, String> tokens = authManager.refresh(refreshToken);
     return ResponseEntity.ok(ResponseHelper.createDataMap(tokens));
   }
 
@@ -55,7 +55,7 @@ public class AuthApi {
   @GetMapping("/logout")
   public ResponseEntity<Void> logoutApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    authService.logout(token);
+    authManager.logout(token);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

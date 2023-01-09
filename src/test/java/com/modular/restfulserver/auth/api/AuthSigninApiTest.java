@@ -1,9 +1,9 @@
 package com.modular.restfulserver.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modular.restfulserver.auth.dto.TokenResponseDto;
-import com.modular.restfulserver.auth.dto.UserLoginRequestDto;
-import com.modular.restfulserver.auth.dto.UserSignupRequestDto;
+import com.modular.restfulserver.auth.dto.TokenInfo;
+import com.modular.restfulserver.auth.dto.UserLoginRequest;
+import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,8 +45,8 @@ class AuthSigninApiTest {
   final String realname = "안드레킴";
   final String password = "@Testtest12";
   final String email = "testuser@test.com";
-  UserLoginRequestDto userLoginRequest;
-  UserSignupRequestDto signupRequest = UserSignupRequestDto.builder()
+  UserLoginRequest userLoginRequest;
+  UserSignupRequest signupRequest = UserSignupRequest.builder()
     .addUsername(username)
     .addRealname(realname)
     .addEmail(email)
@@ -64,7 +64,7 @@ class AuthSigninApiTest {
 
   @BeforeEach
   protected void beforeEach() {
-    userLoginRequest = UserLoginRequestDto.builder()
+    userLoginRequest = UserLoginRequest.builder()
       .addEmail(email)
       .addPassword(password)
       .build();
@@ -89,7 +89,7 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("존재하지 않는 이메일 정보로 로그인할 시 실패한다.")
   void login_failed_not_exists_email() throws Exception {
-    userLoginRequest = UserLoginRequestDto.builder()
+    userLoginRequest = UserLoginRequest.builder()
       .addEmail("anonymous@anonymous.com")
       .addPassword(password)
       .build();
@@ -101,7 +101,7 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("형식에 맞지않는 비밀번호 로그인 요청은 실패한다.")
   void login_failed_password_invalid() throws Exception {
-    userLoginRequest = UserLoginRequestDto.builder()
+    userLoginRequest = UserLoginRequest.builder()
       .addEmail(email)
       .addPassword("dlrpvotmdnjemsi12")
       .build();
@@ -113,7 +113,7 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("잘못된 비밀번호 로그인 요청은 실패한다.")
   void login_failed_password_mismatch() throws Exception {
-    userLoginRequest = UserLoginRequestDto.builder()
+    userLoginRequest = UserLoginRequest.builder()
       .addEmail(email)
       .addPassword("@Faultpassword12")
       .build();
@@ -133,13 +133,13 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("정상적인 액세스 토큰 갱신 요청이 성공적으로 수행된다.")
   void reissue_access_token_success() throws Exception {
-    TokenResponseDto tokenResponse = getLoginData();
+    TokenInfo tokenResponse = getLoginData();
     getReissueTokenActions(tokenResponse.getRefreshToken())
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.accessToken").isString());
   }
 
-  private ResultActions getLoginResultActions(UserLoginRequestDto userLoginRequest) throws Exception {
+  private ResultActions getLoginResultActions(UserLoginRequest userLoginRequest) throws Exception {
     return mvc.perform(post("/api/auth/login")
       .contentType(MediaType.APPLICATION_JSON)
       .accept(MediaType.APPLICATION_JSON)
@@ -154,7 +154,7 @@ class AuthSigninApiTest {
       .andDo(print());
   }
 
-  private TokenResponseDto getLoginData() {
+  private TokenInfo getLoginData() {
     return Objects.requireNonNull(authApi.login(userLoginRequest).getBody()).get("data");
   }
 

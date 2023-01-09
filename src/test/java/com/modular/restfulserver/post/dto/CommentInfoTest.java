@@ -2,7 +2,7 @@ package com.modular.restfulserver.post.dto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.MockData;
+import util.MockData;
 
 import static org.junit.jupiter.api.Assertions.*;
 

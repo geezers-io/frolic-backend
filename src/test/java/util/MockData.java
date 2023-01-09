@@ -1,4 +1,4 @@
-package utils;
+package util;
 
 import com.modular.restfulserver.user.dto.UserInfo;
 
