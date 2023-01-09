@@ -20,7 +20,7 @@ public class UserLoginResponse {
 
   public static UserLoginResponse create(TokenDetail tokenDetail, UserUnitedDetails userUnitedDetails) {
     return UserLoginResponse.builder()
-      .addTokenDetails(tokenDetail)
+      .addTokenDetail(tokenDetail)
       .addUserUnitedDetails(userUnitedDetails)
       .build();
   }
