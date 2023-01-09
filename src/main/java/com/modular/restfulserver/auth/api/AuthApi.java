@@ -1,8 +1,9 @@
 package com.modular.restfulserver.auth.api;
 
 import com.modular.restfulserver.auth.application.AuthManager;
-import com.modular.restfulserver.auth.dto.TokenInfo;
+import com.modular.restfulserver.auth.dto.TokenDetails;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
+import com.modular.restfulserver.auth.dto.UserLoginResponse;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import com.modular.restfulserver.auth.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
@@ -27,8 +28,8 @@ public class AuthApi {
 
   @SignupDocs
   @PostMapping("/signup")
-  public ResponseEntity<Map<String, TokenInfo>> signup(@RequestBody @Valid UserSignupRequest dto) {
-    TokenInfo loginInfo = authManager.saveUser(dto);
+  public ResponseEntity<Map<String, UserLoginResponse>> signup(@RequestBody @Valid UserSignupRequest dto) {
+    UserLoginResponse loginInfo = authManager.saveUser(dto);
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(loginInfo));
@@ -36,8 +37,8 @@ public class AuthApi {
 
   @LoginDocs
   @PostMapping("/login")
-  public ResponseEntity<Map<String, TokenInfo>> login(@RequestBody @Valid UserLoginRequest dto) {
-    TokenInfo loginInfo = authManager.loginUser(dto);
+  public ResponseEntity<Map<String, UserLoginResponse>> login(@RequestBody @Valid UserLoginRequest dto) {
+    UserLoginResponse loginInfo = authManager.loginUser(dto);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(loginInfo));
