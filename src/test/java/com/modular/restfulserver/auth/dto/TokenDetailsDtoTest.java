@@ -11,7 +11,7 @@ class TokenDetailsDtoTest {
   @Test
   @DisplayName("accessToken 이 없으면 예외가 발생한다.")
   void hasTextAccessToken() {
-    assertThrows(IllegalArgumentException.class, () -> TokenDetails.builder()
+    assertThrows(IllegalArgumentException.class, () -> TokenDetail.builder()
       .addRefreshToken("refreshToken")
       .addUserInfo(MockData.mockUserDetailsForClientDto)
       .build());
@@ -20,7 +20,7 @@ class TokenDetailsDtoTest {
   @Test
   @DisplayName("refreshToken 이 없으면 예외가 발생한다.")
   void hasTextRefreshToken() {
-    assertThrows(IllegalArgumentException.class, () -> TokenDetails.builder()
+    assertThrows(IllegalArgumentException.class, () -> TokenDetail.builder()
       .addAccessToken("accessToken")
       .addUserInfo(MockData.mockUserDetailsForClientDto)
       .build());
@@ -29,7 +29,7 @@ class TokenDetailsDtoTest {
   @Test
   @DisplayName("userInfo 가 없으면 예외가 발생한다.")
   void instanceOfUserInfo() {
-    assertThrows(IllegalArgumentException.class, () -> TokenDetails.builder()
+    assertThrows(IllegalArgumentException.class, () -> TokenDetail.builder()
       .addAccessToken("accessToken")
       .addRefreshToken("refreshToken")
       .build());

@@ -1,7 +1,7 @@
 package com.modular.restfulserver.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modular.restfulserver.auth.dto.TokenDetails;
+import com.modular.restfulserver.auth.dto.TokenDetail;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import org.junit.jupiter.api.*;
@@ -133,7 +133,7 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("정상적인 액세스 토큰 갱신 요청이 성공적으로 수행된다.")
   void reissue_access_token_success() throws Exception {
-    TokenDetails tokenResponse = getLoginData();
+    TokenDetail tokenResponse = getLoginData();
     getReissueTokenActions(tokenResponse.getRefreshToken())
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.accessToken").isString());
@@ -154,7 +154,7 @@ class AuthSigninApiTest {
       .andDo(print());
   }
 
-  private TokenDetails getLoginData() {
+  private TokenDetail getLoginData() {
     return Objects.requireNonNull(authApi.login(userLoginRequest).getBody()).get("data");
   }
 

@@ -6,21 +6,21 @@ import lombok.Getter;
 
 @Getter
 public class UserLoginResponse {
-  private final TokenDetails tokenDetails;
+  private final TokenDetail tokenDetail;
   private final UserUnitedDetails userUnitedDetails;
 
   @Builder(setterPrefix = "add")
   public UserLoginResponse(
-    TokenDetails tokenDetails,
+    TokenDetail tokenDetail,
     UserUnitedDetails userUnitedDetails
   ) {
-    this.tokenDetails = tokenDetails;
+    this.tokenDetail = tokenDetail;
     this.userUnitedDetails = userUnitedDetails;
   }
 
-  public static UserLoginResponse create(TokenDetails tokenDetails, UserUnitedDetails userUnitedDetails) {
+  public static UserLoginResponse create(TokenDetail tokenDetail, UserUnitedDetails userUnitedDetails) {
     return UserLoginResponse.builder()
-      .addTokenDetails(tokenDetails)
+      .addTokenDetails(tokenDetail)
       .addUserUnitedDetails(userUnitedDetails)
       .build();
   }

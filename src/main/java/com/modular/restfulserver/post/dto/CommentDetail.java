@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class CommentDetails {
+public class CommentDetail {
 
   private final Long id;
 
@@ -21,7 +21,7 @@ public class CommentDetails {
   private final UserDetails userDetails;
 
   @Builder(setterPrefix = "add")
-  public CommentDetails(
+  public CommentDetail(
     Long id,
     Long postId,
     Long replyUserId,
@@ -40,8 +40,8 @@ public class CommentDetails {
     this.userDetails = userDetails;
   }
 
-  public static CommentDetails from(Comment comment) {
-    return CommentDetails.builder()
+  public static CommentDetail from(Comment comment) {
+    return CommentDetail.builder()
       .addId(comment.getId())
       .addUserDetails(UserDetails.from(comment.getUser()))
       .addPostId(comment.getPost().getId())

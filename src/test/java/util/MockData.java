@@ -1,6 +1,6 @@
 package util;
 
-import com.modular.restfulserver.auth.dto.TokenDetails;
+import com.modular.restfulserver.auth.dto.TokenDetail;
 import com.modular.restfulserver.auth.dto.UserLoginResponse;
 import com.modular.restfulserver.user.dto.UserDetails;
 import com.modular.restfulserver.user.dto.UserUnitedDetails;
@@ -17,7 +17,7 @@ public class MockData {
     .addId(1L)
     .build();
 
-  public static TokenDetails mockTokenDetails = TokenDetails.builder()
+  public static TokenDetail mockTokenDetail = TokenDetail.builder()
     .addAccessToken("accessToken")
     .addRefreshToken("refreshToken")
     .build();
@@ -30,6 +30,6 @@ public class MockData {
     .addAllPostCount(120L)
     .build();
 
-  public static UserLoginResponse mockUserLoginResponse = new UserLoginResponse(mockTokenDetails, mockUserUnitedDetails);
+  public static UserLoginResponse mockUserLoginResponse = new UserLoginResponse(mockTokenDetail, mockUserUnitedDetails);
 
 }

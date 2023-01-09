@@ -1,7 +1,7 @@
 package com.modular.restfulserver.post.application;
 
 import com.modular.restfulserver.post.dto.CreateCommentRequest;
-import com.modular.restfulserver.post.dto.CommentDetails;
+import com.modular.restfulserver.post.dto.CommentDetail;
 import com.modular.restfulserver.post.model.Post;
 import com.modular.restfulserver.post.model.Comment;
 import com.modular.restfulserver.post.repository.PostRepository;
@@ -31,42 +31,42 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
   private final PostRepository postRepository;
 
   @Override
-  public CommentDetails getCommentById(Long commentId) {
+  public CommentDetail getCommentById(Long commentId) {
     Comment comment = commentRepository.findById(commentId).orElseThrow(NotFoundResourceException::new);
-    return CommentDetails.from(comment);
+    return CommentDetail.from(comment);
   }
 
   @Override
-  public List<CommentDetails> getCommentsByArticlePagination(Long articleId, Pageable pageable) {
+  public List<CommentDetail> getCommentsByArticlePagination(Long articleId, Pageable pageable) {
     Post post = postRepository.findById(articleId).orElseThrow(NotFoundResourceException::new);
     Page<Comment> commentPage = commentRepository.findAllByPostOrderByCreatedDate(post, pageable);
 
     return commentPage.stream()
-      .map(CommentDetails::from)
+      .map(CommentDetail::from)
       .collect(Collectors.toList());
   }
 
   @Override
-  public List<CommentDetails> getCommentsByUserPagination(String username, Pageable pageable) {
+  public List<CommentDetail> getCommentsByUserPagination(String username, Pageable pageable) {
     User user = userRepository.findByUsername(username)
       .orElseThrow(UserNotFoundException::new);
 
     Page<Comment> commentPage = commentRepository.findAllByUserOrderByCreatedDate(user, pageable);
 
     return commentPage.stream()
-      .map(CommentDetails::from)
+      .map(CommentDetail::from)
       .collect(Collectors.toList());
   }
 
   @Override
-  public CommentDetails createComment(String token, CreateCommentRequest dto) {
+  public CommentDetail createComment(String token, CreateCommentRequest dto) {
     Comment newComment = getCommentByCreateRequestDto(dto);
     commentRepository.save(newComment);
-    return CommentDetails.from(newComment);
+    return CommentDetail.from(newComment);
   }
 
   @Override
-  public CommentDetails updateComment(String token, CreateCommentRequest createCommentInfo, Long commentId) {
+  public CommentDetail updateComment(String token, CreateCommentRequest createCommentInfo, Long commentId) {
     User tokenUser = getUserIsTokenAble(token);
     boolean isSameUser = Objects.equals(tokenUser.getId(), createCommentInfo.getPostOwnerId());
     if (!isSameUser)
@@ -76,7 +76,7 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
 
     comment.updateTextContent(createCommentInfo.getTextContent());
     commentRepository.save(comment);
-    return CommentDetails.from(comment);
+    return CommentDetail.from(comment);
   }
 
   @Override

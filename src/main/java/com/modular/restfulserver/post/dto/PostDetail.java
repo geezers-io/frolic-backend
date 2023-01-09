@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class PostDetails {
+public class PostDetail {
 
   private final Long id;
   private final UserDetails userDetails;
   private final String textContent;
-  private final List<CommentDetails> comments;
+  private final List<CommentDetail> comments;
   private final List<String> hashtags;
   private final Long likeCount;
   private final List<String> fileDownloadUrls;
@@ -24,11 +24,11 @@ public class PostDetails {
   private final boolean isLikeUp;
 
   @Builder(setterPrefix = "add")
-  public PostDetails(
+  public PostDetail(
     Long id,
     String textContent,
     UserDetails userDetails,
-    List<CommentDetails> comments,
+    List<CommentDetail> comments,
     List<String> hashtags,
     Long likeCount,
     boolean isLikeUp,

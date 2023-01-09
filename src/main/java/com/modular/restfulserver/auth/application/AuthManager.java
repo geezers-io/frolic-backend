@@ -1,6 +1,6 @@
 package com.modular.restfulserver.auth.application;
 
-import com.modular.restfulserver.auth.dto.TokenDetails;
+import com.modular.restfulserver.auth.dto.TokenDetail;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserLoginResponse;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
@@ -75,7 +75,7 @@ public class AuthManager implements AuthManageable {
     String refreshToken = jwtProvider.createRefreshToken(email);
     user.updateRefreshToken(refreshToken);
 
-    TokenDetails tokenDetails = TokenDetails.builder()
+    TokenDetail tokenDetail = TokenDetail.builder()
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
       .build();
@@ -93,7 +93,7 @@ public class AuthManager implements AuthManageable {
       .addAllPostCount(allPostCount)
       .build();
 
-    return UserLoginResponse.create(tokenDetails, userUnitedDetails);
+    return UserLoginResponse.create(tokenDetail, userUnitedDetails);
   }
 
   public Map<String, String> refresh(String refreshToken) {

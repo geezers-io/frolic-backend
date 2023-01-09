@@ -1,6 +1,6 @@
 package com.modular.restfulserver.post.swagger;
 
-import com.modular.restfulserver.post.dto.CommentDetails;
+import com.modular.restfulserver.post.dto.CommentDetail;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,12 +9,12 @@ public class CommentSchemas {
 
   @Getter
   public static class CommentInfoSchema {
-    CommentDetails data;
+    CommentDetail data;
   }
 
   @Getter
   public static class CommentListSchema {
-    List<CommentDetails> data;
+    List<CommentDetail> data;
   }
 
 }

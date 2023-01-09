@@ -1,6 +1,6 @@
 package com.modular.restfulserver.post.swagger;
 
-import com.modular.restfulserver.post.dto.PostDetails;
+import com.modular.restfulserver.post.dto.PostDetail;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,12 +9,12 @@ public class PostSchemas {
 
   @Getter
   public static class CreateArticleSchema {
-    PostDetails data;
+    PostDetail data;
   }
 
   @Getter
   public static class FeedListSchema {
-    List<PostDetails> data;
+    List<PostDetail> data;
   }
 
   @Getter

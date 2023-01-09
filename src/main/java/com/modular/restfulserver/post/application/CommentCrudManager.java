@@ -1,22 +1,22 @@
 package com.modular.restfulserver.post.application;
 
 import com.modular.restfulserver.post.dto.CreateCommentRequest;
-import com.modular.restfulserver.post.dto.CommentDetails;
+import com.modular.restfulserver.post.dto.CommentDetail;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface CommentCrudManager {
 
-  CommentDetails getCommentById(Long commentId);
+  CommentDetail getCommentById(Long commentId);
 
-  List<CommentDetails> getCommentsByArticlePagination(Long articleId, Pageable pageable);
+  List<CommentDetail> getCommentsByArticlePagination(Long articleId, Pageable pageable);
 
-  List<CommentDetails> getCommentsByUserPagination(String username, Pageable pageable);
+  List<CommentDetail> getCommentsByUserPagination(String username, Pageable pageable);
 
-  CommentDetails createComment(String token, CreateCommentRequest dto);
+  CommentDetail createComment(String token, CreateCommentRequest dto);
 
-  CommentDetails updateComment(String token, CreateCommentRequest dto, Long commentId);
+  CommentDetail updateComment(String token, CreateCommentRequest dto, Long commentId);
 
   void deleteComment(String token, Long commentId);
 

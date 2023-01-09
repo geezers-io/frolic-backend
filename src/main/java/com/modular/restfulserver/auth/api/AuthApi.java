@@ -1,7 +1,6 @@
 package com.modular.restfulserver.auth.api;
 
 import com.modular.restfulserver.auth.application.AuthManager;
-import com.modular.restfulserver.auth.dto.TokenDetails;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserLoginResponse;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;

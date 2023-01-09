@@ -2,7 +2,7 @@ package com.modular.restfulserver.post.api;
 
 import com.modular.restfulserver.post.application.CommentCrudManager;
 import com.modular.restfulserver.post.dto.CreateCommentRequest;
-import com.modular.restfulserver.post.dto.CommentDetails;
+import com.modular.restfulserver.post.dto.CommentDetail;
 import com.modular.restfulserver.post.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
@@ -27,17 +27,17 @@ public class CommentCrudApi {
 
   @CreateCommentDocs
   @PostMapping("")
-  public ResponseEntity<Map<String, CommentDetails>> createCommentApi(
+  public ResponseEntity<Map<String, CommentDetail>> createCommentApi(
     HttpServletRequest request,
     @RequestBody @Valid CreateCommentRequest dto
     ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    CommentDetails commentDetails = commentCrudManager.createComment(
+    CommentDetail commentDetail = commentCrudManager.createComment(
       token,dto
     );
     return ResponseEntity
       .status(HttpStatus.CREATED)
-      .body(ResponseHelper.createDataMap(commentDetails));
+      .body(ResponseHelper.createDataMap(commentDetail));
   }
 
   @DeleteCommentDocs
@@ -53,45 +53,45 @@ public class CommentCrudApi {
 
   @UpdateCommentDocs
   @PutMapping("/{commentId}")
-  public ResponseEntity<Map<String, CommentDetails>> updateCommentApi(
+  public ResponseEntity<Map<String, CommentDetail>> updateCommentApi(
     HttpServletRequest request,
     @RequestBody @Valid CreateCommentRequest dto,
     @PathVariable(name = "commentId") Long commentId
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    CommentDetails commentDetails = commentCrudManager.updateComment(
+    CommentDetail commentDetail = commentCrudManager.updateComment(
       token, dto, commentId
     );
-    return ResponseEntity.ok(ResponseHelper.createDataMap(commentDetails));
+    return ResponseEntity.ok(ResponseHelper.createDataMap(commentDetail));
   }
 
   @GetCommentDocs
   @GetMapping("/{commentId}")
-  public ResponseEntity<Map<String, CommentDetails>> getCommentByIdApi(
+  public ResponseEntity<Map<String, CommentDetail>> getCommentByIdApi(
     @PathVariable(name = "commentId") Long commentId
   ) {
-    CommentDetails info = commentCrudManager.getCommentById(commentId);
+    CommentDetail info = commentCrudManager.getCommentById(commentId);
     return ResponseEntity.ok(ResponseHelper.createDataMap(info));
   }
 
   @GetCommentListDocs
   @GetMapping("/posts/{postId}")
-  public ResponseEntity<Map<String, List<CommentDetails>>> getCommentByArticleIdPaginationApi(
+  public ResponseEntity<Map<String, List<CommentDetail>>> getCommentByArticleIdPaginationApi(
     @PathVariable(name = "postId") Long postId,
     Pageable pageable
   ) {
-    List<CommentDetails> comments = commentCrudManager
+    List<CommentDetail> comments = commentCrudManager
       .getCommentsByArticlePagination(postId, pageable);
     return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
   }
 
   @GetCommentListByUsernameDocs
   @GetMapping("/username/{username}")
-  public ResponseEntity<Map<String, List<CommentDetails>>> getCommentsByUsernamePaginationApi(
+  public ResponseEntity<Map<String, List<CommentDetail>>> getCommentsByUsernamePaginationApi(
     @PathVariable String username,
     Pageable pageable
     ) {
-      List<CommentDetails> comments = commentCrudManager
+      List<CommentDetail> comments = commentCrudManager
         .getCommentsByUserPagination(username, pageable);
       return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
   }
