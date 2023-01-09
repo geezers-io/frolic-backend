@@ -1,7 +1,7 @@
 package com.modular.restfulserver.post.dto;
 
 import static com.modular.restfulserver.global.util.message.FieldError.*;
-import com.modular.restfulserver.user.dto.UserInfo;
+import com.modular.restfulserver.user.dto.UserDetails;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class PostInfo {
+public class PostDetails {
 
   private final Long id;
-  private final UserInfo userInfo;
+  private final UserDetails userDetails;
   private final String textContent;
-  private final List<CommentInfo> comments;
+  private final List<CommentDetails> comments;
   private final List<String> hashtags;
   private final Long likeCount;
   private final List<String> fileDownloadUrls;
@@ -24,11 +24,11 @@ public class PostInfo {
   private final boolean isLikeUp;
 
   @Builder(setterPrefix = "add")
-  public PostInfo(
+  public PostDetails(
     Long id,
     String textContent,
-    UserInfo userInfo,
-    List<CommentInfo> comments,
+    UserDetails userDetails,
+    List<CommentDetails> comments,
     List<String> hashtags,
     Long likeCount,
     boolean isLikeUp,
@@ -38,7 +38,7 @@ public class PostInfo {
   ) {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("postId"));
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
-    Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
+    Assert.isInstanceOf(UserDetails.class, userDetails, getIllegalFieldError("userInfo"));
     Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
     Assert.isInstanceOf(List.class, hashtags, getIllegalFieldError("hashtags"));
     Assert.isInstanceOf(Long.class, likeCount, getIllegalFieldError("likeCount"));
@@ -49,7 +49,7 @@ public class PostInfo {
 
     this.id = id;
     this.textContent = textContent;
-    this.userInfo = userInfo;
+    this.userDetails = userDetails;
     this.comments = comments;
     this.hashtags = hashtags;
     this.likeCount = likeCount;

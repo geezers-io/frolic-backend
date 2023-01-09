@@ -1,7 +1,7 @@
 package com.modular.restfulserver.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modular.restfulserver.auth.dto.TokenInfo;
+import com.modular.restfulserver.auth.dto.TokenDetails;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import org.junit.jupiter.api.*;
@@ -77,7 +77,7 @@ class AuthSigninApiTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.accessToken").isString())
       .andExpect(jsonPath("$.data.refreshToken").isString())
-      .andExpect(jsonPath("$.data.userInfo.userId").isNumber())
+      .andExpect(jsonPath("$.data.userInfo.id").isNumber())
       .andExpect(jsonPath("$.data.userInfo.email").value(email))
       .andExpect(jsonPath("$.data.userInfo.username").value(username))
       .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
@@ -103,11 +103,11 @@ class AuthSigninApiTest {
   void login_failed_password_invalid() throws Exception {
     userLoginRequest = UserLoginRequest.builder()
       .addEmail(email)
-      .addPassword("dlrpvotmdnjemsi12")
+      .addPassword("@PerfectSns4275")
       .build();
     getLoginResultActions(userLoginRequest)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.error.message").value("비밀번호 형식이 잘못되었습니다."));
+      .andExpect(jsonPath("$.error.message").value("패스워드 정보가 일치하지 않습니다."));
   }
 
   @Test
@@ -133,7 +133,7 @@ class AuthSigninApiTest {
   @Test
   @DisplayName("정상적인 액세스 토큰 갱신 요청이 성공적으로 수행된다.")
   void reissue_access_token_success() throws Exception {
-    TokenInfo tokenResponse = getLoginData();
+    TokenDetails tokenResponse = getLoginData();
     getReissueTokenActions(tokenResponse.getRefreshToken())
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.accessToken").isString());
@@ -154,7 +154,7 @@ class AuthSigninApiTest {
       .andDo(print());
   }
 
-  private TokenInfo getLoginData() {
+  private TokenDetails getLoginData() {
     return Objects.requireNonNull(authApi.login(userLoginRequest).getBody()).get("data");
   }
 

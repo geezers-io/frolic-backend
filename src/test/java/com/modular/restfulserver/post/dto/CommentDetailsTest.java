@@ -6,16 +6,16 @@ import util.MockData;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CommentInfoTest {
+class CommentDetailsTest {
 
   @Test
   @DisplayName("id 값이 null 이면 에러가 발생한다.")
   void checkIdValueIsNull() {
     assertThrows(IllegalArgumentException.class, () -> {
-      CommentInfo.builder()
+      CommentDetails.builder()
         .addPostId(1L)
         .addTextContent("test")
-        .addUserInfo(MockData.mockUserInfoForClientDto)
+        .addUserInfo(MockData.mockUserDetailsForClientDto)
         .build();
     });
   }
@@ -24,10 +24,10 @@ class CommentInfoTest {
   @DisplayName("postId 값이 null 이면 에러가 발생한다.")
   void checkPostIdValueIsNull() {
     assertThrows(IllegalArgumentException.class, () -> {
-      CommentInfo.builder()
+      CommentDetails.builder()
         .addId(1L)
         .addTextContent("test")
-        .addUserInfo(MockData.mockUserInfoForClientDto)
+        .addUserInfo(MockData.mockUserDetailsForClientDto)
         .build();
     });
   }
@@ -36,10 +36,10 @@ class CommentInfoTest {
   @DisplayName("tetContent 값이 null 이면 에러가 발생한다.")
   void checkTextContentValueIsNull() {
     assertThrows(IllegalArgumentException.class, () -> {
-      CommentInfo.builder()
+      CommentDetails.builder()
         .addId(1L)
         .addPostId(1L)
-        .addUserInfo(MockData.mockUserInfoForClientDto)
+        .addUserInfo(MockData.mockUserDetailsForClientDto)
         .build();
     });
   }
@@ -48,7 +48,7 @@ class CommentInfoTest {
   @DisplayName("userInfo 값이 null 이면 에러가 발생한다.")
   void checkUserInfoValueIsNull() {
     assertThrows(IllegalArgumentException.class, () -> {
-      CommentInfo.builder()
+      CommentDetails.builder()
         .addId(1L)
         .addPostId(1L)
         .addTextContent("text")

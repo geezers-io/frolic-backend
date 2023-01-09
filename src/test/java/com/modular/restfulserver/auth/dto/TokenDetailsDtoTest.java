@@ -6,30 +6,30 @@ import util.MockData;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TokenInfoDtoTest {
+class TokenDetailsDtoTest {
 
   @Test
   @DisplayName("accessToken 이 없으면 예외가 발생한다.")
   void hasTextAccessToken() {
-    assertThrows(IllegalArgumentException.class, () -> TokenInfo.builder()
+    assertThrows(IllegalArgumentException.class, () -> TokenDetails.builder()
       .addRefreshToken("refreshToken")
-      .addUserInfo(MockData.mockUserInfoForClientDto)
+      .addUserInfo(MockData.mockUserDetailsForClientDto)
       .build());
   }
 
   @Test
   @DisplayName("refreshToken 이 없으면 예외가 발생한다.")
   void hasTextRefreshToken() {
-    assertThrows(IllegalArgumentException.class, () -> TokenInfo.builder()
+    assertThrows(IllegalArgumentException.class, () -> TokenDetails.builder()
       .addAccessToken("accessToken")
-      .addUserInfo(MockData.mockUserInfoForClientDto)
+      .addUserInfo(MockData.mockUserDetailsForClientDto)
       .build());
   }
 
   @Test
   @DisplayName("userInfo 가 없으면 예외가 발생한다.")
   void instanceOfUserInfo() {
-    assertThrows(IllegalArgumentException.class, () -> TokenInfo.builder()
+    assertThrows(IllegalArgumentException.class, () -> TokenDetails.builder()
       .addAccessToken("accessToken")
       .addRefreshToken("refreshToken")
       .build());

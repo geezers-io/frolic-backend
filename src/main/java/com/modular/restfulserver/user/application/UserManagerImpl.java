@@ -5,8 +5,8 @@ import com.modular.restfulserver.post.repository.LikeRepository;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
-import com.modular.restfulserver.user.dto.UserIntegrationInfo;
-import com.modular.restfulserver.user.dto.UserInfo;
+import com.modular.restfulserver.user.dto.UserUnitedDetails;
+import com.modular.restfulserver.user.dto.UserDetails;
 import com.modular.restfulserver.user.dto.PasswordUpdateRequest;
 import com.modular.restfulserver.user.dto.UserUpdateRequest;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
@@ -32,7 +32,7 @@ public class UserManagerImpl implements UserManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public UserInfo updateUserInfo(String token, UserUpdateRequest dto) {
+  public UserDetails updateUserInfo(String token, UserUpdateRequest dto) {
     User user = getUserByToken(token);
 
     checkDuplicatedInfo(dto, user);
@@ -42,7 +42,7 @@ public class UserManagerImpl implements UserManager {
     user.changeRealname(dto.getRealname());
     userRepository.save(user);
 
-    return UserInfo.from(user);
+    return UserDetails.from(user);
   }
 
   @Override
@@ -66,13 +66,13 @@ public class UserManagerImpl implements UserManager {
   }
 
   @Override
-  public UserIntegrationInfo getUserInfo(String username) {
+  public UserUnitedDetails getUserInfo(String username) {
     User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     return getUserInfoDto(user);
   }
 
   @Override
-  public UserIntegrationInfo getUserInfoByToken(String token) {
+  public UserUnitedDetails getUserInfoByToken(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
     User user = userRepository.findByEmail(email)
       .orElseThrow(UserNotFoundException::new);
@@ -80,19 +80,19 @@ public class UserManagerImpl implements UserManager {
     return getUserInfoDto(user);
   }
 
-  private UserIntegrationInfo getUserInfoDto(User user) {
+  private UserUnitedDetails getUserInfoDto(User user) {
     long followerCount = followRepository.countByFollowingId(user);
     long followingCount = followRepository.countByFollowerId(user);
     long postCount = postRepository.countAllByUser(user);
     long likeCount = likeRepository.countAllByUser(user);
-    UserInfo userInfo = UserInfo.from(user);
+    UserDetails userDetails = UserDetails.from(user);
 
-    return UserIntegrationInfo.builder()
+    return UserUnitedDetails.builder()
       .addAllFollowerCount(followerCount)
       .addAllFollowingCount(followingCount)
       .addAllGivenLikeCount(likeCount)
       .addAllPostCount(postCount)
-      .addUserInfo(userInfo)
+      .addUserDetails(userDetails)
       .build();
   }
 

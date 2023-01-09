@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class UserInfo {
+public class UserDetails {
 
   private final Long id;
   private final String email;
@@ -20,7 +20,7 @@ public class UserInfo {
   private final LocalDateTime updatedDate;
 
   @Builder(setterPrefix = "add")
-  public UserInfo(Long id, String email, String username, String realname, LocalDateTime createdDate, LocalDateTime updatedDate) {
+  public UserDetails(Long id, String email, String username, String realname, LocalDateTime createdDate, LocalDateTime updatedDate) {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("userId"));
     Assert.isInstanceOf(String.class, email, getIllegalFieldError("email"));
     Assert.isInstanceOf(String.class, username, getIllegalFieldError("username"));
@@ -36,8 +36,8 @@ public class UserInfo {
     this.updatedDate = updatedDate;
   }
 
-  public static UserInfo from(User user) {
-    return UserInfo.builder()
+  public static UserDetails from(User user) {
+    return UserDetails.builder()
       .addId(user.getId())
       .addEmail(user.getEmail())
       .addUsername(user.getUsername())

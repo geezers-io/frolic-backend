@@ -68,7 +68,7 @@ class AuthSignupApiTest {
       .andExpect(status().isCreated())
       .andExpect(jsonPath("$.data.accessToken").isString())
       .andExpect(jsonPath("$.data.refreshToken").isString())
-      .andExpect(jsonPath("$.data.userInfo.userId").isNumber())
+      .andExpect(jsonPath("$.data.userInfo.id").isNumber())
       .andExpect(jsonPath("$.data.userInfo.email").value(email))
       .andExpect(jsonPath("$.data.userInfo.username").value(username))
       .andExpect(jsonPath("$.data.userInfo.realname").value(realname))

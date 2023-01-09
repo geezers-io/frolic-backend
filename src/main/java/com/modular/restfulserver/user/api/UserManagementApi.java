@@ -27,30 +27,30 @@ public class UserManagementApi {
 
   @UserInfoDocs
   @GetMapping("")
-  public ResponseEntity<Map<String, UserIntegrationInfo>> getUserInfoByTokenApi(HttpServletRequest request) {
+  public ResponseEntity<Map<String, UserUnitedDetails>> getUserInfoByTokenApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserIntegrationInfo userInfo = userManager.getUserInfoByToken(token);
+    UserUnitedDetails userInfo = userManager.getUserInfoByToken(token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
   @GetUserByUsernameDocs
   @GetMapping("/{username}")
-  public ResponseEntity<Map<String, UserIntegrationInfo>> getUserInfoByUsernameParamApi(@PathVariable String username) {
-    UserIntegrationInfo userInfo = userManager.getUserInfo(username);
+  public ResponseEntity<Map<String, UserUnitedDetails>> getUserInfoByUsernameParamApi(@PathVariable String username) {
+    UserUnitedDetails userInfo = userManager.getUserInfo(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
   }
 
   @UserUpdateDocs
   @PutMapping("")
-  public ResponseEntity<Map<String, UserInfo>> updateUserInfoApi(
+  public ResponseEntity<Map<String, UserDetails>> updateUserInfoApi(
     HttpServletRequest request,
     @RequestBody @Valid UserUpdateRequest dto
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserInfo userInfo = userManager.updateUserInfo(token, dto);
+    UserDetails userDetails = userManager.updateUserInfo(token, dto);
     return ResponseEntity
       .status(HttpStatus.OK)
-      .body(ResponseHelper.createDataMap(userInfo));
+      .body(ResponseHelper.createDataMap(userDetails));
   }
 
   @UserPasswordUpdateDocs

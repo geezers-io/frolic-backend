@@ -1,19 +1,19 @@
 package com.modular.restfulserver.user.swagger;
 
-import com.modular.restfulserver.user.dto.UserIntegrationInfo;
-import com.modular.restfulserver.user.dto.UserInfo;
+import com.modular.restfulserver.user.dto.UserUnitedDetails;
+import com.modular.restfulserver.user.dto.UserDetails;
 import lombok.Getter;
 
 public class UserManagementSchemas {
 
   @Getter
   static class UserInfoSchema {
-    UserIntegrationInfo data;
+    UserUnitedDetails data;
   }
 
   @Getter
   static class UserInfoForClientSchema {
-    UserInfo data;
+    UserDetails data;
   }
 
 }
