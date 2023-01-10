@@ -2,6 +2,7 @@ package com.modular.restfulserver.auth.application;
 
 import com.modular.restfulserver.auth.dto.TokenInfo;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
+import com.modular.restfulserver.auth.dto.UserLoginResponse;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.auth.exception.InvalidTokenException;
@@ -9,9 +10,13 @@ import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.CustomEmailPasswordAuthToken;
 import com.modular.restfulserver.global.config.security.JwtConstants;
 import com.modular.restfulserver.global.config.security.JwtProvider;
+import com.modular.restfulserver.post.repository.LikeRepository;
+import com.modular.restfulserver.post.repository.PostRepository;
 import com.modular.restfulserver.user.dto.UserInfo;
+import com.modular.restfulserver.user.dto.UserUnitedInfo;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
+import com.modular.restfulserver.user.repository.FollowRepository;
 import com.modular.restfulserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,11 +34,14 @@ import java.util.Map;
 public class AuthManager implements AuthManageable {
 
   private final UserRepository userRepository;
+  private final PostRepository postRepository;
+  private final FollowRepository followRepository;
   private final JwtProvider jwtProvider;
+  private final LikeRepository likeRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
 
-  public TokenInfo saveUser(UserSignupRequest userSignupRequest) {
+  public UserLoginResponse saveUser(UserSignupRequest userSignupRequest) {
     boolean isExistsEmail = userRepository.existsByEmail(userSignupRequest.getEmail());
     boolean isExistsUsername = userRepository.existsByUsername(userSignupRequest.getUsername());
     if (isExistsEmail || isExistsUsername)
@@ -52,7 +60,7 @@ public class AuthManager implements AuthManageable {
     return this.loginUser(userLoginRequest);
   }
 
-  public TokenInfo loginUser(UserLoginRequest userLoginRequest) {
+  public UserLoginResponse loginUser(UserLoginRequest userLoginRequest) {
     User user = userRepository.findByEmail(userLoginRequest.getEmail()).orElseThrow(UserNotFoundException::new);
 
     if (!passwordEncoder.matches(userLoginRequest.getPassword(), user.getPassword()))
@@ -67,11 +75,26 @@ public class AuthManager implements AuthManageable {
     String refreshToken = jwtProvider.createRefreshToken(email);
     user.updateRefreshToken(refreshToken);
 
-    return TokenInfo.builder()
+    TokenInfo tokenInfo = TokenInfo.builder()
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
-      .addUserInfo(UserInfo.from(user))
       .build();
+    Long allPostCount = postRepository.countAllByUser(user);
+    Long allFollowerCount = followRepository.countByFollowerId(user);
+    Long allFollowingCount = followRepository.countByFollowingId(user);
+    Long allGivenLikeCount = likeRepository.countAllByUser(user);
+
+    UserInfo userInfo = UserInfo.from(user);
+    UserUnitedInfo userUnitedInfo = UserUnitedInfo.builder()
+
+      .addUserInfo(userInfo)
+      .addAllFollowerCount(allFollowerCount)
+      .addAllFollowingCount(allFollowingCount)
+      .addAllGivenLikeCount(allGivenLikeCount)
+      .addAllPostCount(allPostCount)
+      .build();
+
+    return UserLoginResponse.create(tokenInfo, userUnitedInfo);
   }
 
   public Map<String, String> refresh(String refreshToken) {

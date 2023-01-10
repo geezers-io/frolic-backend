@@ -24,20 +24,19 @@ public class UserManagementApi {
   private final UserManager userManager;
   private final JwtProvider jwtProvider;
 
-
   @UserInfoDocs
   @GetMapping("")
-  public ResponseEntity<Map<String, UserIntegrationInfo>> getUserInfoByTokenApi(HttpServletRequest request) {
+  public ResponseEntity<Map<String, UserUnitedInfo>> getUserInfoByTokenApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserIntegrationInfo userInfo = userManager.getUserInfoByToken(token);
-    return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
+    UserUnitedInfo userUnitedInfo = userManager.getUserUnitedDetailByToken(token);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(userUnitedInfo));
   }
 
   @GetUserByUsernameDocs
   @GetMapping("/{username}")
-  public ResponseEntity<Map<String, UserIntegrationInfo>> getUserInfoByUsernameParamApi(@PathVariable String username) {
-    UserIntegrationInfo userInfo = userManager.getUserInfo(username);
-    return ResponseEntity.ok(ResponseHelper.createDataMap(userInfo));
+  public ResponseEntity<Map<String, UserUnitedInfo>> getUserInfoByUsernameParamApi(@PathVariable String username) {
+    UserUnitedInfo userUnitedInfo = userManager.getUserUnitedDetail(username);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(userUnitedInfo));
   }
 
   @UserUpdateDocs
@@ -47,7 +46,7 @@ public class UserManagementApi {
     @RequestBody @Valid UserUpdateRequest dto
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserInfo userInfo = userManager.updateUserInfo(token, dto);
+    UserInfo userInfo = userManager.updateUserDetail(token, dto);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(userInfo));

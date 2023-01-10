@@ -2,7 +2,7 @@ package com.modular.restfulserver.post.dto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.MockData;
+import util.MockProvider;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +15,7 @@ class CommentInfoTest {
       CommentInfo.builder()
         .addPostId(1L)
         .addTextContent("test")
-        .addUserInfo(MockData.mockUserInfoForClientDto)
+        .addUserInfo(MockProvider.mockUserInfoForClientDto)
         .build();
     });
   }
@@ -27,7 +27,7 @@ class CommentInfoTest {
       CommentInfo.builder()
         .addId(1L)
         .addTextContent("test")
-        .addUserInfo(MockData.mockUserInfoForClientDto)
+        .addUserInfo(MockProvider.mockUserInfoForClientDto)
         .build();
     });
   }
@@ -39,7 +39,7 @@ class CommentInfoTest {
       CommentInfo.builder()
         .addId(1L)
         .addPostId(1L)
-        .addUserInfo(MockData.mockUserInfoForClientDto)
+        .addUserInfo(MockProvider.mockUserInfoForClientDto)
         .build();
     });
   }

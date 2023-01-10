@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.util.Assert;
 
 @Getter
-public class UserIntegrationInfo {
+public class UserUnitedInfo {
 
   private final Long allPostCount;
   private final Long allFollowerCount;
@@ -15,7 +15,7 @@ public class UserIntegrationInfo {
   private final UserInfo userInfo;
 
   @Builder(setterPrefix = "add")
-  public UserIntegrationInfo(
+  public UserUnitedInfo(
     Long allPostCount,
     Long allFollowerCount,
     Long allFollowingCount,
@@ -26,7 +26,7 @@ public class UserIntegrationInfo {
     Assert.isInstanceOf(Long.class, allFollowerCount, getIllegalFieldError("allFollowerCount"));
     Assert.isInstanceOf(Long.class, allFollowingCount, getIllegalFieldError("allFollowingCount"));
     Assert.isInstanceOf(Long.class, allGivenLikeCount, getIllegalFieldError("allGivenLikeCount"));
-    Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
+    Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userDetails"));
 
     this.allPostCount = allPostCount;
     this.allFollowerCount = allFollowerCount;
