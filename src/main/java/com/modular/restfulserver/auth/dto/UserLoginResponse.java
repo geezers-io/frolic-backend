@@ -1,27 +1,27 @@
 package com.modular.restfulserver.auth.dto;
 
-import com.modular.restfulserver.user.dto.UserUnitedDetails;
+import com.modular.restfulserver.user.dto.UserUnitedInfo;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class UserLoginResponse {
-  private final TokenDetail tokenDetail;
-  private final UserUnitedDetails userUnitedDetails;
+  private final TokenInfo tokenInfo;
+  private final UserUnitedInfo userUnitedInfo;
 
   @Builder(setterPrefix = "add")
   public UserLoginResponse(
-    TokenDetail tokenDetail,
-    UserUnitedDetails userUnitedDetails
+    TokenInfo tokenInfo,
+    UserUnitedInfo userUnitedInfo
   ) {
-    this.tokenDetail = tokenDetail;
-    this.userUnitedDetails = userUnitedDetails;
+    this.tokenInfo = tokenInfo;
+    this.userUnitedInfo = userUnitedInfo;
   }
 
-  public static UserLoginResponse create(TokenDetail tokenDetail, UserUnitedDetails userUnitedDetails) {
+  public static UserLoginResponse create(TokenInfo tokenInfo, UserUnitedInfo userUnitedInfo) {
     return UserLoginResponse.builder()
-      .addTokenDetail(tokenDetail)
-      .addUserUnitedDetails(userUnitedDetails)
+      .addTokenInfo(tokenInfo)
+      .addUserUnitedInfo(userUnitedInfo)
       .build();
   }
 

@@ -2,7 +2,7 @@ package com.modular.restfulserver.post.api;
 
 import com.modular.restfulserver.post.application.PostCrudManager;
 import com.modular.restfulserver.post.dto.CreatePostRequest;
-import com.modular.restfulserver.post.dto.PostDetail;
+import com.modular.restfulserver.post.dto.PostInfo;
 import com.modular.restfulserver.post.dto.UpdatePostRequest;
 import com.modular.restfulserver.post.swagger.*;
 import com.modular.restfulserver.global.common.ResponseHelper;
@@ -35,13 +35,13 @@ public class PostCrudApi {
 
   @CreatePostDocs
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-  public ResponseEntity<Map<String, PostDetail>> createPostApi(
+  public ResponseEntity<Map<String, PostInfo>> createPostApi(
     HttpServletRequest request,
     @RequestPart @Valid CreatePostRequest createPostRequest,
     @RequestPart(required = false) List<MultipartFile> files
   ) {
     List<CustomFile> customFiles = FileManager.createCustomFileList(files);
-    PostDetail post = postCrudManager.createPost(getToken(request), createPostRequest, customFiles);
+    PostInfo post = postCrudManager.createPost(getToken(request), createPostRequest, customFiles);
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(post));
@@ -49,18 +49,18 @@ public class PostCrudApi {
 
   @GetPostDocs
   @GetMapping("/{postId}")
-  public ResponseEntity<Map<String, PostDetail>> getPostByIdApi(
+  public ResponseEntity<Map<String, PostInfo>> getPostByIdApi(
     HttpServletRequest request,
     @PathVariable(name = "postId") Long postId
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    PostDetail articleInfo = postCrudManager.getPostById(postId, token);
+    PostInfo articleInfo = postCrudManager.getPostById(postId, token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfo));
   }
 
   @UpdatePostDocs
   @PutMapping("/{postId}")
-  public ResponseEntity<Map<String, PostDetail>> updatePostByIdApi(
+  public ResponseEntity<Map<String, PostInfo>> updatePostByIdApi(
     HttpServletRequest request,
     @PathVariable(name = "postId") Long postId,
     @RequestPart @Valid UpdatePostRequest updateRequest,
@@ -68,7 +68,7 @@ public class PostCrudApi {
   ) {
     String token = getToken(request);
     List<CustomFile> customFiles = FileManager.createCustomFileList(files);
-    PostDetail articleInfoDto = postCrudManager.updatePostById(token, postId, updateRequest, customFiles);
+    PostInfo articleInfoDto = postCrudManager.updatePostById(token, postId, updateRequest, customFiles);
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfoDto));
   }
 
@@ -82,37 +82,37 @@ public class PostCrudApi {
 
   @GetPostListMySelfDocs
   @GetMapping("/list/token")
-  public ResponseEntity<Map<String, List<PostDetail>>> getEntirePostByTokenPaginationApi(
+  public ResponseEntity<Map<String, List<PostInfo>>> getEntirePostByTokenPaginationApi(
     HttpServletRequest request,
     Pageable pageable
   ) {
     String token = getToken(request);
 
-    List<PostDetail> data = postCrudManager.getPostByTokenAndPagination(token, pageable);
+    List<PostInfo> data = postCrudManager.getPostByTokenAndPagination(token, pageable);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
   @GetMainPostListDocs
   @GetMapping("/list")
-  public ResponseEntity<Map<String, List<PostDetail>>> getEntirePostByPaginationApi(
+  public ResponseEntity<Map<String, List<PostInfo>>> getEntirePostByPaginationApi(
     HttpServletRequest request,
     Pageable pageable
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    List<PostDetail> data = postCrudManager.getEntirePostByPagination(pageable, token);
+    List<PostInfo> data = postCrudManager.getEntirePostByPagination(pageable, token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 
   @SearchPostDocs
   @GetMapping("/search")
-  public ResponseEntity<Map<String, List<PostDetail>>> getPostBySearchParamPaginationApi(
+  public ResponseEntity<Map<String, List<PostInfo>>> getPostBySearchParamPaginationApi(
     HttpServletRequest request,
     Pageable pageable,
     @RequestParam Map<String, String> reqParam
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     List<String> params = new ArrayList<>(reqParam.values());
-    List<PostDetail> data = postCrudManager.getSearchParamByPagination(params, pageable, token);
+    List<PostInfo> data = postCrudManager.getSearchParamByPagination(params, pageable, token);
     return ResponseEntity.ok(ResponseHelper.createDataMap(data));
   }
 

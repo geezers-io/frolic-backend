@@ -1,7 +1,7 @@
 package com.modular.restfulserver.post.dto;
 
 import static com.modular.restfulserver.global.util.message.FieldError.*;
-import com.modular.restfulserver.user.dto.UserDetail;
+import com.modular.restfulserver.user.dto.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class PostDetail {
+public class PostInfo {
 
   private final Long id;
-  private final UserDetail userDetail;
+  private final UserInfo userInfo;
   private final String textContent;
-  private final List<CommentDetail> comments;
+  private final List<CommentInfo> comments;
   private final List<String> hashtags;
   private final Long likeCount;
   private final List<String> fileDownloadUrls;
@@ -24,11 +24,11 @@ public class PostDetail {
   private final boolean isLikeUp;
 
   @Builder(setterPrefix = "add")
-  public PostDetail(
+  public PostInfo(
     Long id,
     String textContent,
-    UserDetail userDetail,
-    List<CommentDetail> comments,
+    UserInfo userInfo,
+    List<CommentInfo> comments,
     List<String> hashtags,
     Long likeCount,
     boolean isLikeUp,
@@ -38,7 +38,7 @@ public class PostDetail {
   ) {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("postId"));
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
-    Assert.isInstanceOf(UserDetail.class, userDetail, getIllegalFieldError("userInfo"));
+    Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
     Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
     Assert.isInstanceOf(List.class, hashtags, getIllegalFieldError("hashtags"));
     Assert.isInstanceOf(Long.class, likeCount, getIllegalFieldError("likeCount"));
@@ -49,7 +49,7 @@ public class PostDetail {
 
     this.id = id;
     this.textContent = textContent;
-    this.userDetail = userDetail;
+    this.userInfo = userInfo;
     this.comments = comments;
     this.hashtags = hashtags;
     this.likeCount = likeCount;

@@ -1,6 +1,6 @@
 package com.modular.restfulserver.auth.application;
 
-import com.modular.restfulserver.auth.dto.TokenDetail;
+import com.modular.restfulserver.auth.dto.TokenInfo;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserLoginResponse;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
@@ -12,8 +12,8 @@ import com.modular.restfulserver.global.config.security.JwtConstants;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.post.repository.LikeRepository;
 import com.modular.restfulserver.post.repository.PostRepository;
-import com.modular.restfulserver.user.dto.UserDetails;
-import com.modular.restfulserver.user.dto.UserUnitedDetails;
+import com.modular.restfulserver.user.dto.UserInfo;
+import com.modular.restfulserver.user.dto.UserUnitedInfo;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
 import com.modular.restfulserver.user.repository.FollowRepository;
@@ -75,7 +75,7 @@ public class AuthManager implements AuthManageable {
     String refreshToken = jwtProvider.createRefreshToken(email);
     user.updateRefreshToken(refreshToken);
 
-    TokenDetail tokenDetail = TokenDetail.builder()
+    TokenInfo tokenInfo = TokenInfo.builder()
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
       .build();
@@ -84,16 +84,17 @@ public class AuthManager implements AuthManageable {
     Long allFollowingCount = followRepository.countByFollowingId(user);
     Long allGivenLikeCount = likeRepository.countAllByUser(user);
 
-    UserDetails userDetails = UserDetails.from(user);
-    UserUnitedDetails userUnitedDetails = UserUnitedDetails.builder()
-      .addUserDetails(userDetails)
+    UserInfo userInfo = UserInfo.from(user);
+    UserUnitedInfo userUnitedInfo = UserUnitedInfo.builder()
+
+      .addUserInfo(userInfo)
       .addAllFollowerCount(allFollowerCount)
       .addAllFollowingCount(allFollowingCount)
       .addAllGivenLikeCount(allGivenLikeCount)
       .addAllPostCount(allPostCount)
       .build();
 
-    return UserLoginResponse.create(tokenDetail, userUnitedDetails);
+    return UserLoginResponse.create(tokenInfo, userUnitedInfo);
   }
 
   public Map<String, String> refresh(String refreshToken) {

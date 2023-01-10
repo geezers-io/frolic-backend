@@ -1,20 +1,20 @@
 package com.modular.restfulserver.user.application;
 
-import com.modular.restfulserver.user.dto.UserUnitedDetails;
-import com.modular.restfulserver.user.dto.UserDetails;
+import com.modular.restfulserver.user.dto.UserUnitedInfo;
+import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.dto.PasswordUpdateRequest;
 import com.modular.restfulserver.user.dto.UserUpdateRequest;
 
-public interface UserManager {
+public interface UserManageable {
 
-  UserDetails updateUserInfo(String token, UserUpdateRequest dto);
+  UserInfo updateUserDetail(String token, UserUpdateRequest dto);
 
   void updateUserPassword(String token, PasswordUpdateRequest dto);
 
   void deleteUser(String token, String password);
 
-  UserUnitedDetails getUserInfo(String username);
+  UserUnitedInfo getUserUnitedDetail(String username);
 
-  UserUnitedDetails getUserInfoByToken(String token);
+  UserUnitedInfo getUserUnitedDetailByToken(String token);
 
 }

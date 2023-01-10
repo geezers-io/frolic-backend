@@ -1,15 +1,15 @@
 package com.modular.restfulserver.post.application;
 
 import com.modular.restfulserver.post.dto.CreatePostRequest;
-import com.modular.restfulserver.post.dto.PostDetail;
-import com.modular.restfulserver.post.dto.CommentDetail;
+import com.modular.restfulserver.post.dto.PostInfo;
+import com.modular.restfulserver.post.dto.CommentInfo;
 import com.modular.restfulserver.post.dto.UpdatePostRequest;
 import com.modular.restfulserver.post.model.*;
 import com.modular.restfulserver.post.repository.*;
 import com.modular.restfulserver.global.common.file.application.CustomFile;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.global.exception.NotFoundResourceException;
-import com.modular.restfulserver.user.dto.UserDetails;
+import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.exception.NotPermissionException;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
 import com.modular.restfulserver.user.model.User;
@@ -44,21 +44,21 @@ public class PostCrudManagerImpl implements PostCrudManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public PostDetail getPostById(Long id, String token) {
+  public PostInfo getPostById(Long id, String token) {
     Post post = postRepository.findById(id).orElseThrow(NotFoundResourceException::new);
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
       .orElseThrow(UserNotFoundException::new);
 
     List<String> hashtags = postHashtagRepository.findAllByPost(post);
-    UserDetails userDetails = UserDetails.from(post.getUser());
+    UserInfo userInfo = UserInfo.from(post.getUser());
 
-    return getSingleArticleDto(post, hashtags, userDetails, user);
+    return getSingleArticleDto(post, hashtags, userInfo, user);
   }
 
   // TODO: 2022-11-29 여러 번 발생하는 쿼리를 하나로 줄일 수 없을까? 
   // TODO: 2022-11-29 복잡한 코드를 줄이자
   @Override
-  public PostDetail updatePostById(
+  public PostInfo updatePostById(
     String token,
     Long id,
     UpdatePostRequest singleArticleInfoDto,
@@ -112,7 +112,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       setRelationTagWithArticle(post, hashtag);
     });
 
-    return getSingleArticleDto(post, updatedHashtagsNames, UserDetails.from(articleUser), user);
+    return getSingleArticleDto(post, updatedHashtagsNames, UserInfo.from(articleUser), user);
   }
 
   @Override
@@ -122,7 +122,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public PostDetail createPost(String token, CreatePostRequest createInfo, List<CustomFile> files) {
+  public PostInfo createPost(String token, CreatePostRequest createInfo, List<CustomFile> files) {
     User user = getUserIsTokenAble(token);
     List<String> hashtags = createInfo.getHashtags();
     Post newPost = Post.createPost(createInfo, user);
@@ -132,15 +132,15 @@ public class PostCrudManagerImpl implements PostCrudManager {
       createHashtagIfNotExists(tag);
       setRelationTagWithArticle(newPost, tag);
     });
-    UserDetails userDetails = UserDetails.from(user);
+    UserInfo userInfo = UserInfo.from(user);
 
-    return PostDetail.builder()
+    return PostInfo.builder()
       .addId(newPost.getId())
       .addTextContent(newPost.getTextContent())
       .addComments(new ArrayList<>())
       .addHashtags(hashtags)
       .addLikeCount(0L)
-      .addUserDetails(userDetails)
+      .addUserInfo(userInfo)
       .addFileDownloadUrls(fileDownloadUrls)
       .addCreatedDate(newPost.getCreatedDate())
       .addUpdatedDate(newPost.getUpdatedDate())
@@ -149,7 +149,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public List<PostDetail> getPostByTokenAndPagination(String token, Pageable pageable) {
+  public List<PostInfo> getPostByTokenAndPagination(String token, Pageable pageable) {
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
 
     Page<Post> articlePage = postRepository.findAllByUserOrderByCreatedDateDesc(user, pageable);
@@ -157,7 +157,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public List<PostDetail> getEntirePostByPagination(Pageable pageable, String token) {
+  public List<PostInfo> getEntirePostByPagination(Pageable pageable, String token) {
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
       .orElseThrow(UserNotFoundException::new);
     Page<Post> articlePage = postRepository.findAllCreatedDateDesc(pageable);
@@ -165,7 +165,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public List<PostDetail> getSearchParamByPagination(List<String> searchList, Pageable pageable, String token) {
+  public List<PostInfo> getSearchParamByPagination(List<String> searchList, Pageable pageable, String token) {
     User user = userRepository.findByEmail(jwtProvider.getUserEmailByToken(token))
       .orElseThrow(UserNotFoundException::new);
     Page<Post> articlePage = postRepository.findAllByHashtagsAndPagination(searchList, pageable);
@@ -187,20 +187,20 @@ public class PostCrudManagerImpl implements PostCrudManager {
     return userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
   }
 
-  private PostDetail getSingleArticleDto(Post post, List<String> hashtags, UserDetails userDetails, User user) {
+  private PostInfo getSingleArticleDto(Post post, List<String> hashtags, UserInfo userInfo, User user) {
     long likeCount = likeRepository.countAllByPost(post);
-    List<CommentDetail> comments = commentRepository.findAllByPost(post)
+    List<CommentInfo> comments = commentRepository.findAllByPost(post)
       .stream()
       .map(comment -> getSingleCommentDtoByEntity(comment, post))
       .collect(Collectors.toList());
     List<String> fileDownloadUrls = articleFileManager.getFileDownloadUrlsByArticle(post);
     boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
 
-    return PostDetail.builder()
+    return PostInfo.builder()
       .addId(post.getId())
       .addHashtags(hashtags)
       .addComments(comments)
-      .addUserDetails(userDetails)
+      .addUserInfo(userInfo)
       .addIsLikeUp(isLikeUp)
       .addLikeCount(likeCount)
       .addTextContent(post.getTextContent())
@@ -210,12 +210,12 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .build();
   }
 
-  private CommentDetail getSingleCommentDtoByEntity(Comment comment, Post post) {
-    return CommentDetail.builder()
+  private CommentInfo getSingleCommentDtoByEntity(Comment comment, Post post) {
+    return CommentInfo.builder()
       .addId(comment.getId())
       .addReplyUserId(comment.getReplyUserPkId())
       .addPostId(post.getId())
-      .addUserDetails(UserDetails.from(comment.getUser()))
+      .addUserInfo(UserInfo.from(comment.getUser()))
       .addTextContent(comment.getTextContent())
       .build();
   }
@@ -243,11 +243,11 @@ public class PostCrudManagerImpl implements PostCrudManager {
       );
   }
 
-  private List<PostDetail> getListOfSingleArticleDtoByPageResults(Page<Post> articlePage, User user) {
+  private List<PostInfo> getListOfSingleArticleDtoByPageResults(Page<Post> articlePage, User user) {
     return articlePage.stream()
       .map(article -> {
         List<String> hashtags = postHashtagRepository.findAllByPost(article);
-        UserDetails articleOwner = UserDetails.from(article.getUser());
+        UserInfo articleOwner = UserInfo.from(article.getUser());
         return getSingleArticleDto(article,hashtags, articleOwner, user);
       })
       .collect(Collectors.toList());

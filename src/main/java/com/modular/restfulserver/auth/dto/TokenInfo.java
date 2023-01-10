@@ -6,12 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class TokenDetail {
+public class TokenInfo {
   private final String accessToken;
   private final String refreshToken;
 
   @Builder(setterPrefix = "add")
-  public TokenDetail(
+  public TokenInfo(
     String accessToken,
     String refreshToken
   ) {

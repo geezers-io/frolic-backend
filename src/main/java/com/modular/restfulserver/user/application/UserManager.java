@@ -5,8 +5,8 @@ import com.modular.restfulserver.post.repository.LikeRepository;
 import com.modular.restfulserver.auth.exception.AlreadyExistsUserException;
 import com.modular.restfulserver.auth.exception.PasswordNotMatchException;
 import com.modular.restfulserver.global.config.security.JwtProvider;
-import com.modular.restfulserver.user.dto.UserUnitedDetails;
-import com.modular.restfulserver.user.dto.UserDetails;
+import com.modular.restfulserver.user.dto.UserUnitedInfo;
+import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.dto.PasswordUpdateRequest;
 import com.modular.restfulserver.user.dto.UserUpdateRequest;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserManagerImpl implements UserManager {
+public class UserManager implements UserManageable {
 
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
@@ -32,17 +32,17 @@ public class UserManagerImpl implements UserManager {
   private final JwtProvider jwtProvider;
 
   @Override
-  public UserDetails updateUserInfo(String token, UserUpdateRequest dto) {
+  public UserInfo updateUserDetail(String token, UserUpdateRequest dto) {
     User user = getUserByToken(token);
 
-    checkDuplicatedInfo(dto, user);
+    checkDuplicatedUserDetailWhenModified(dto, user);
 
     user.changeEmail(dto.getEmail());
     user.changeUsername(dto.getUsername());
     user.changeRealname(dto.getRealname());
     userRepository.save(user);
 
-    return UserDetails.from(user);
+    return UserInfo.from(user);
   }
 
   @Override
@@ -66,37 +66,37 @@ public class UserManagerImpl implements UserManager {
   }
 
   @Override
-  public UserUnitedDetails getUserInfo(String username) {
+  public UserUnitedInfo getUserUnitedDetail(String username) {
     User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-    return getUserInfoDto(user);
+    return buildUserUnitedDetail(user);
   }
 
   @Override
-  public UserUnitedDetails getUserInfoByToken(String token) {
+  public UserUnitedInfo getUserUnitedDetailByToken(String token) {
     String email = jwtProvider.getUserEmailByToken(token);
     User user = userRepository.findByEmail(email)
       .orElseThrow(UserNotFoundException::new);
 
-    return getUserInfoDto(user);
+    return buildUserUnitedDetail(user);
   }
 
-  private UserUnitedDetails getUserInfoDto(User user) {
+  private UserUnitedInfo buildUserUnitedDetail(User user) {
     long followerCount = followRepository.countByFollowingId(user);
     long followingCount = followRepository.countByFollowerId(user);
     long postCount = postRepository.countAllByUser(user);
     long likeCount = likeRepository.countAllByUser(user);
-    UserDetails userDetails = UserDetails.from(user);
+    UserInfo userInfo = UserInfo.from(user);
 
-    return UserUnitedDetails.builder()
+    return UserUnitedInfo.builder()
       .addAllFollowerCount(followerCount)
       .addAllFollowingCount(followingCount)
       .addAllGivenLikeCount(likeCount)
       .addAllPostCount(postCount)
-      .addUserDetails(userDetails)
+      .addUserInfo(userInfo)
       .build();
   }
 
-  private void checkDuplicatedInfo(UserUpdateRequest dto, User targetUser) {
+  private void checkDuplicatedUserDetailWhenModified(UserUpdateRequest dto, User targetUser) {
     boolean isAlreadyExistsEmail = userRepository.existsByEmail(dto.getEmail());
     boolean isAlreadyExistsUsername = userRepository.existsByUsername(dto.getUsername());
 
