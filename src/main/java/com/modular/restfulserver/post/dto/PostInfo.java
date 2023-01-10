@@ -1,7 +1,7 @@
 package com.modular.restfulserver.post.dto;
 
 import static com.modular.restfulserver.global.util.message.FieldError.*;
-import com.modular.restfulserver.user.dto.UserDetails;
+import com.modular.restfulserver.user.dto.UserDetail;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -13,7 +13,7 @@ import java.util.List;
 public class PostDetail {
 
   private final Long id;
-  private final UserDetails userDetails;
+  private final UserDetail userDetail;
   private final String textContent;
   private final List<CommentDetail> comments;
   private final List<String> hashtags;
@@ -27,7 +27,7 @@ public class PostDetail {
   public PostDetail(
     Long id,
     String textContent,
-    UserDetails userDetails,
+    UserDetail userDetail,
     List<CommentDetail> comments,
     List<String> hashtags,
     Long likeCount,
@@ -38,7 +38,7 @@ public class PostDetail {
   ) {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("postId"));
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
-    Assert.isInstanceOf(UserDetails.class, userDetails, getIllegalFieldError("userInfo"));
+    Assert.isInstanceOf(UserDetail.class, userDetail, getIllegalFieldError("userInfo"));
     Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
     Assert.isInstanceOf(List.class, hashtags, getIllegalFieldError("hashtags"));
     Assert.isInstanceOf(Long.class, likeCount, getIllegalFieldError("likeCount"));
@@ -49,7 +49,7 @@ public class PostDetail {
 
     this.id = id;
     this.textContent = textContent;
-    this.userDetails = userDetails;
+    this.userDetail = userDetail;
     this.comments = comments;
     this.hashtags = hashtags;
     this.likeCount = likeCount;

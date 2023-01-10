@@ -1,7 +1,7 @@
 package com.modular.restfulserver.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modular.restfulserver.auth.dto.TokenDetail;
+import com.modular.restfulserver.auth.dto.TokenInfo;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import org.junit.jupiter.api.*;
@@ -72,11 +72,11 @@ class AuthSigninApiTest {
 
   @Test
   @DisplayName("정상적인 로그인이 요청이 성공적으로 수행된다.")
-  void login_success() throws Exception {
+  void loginSuccess() throws Exception {
     getLoginResultActions(userLoginRequest)
       .andExpect(status().isOk())
-      .andExpect(jsonPath("$.data.accessToken").isString())
-      .andExpect(jsonPath("$.data.refreshToken").isString())
+      .andExpect(jsonPath("$.data.tokenInfo.accessToken").isString())
+      .andExpect(jsonPath("$.data.tokenInfo.refreshToken").isString())
       .andExpect(jsonPath("$.data.userInfo.id").isNumber())
       .andExpect(jsonPath("$.data.userInfo.email").value(email))
       .andExpect(jsonPath("$.data.userInfo.username").value(username))
@@ -88,7 +88,7 @@ class AuthSigninApiTest {
 
   @Test
   @DisplayName("존재하지 않는 이메일 정보로 로그인할 시 실패한다.")
-  void login_failed_not_exists_email() throws Exception {
+  void loginFailedEmailNotExists() throws Exception {
     userLoginRequest = UserLoginRequest.builder()
       .addEmail("anonymous@anonymous.com")
       .addPassword(password)
@@ -100,7 +100,7 @@ class AuthSigninApiTest {
 
   @Test
   @DisplayName("형식에 맞지않는 비밀번호 로그인 요청은 실패한다.")
-  void login_failed_password_invalid() throws Exception {
+  void loginFailedPasswordInvalid() throws Exception {
     userLoginRequest = UserLoginRequest.builder()
       .addEmail(email)
       .addPassword("@PerfectSns4275")
@@ -112,7 +112,7 @@ class AuthSigninApiTest {
 
   @Test
   @DisplayName("잘못된 비밀번호 로그인 요청은 실패한다.")
-  void login_failed_password_mismatch() throws Exception {
+  void loginFailedPasswordMismatch() throws Exception {
     userLoginRequest = UserLoginRequest.builder()
       .addEmail(email)
       .addPassword("@Faultpassword12")
@@ -124,7 +124,7 @@ class AuthSigninApiTest {
 
   @Test
   @DisplayName("검증 토큰이 잘못된 액세스 토큰 갱신 요청은 실패한다.")
-  void reissue_access_token_failed_invalid_refresh_token() throws Exception {
+  void failedReissueTokenUsingInvalidAccessToken() throws Exception {
     getReissueTokenActions("setaccesstoken")
       .andExpect(status().isUnauthorized())
       .andExpect(jsonPath("$.error").value("토큰이 유효하지 않습니다."));
@@ -132,8 +132,8 @@ class AuthSigninApiTest {
 
   @Test
   @DisplayName("정상적인 액세스 토큰 갱신 요청이 성공적으로 수행된다.")
-  void reissue_access_token_success() throws Exception {
-    TokenDetail tokenResponse = getLoginData();
+  void reissueSuccess() throws Exception {
+    TokenInfo tokenResponse = getLoginData();
     getReissueTokenActions(tokenResponse.getRefreshToken())
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.accessToken").isString());
@@ -154,8 +154,8 @@ class AuthSigninApiTest {
       .andDo(print());
   }
 
-  private TokenDetail getLoginData() {
-    return Objects.requireNonNull(authApi.login(userLoginRequest).getBody()).get("data");
+  private TokenInfo getLoginData() {
+    return Objects.requireNonNull(authApi.login(userLoginRequest).getBody()).get("data").getTokenInfo();
   }
 
 }

@@ -2,7 +2,7 @@ package com.modular.restfulserver.post.dto;
 
 import com.modular.restfulserver.post.model.Comment;
 import com.modular.restfulserver.post.util.PostValidationMessages;
-import com.modular.restfulserver.user.dto.UserDetails;
+import com.modular.restfulserver.user.dto.UserDetail;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class CommentDetail {
 
   private final String textContent;
 
-  private final UserDetails userDetails;
+  private final UserDetail userDetail;
 
   @Builder(setterPrefix = "add")
   public CommentDetail(
@@ -26,24 +26,24 @@ public class CommentDetail {
     Long postId,
     Long replyUserId,
     String textContent,
-    UserDetails userDetails
+    UserDetail userDetail
   ) {
     Assert.notNull(id, PostValidationMessages.notNullId);
     Assert.notNull(postId, PostValidationMessages.notNullPostId);
     Assert.notNull(textContent, PostValidationMessages.notNullTextContent);
-    Assert.notNull(userDetails, PostValidationMessages.notNullUserInfo);
+    Assert.notNull(userDetail, PostValidationMessages.notNullUserInfo);
 
     this.id = id;
     this.postId = postId;
     this.replyUserId = replyUserId;
     this.textContent = textContent;
-    this.userDetails = userDetails;
+    this.userDetail = userDetail;
   }
 
   public static CommentDetail from(Comment comment) {
     return CommentDetail.builder()
       .addId(comment.getId())
-      .addUserDetails(UserDetails.from(comment.getUser()))
+      .addUserDetail(UserDetail.from(comment.getUser()))
       .addPostId(comment.getPost().getId())
       .addReplyUserId(comment.getReplyUserPkId())
       .addTextContent(comment.getTextContent())
