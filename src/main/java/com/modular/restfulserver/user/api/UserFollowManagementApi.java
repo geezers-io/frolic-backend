@@ -2,6 +2,7 @@ package com.modular.restfulserver.user.api;
 
 import com.modular.restfulserver.global.common.ResponseHelper;
 import com.modular.restfulserver.global.config.security.JwtProvider;
+import com.modular.restfulserver.user.application.UserFollowManageable;
 import com.modular.restfulserver.user.application.UserFollowManager;
 import com.modular.restfulserver.user.dto.FollowUserRequest;
 import com.modular.restfulserver.user.swagger.*;
