@@ -1,8 +1,8 @@
 package com.modular.restfulserver.user.dto;
 
+import com.modular.restfulserver.util.MockProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.MockProvider;
 
 import static org.junit.jupiter.api.Assertions.*;
 
