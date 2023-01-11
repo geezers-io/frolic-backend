@@ -47,13 +47,13 @@ public class UserManager implements UserManageable {
   }
 
   @Override
-  public void updateUserPassword(String token, PasswordUpdateRequest dto) {
+  public void updateUserPassword(String token, PasswordUpdateRequest updateRequest) {
     User user = getUserByToken(token);
-    boolean isMatchPassword = passwordEncoder.matches(dto.getPrevPassword(), user.getPassword());
+    boolean isMatchPassword = passwordEncoder.matches(updateRequest.getPrevPassword(), user.getPassword());
     if (!isMatchPassword)
       throw new PasswordNotMatchException();
 
-    String newPassword = passwordEncoder.encode(dto.getNewPassword());
+    String newPassword = passwordEncoder.encode(updateRequest.getNewPassword());
     user.changePassword(newPassword);
     userRepository.save(user);
   }

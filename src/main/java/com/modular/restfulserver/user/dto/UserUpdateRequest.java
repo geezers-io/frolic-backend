@@ -1,11 +1,16 @@
 package com.modular.restfulserver.user.dto;
 
+import com.modular.restfulserver.global.util.message.CommonMessageUtils;
+import io.jsonwebtoken.lang.Assert;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+@NoArgsConstructor
 @Getter
 public class UserUpdateRequest {
 
@@ -29,5 +34,23 @@ public class UserUpdateRequest {
     message = "폰 번호 형식이 잘못되었습니다."
   )
   private String phoneNumber;
+
+  @Builder(setterPrefix = "add")
+  public UserUpdateRequest(
+    String email,
+    String username,
+    String realname,
+    String phoneNumber
+  ) {
+    Assert.hasText(email, CommonMessageUtils.getIllegalFieldError("email"));
+    Assert.hasText(username, CommonMessageUtils.getIllegalFieldError("username"));
+    Assert.hasText(realname, CommonMessageUtils.getIllegalFieldError("realname"));
+    Assert.hasText(phoneNumber, CommonMessageUtils.getIllegalFieldError("phoneNumber"));
+
+    this.email = email;
+    this.username = username;
+    this.realname = realname;
+    this.phoneNumber = phoneNumber;
+  }
 
 }
