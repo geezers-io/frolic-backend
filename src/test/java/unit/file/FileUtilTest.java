@@ -1,4 +1,4 @@
-package file;
+package unit.file;
 
 import com.modular.restfulserver.global.common.file.application.CustomFile;
 import org.junit.jupiter.api.DisplayName;
