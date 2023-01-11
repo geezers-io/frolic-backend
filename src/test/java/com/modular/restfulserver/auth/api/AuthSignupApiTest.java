@@ -46,6 +46,7 @@ class AuthSignupApiTest {
       .addRealname(realname)
       .addEmail(email)
       .addPassword("@Testtest12")
+      .addPhoneNumber("010-3333-4444")
       .build();
   }
 
@@ -72,6 +73,7 @@ class AuthSignupApiTest {
       .andExpect(jsonPath("$.data.userInfo.email").value(email))
       .andExpect(jsonPath("$.data.userInfo.username").value(username))
       .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
+      .andExpect(jsonPath("$.data.userInfo.phoneNumber").isString())
       .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
       .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
 
