@@ -1,6 +1,6 @@
 package com.modular.restfulserver.user.dto;
 
-import static com.modular.restfulserver.global.util.message.FieldError.*;
+import static com.modular.restfulserver.global.util.message.CommonMessageUtils.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.Assert;

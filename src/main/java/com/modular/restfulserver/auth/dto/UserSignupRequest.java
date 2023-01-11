@@ -1,6 +1,6 @@
 package com.modular.restfulserver.auth.dto;
 
-import static com.modular.restfulserver.global.util.message.FieldError.*;
+import static com.modular.restfulserver.global.util.message.CommonMessageUtils.*;
 import com.modular.restfulserver.user.model.User;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
@@ -41,17 +41,32 @@ public class UserSignupRequest {
   )
   private String realname;
 
+  @NotNull
+  @Pattern(
+    regexp = "\\d{3}\\-\\d{3,4}\\-\\d{4}$",
+    message = "폰 번호 형식이 잘못되었습니다."
+  )
+  private String phoneNumber;
+
   @Builder(setterPrefix = "add")
-  public UserSignupRequest(String email, String password, String username, String realname) {
-    Assert.isInstanceOf(String.class, email, getIllegalFieldError("email"));
-    Assert.isInstanceOf(String.class, password, getIllegalFieldError("password"));
-    Assert.isInstanceOf(String.class, username, getIllegalFieldError("username"));
-    Assert.isInstanceOf(String.class, realname, getIllegalFieldError("realname"));
+  public UserSignupRequest(
+    String email,
+    String password,
+    String username,
+    String realname,
+    String phoneNumber
+  ) {
+    Assert.hasText(email, getIllegalFieldError("email"));
+    Assert.hasText(password, getIllegalFieldError("password"));
+    Assert.hasText(username, getIllegalFieldError("username"));
+    Assert.hasText(realname, getIllegalFieldError("realname"));
+    Assert.hasText(phoneNumber, getIllegalFieldError("phoneNumber"));
 
     this.email = email;
     this.password = password;
     this.username = username;
     this.realname = realname;
+    this.phoneNumber = phoneNumber;
   }
 
   public User toEntity() {
@@ -60,6 +75,7 @@ public class UserSignupRequest {
       .addUsername(username)
       .addRealname(realname)
       .addPassword(password)
+      .addPhoneNumber(phoneNumber)
       .build();
   }
 

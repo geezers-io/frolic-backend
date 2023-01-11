@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserFollowManagerImpl implements UserFollowManager {
+public class UserFollowManager implements UserFollowManageable {
 
   private final UserRepository userRepository;
   private final FollowRepository followRepository;

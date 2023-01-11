@@ -1,5 +1,6 @@
 package com.modular.restfulserver.user.model;
 
+import com.modular.restfulserver.global.util.message.CommonMessageUtils;
 import com.modular.restfulserver.global.util.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -34,6 +35,12 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   )
   private String realname;
 
+  @Column(
+    length = 13,
+    nullable = false
+  )
+  private String phoneNumber;
+
   @Column(nullable = false)
   private String password;
 
@@ -47,16 +54,19 @@ public class User extends CreateAndModifiedTimeAuditEntity {
     String email,
     String username,
     String realname,
+    String phoneNumber,
     String password
   ) {
-    Assert.hasText(email, "email must not be empty");
-    Assert.hasText(username, "username must not be empty");
-    Assert.hasText(password, "password must not be empty");
-    Assert.hasText(realname, "realname must not be empty");
+    Assert.hasText(email, CommonMessageUtils.getIllegalFieldError("email"));
+    Assert.hasText(username, CommonMessageUtils.getIllegalFieldError("username"));
+    Assert.hasText(password, CommonMessageUtils.getIllegalFieldError("password"));
+    Assert.hasText(realname, CommonMessageUtils.getIllegalFieldError("realname"));
+    Assert.hasText(phoneNumber, CommonMessageUtils.getIllegalFieldError("phoneNumber"));
 
     this.email = email;
     this.username = username;
     this.realname = realname;
+    this.phoneNumber = phoneNumber;
     this.password = password;
   }
 
@@ -66,6 +76,9 @@ public class User extends CreateAndModifiedTimeAuditEntity {
   public void changeUsername(String username) { this.username = username; }
   public void changeEmail(String email) { this.email = email; }
   public void changeRealname(String realname) { this.realname = realname; }
+
+  public void changePhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
   public void updateRefreshToken(String token) {
     this.refreshToken = token;
   }

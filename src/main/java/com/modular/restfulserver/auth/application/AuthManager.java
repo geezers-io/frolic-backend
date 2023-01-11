@@ -12,6 +12,7 @@ import com.modular.restfulserver.global.config.security.JwtConstants;
 import com.modular.restfulserver.global.config.security.JwtProvider;
 import com.modular.restfulserver.post.repository.LikeRepository;
 import com.modular.restfulserver.post.repository.PostRepository;
+import com.modular.restfulserver.user.application.UserManager;
 import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.dto.UserUnitedInfo;
 import com.modular.restfulserver.user.exception.UserNotFoundException;
@@ -40,6 +41,8 @@ public class AuthManager implements AuthManageable {
   private final LikeRepository likeRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
+
+  private final UserManager userManager;
 
   public UserLoginResponse saveUser(UserSignupRequest userSignupRequest) {
     boolean isExistsEmail = userRepository.existsByEmail(userSignupRequest.getEmail());
@@ -79,20 +82,7 @@ public class AuthManager implements AuthManageable {
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
       .build();
-    Long allPostCount = postRepository.countAllByUser(user);
-    Long allFollowerCount = followRepository.countByFollowerId(user);
-    Long allFollowingCount = followRepository.countByFollowingId(user);
-    Long allGivenLikeCount = likeRepository.countAllByUser(user);
-
-    UserInfo userInfo = UserInfo.from(user);
-    UserUnitedInfo userUnitedInfo = UserUnitedInfo.builder()
-
-      .addUserInfo(userInfo)
-      .addAllFollowerCount(allFollowerCount)
-      .addAllFollowingCount(allFollowingCount)
-      .addAllGivenLikeCount(allGivenLikeCount)
-      .addAllPostCount(allPostCount)
-      .build();
+    UserUnitedInfo userUnitedInfo = userManager.getUserUnitedDetail(user.getUsername());
 
     return UserLoginResponse.create(tokenInfo, userUnitedInfo);
   }

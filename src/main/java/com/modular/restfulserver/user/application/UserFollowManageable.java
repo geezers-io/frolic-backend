@@ -4,7 +4,7 @@ import com.modular.restfulserver.user.dto.FollowUserRequest;
 
 import java.util.List;
 
-public interface UserFollowManager {
+public interface UserFollowManageable {
 
   List<FollowUserRequest> getFollowerListBySelf(String token);
 

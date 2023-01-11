@@ -1,6 +1,6 @@
 package com.modular.restfulserver.post.dto;
 
-import static com.modular.restfulserver.global.util.message.FieldError.*;
+import static com.modular.restfulserver.global.util.message.CommonMessageUtils.*;
 import com.modular.restfulserver.user.dto.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
