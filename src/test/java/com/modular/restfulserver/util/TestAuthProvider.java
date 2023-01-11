@@ -34,9 +34,9 @@ public class TestAuthProvider implements TestAuthSupplier {
   private EntityManager em;
 
   private final List<User> testUsers = Arrays.stream(TestUser.values())
-    .toList()
+    .collect(Collectors.toList())
     .stream().map(TestUser::getUser)
-    .toList();
+    .collect(Collectors.toList());
 
 
   public TokenInfo getTokenInfo(TestUser testUser) {
@@ -55,7 +55,7 @@ public class TestAuthProvider implements TestAuthSupplier {
 
   @Transactional
   public void clearAllTestUser() {
-    List<Long> ids = testUsers.stream().map(User::getId).toList();
+    List<Long> ids = testUsers.stream().map(User::getId).collect(Collectors.toList());
     em.createQuery("DELETE FROM users u WHERE u.id in :ids")
       .setParameter("ids", ids)
       .executeUpdate();

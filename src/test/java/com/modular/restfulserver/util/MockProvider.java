@@ -8,8 +8,10 @@ import com.modular.restfulserver.auth.dto.UserSignupRequest;
 import com.modular.restfulserver.user.dto.UserInfo;
 import com.modular.restfulserver.user.dto.UserUnitedInfo;
 import com.modular.restfulserver.user.model.User;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -23,6 +25,7 @@ public class MockProvider {
   public static UserInfo mockUserInfoForClientDto = UserInfo.builder()
     .addUsername("username")
     .addRealname("realname")
+    .addPhoneNumber(TestUser.testPhoneNumber)
     .addEmail("galaxy4276@gmail.com")
     .addUpdatedDate(LocalDateTime.now())
     .addCreatedDate(LocalDateTime.now())
@@ -49,6 +52,7 @@ public class MockProvider {
     return UserSignupRequest.builder()
       .addUsername(name)
       .addRealname("realname")
+      .addPhoneNumber(TestUser.testPhoneNumber)
       .addEmail(name + "@frolic-sns.io")
       .addPassword("@Frolic" + name)
       .build();
@@ -69,6 +73,10 @@ public class MockProvider {
         .content(objectMapper.writeValueAsString(userSignupRequest))
         .accept(MediaType.APPLICATION_JSON)
     ).andDo(print());
+  }
+
+  public static void setHeaderWithToken(MockHttpServletRequestBuilder mock, String accessToken) {
+    mock.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
   }
 
 }
