@@ -32,14 +32,15 @@ public class UserManager implements UserManageable {
   private final JwtProvider jwtProvider;
 
   @Override
-  public UserInfo updateUserDetail(String token, UserUpdateRequest dto) {
+  public UserInfo updateUserDetail(String token, UserUpdateRequest userUpdateRequest) {
     User user = getUserByToken(token);
 
-    checkDuplicatedUserDetailWhenModified(dto, user);
+    checkDuplicatedUserDetailWhenModified(userUpdateRequest, user);
 
-    user.changeEmail(dto.getEmail());
-    user.changeUsername(dto.getUsername());
-    user.changeRealname(dto.getRealname());
+    user.changeEmail(userUpdateRequest.getEmail());
+    user.changeUsername(userUpdateRequest.getUsername());
+    user.changeRealname(userUpdateRequest.getRealname());
+    user.changePhoneNumber(userUpdateRequest.getPhoneNumber());
     userRepository.save(user);
 
     return UserInfo.from(user);
