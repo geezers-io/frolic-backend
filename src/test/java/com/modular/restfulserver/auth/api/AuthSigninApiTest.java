@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modular.restfulserver.auth.dto.TokenInfo;
 import com.modular.restfulserver.auth.dto.UserLoginRequest;
 import com.modular.restfulserver.auth.dto.UserSignupRequest;
+import com.modular.restfulserver.util.TestUser;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -51,6 +52,7 @@ class AuthSigninApiTest {
     .addRealname(realname)
     .addEmail(email)
     .addPassword(password)
+    .addPhoneNumber(TestUser.testPhoneNumber)
     .build();
 
   @BeforeAll
@@ -77,12 +79,12 @@ class AuthSigninApiTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.data.tokenInfo.accessToken").isString())
       .andExpect(jsonPath("$.data.tokenInfo.refreshToken").isString())
-      .andExpect(jsonPath("$.data.userInfo.id").isNumber())
-      .andExpect(jsonPath("$.data.userInfo.email").value(email))
-      .andExpect(jsonPath("$.data.userInfo.username").value(username))
-      .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
-      .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
-      .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.id").isNumber())
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.email").value(email))
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.username").value(username))
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.realname").value(realname))
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.createdDate").isString())
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.updatedDate").isString());
 
   }
 

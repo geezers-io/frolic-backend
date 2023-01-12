@@ -67,15 +67,15 @@ class AuthSignupApiTest {
     // then
     resultActions
       .andExpect(status().isCreated())
-      .andExpect(jsonPath("$.data.accessToken").isString())
-      .andExpect(jsonPath("$.data.refreshToken").isString())
-      .andExpect(jsonPath("$.data.userInfo.id").isNumber())
-      .andExpect(jsonPath("$.data.userInfo.email").value(email))
-      .andExpect(jsonPath("$.data.userInfo.username").value(username))
-      .andExpect(jsonPath("$.data.userInfo.realname").value(realname))
-      .andExpect(jsonPath("$.data.userInfo.phoneNumber").isString())
-      .andExpect(jsonPath("$.data.userInfo.createdDate").isString())
-      .andExpect(jsonPath("$.data.userInfo.updatedDate").isString());
+      .andExpect(jsonPath("$.data.tokenInfo.accessToken").isString())
+      .andExpect(jsonPath("$.data.tokenInfo.refreshToken").isString())
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.id").isNumber())
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.email").value(email))
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.username").value(username))
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.realname").value(realname))
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.phoneNumber").isString())
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.createdDate").isString())
+      .andExpect(jsonPath("$.data.userUnitedInfo.userInfo.updatedDate").isString());
 
   }
 
