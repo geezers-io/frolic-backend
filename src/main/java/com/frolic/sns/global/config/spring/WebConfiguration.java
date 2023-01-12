@@ -1,4 +1,4 @@
-package com.modular.restfulserver.global.config.spring;
+package com.frolic.sns.global.config.spring;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
