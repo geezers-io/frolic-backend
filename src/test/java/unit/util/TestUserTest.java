@@ -1,7 +1,7 @@
 package unit.util;
 
-import com.modular.restfulserver.user.model.User;
-import com.modular.restfulserver.util.TestUser;
+import com.frolic.sns.user.model.User;
+import com.frolic.sns.util.TestUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
