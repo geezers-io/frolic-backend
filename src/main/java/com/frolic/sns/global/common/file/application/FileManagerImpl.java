@@ -15,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 
+@Deprecated
 @Slf4j
 @Service
 public class FileManagerImpl implements FileManager {

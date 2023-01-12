@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @Getter
+@Deprecated
 public class CustomFile {
   private final MultipartFile file;
   private final String customFilename;
