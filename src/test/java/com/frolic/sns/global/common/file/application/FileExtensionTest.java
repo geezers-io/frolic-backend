@@ -1,6 +1,5 @@
-package com.modular.restfulserver.file.application;
+package com.frolic.sns.global.common.file.application;
 
-import com.modular.restfulserver.file.exception.FaultFileExtensionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
