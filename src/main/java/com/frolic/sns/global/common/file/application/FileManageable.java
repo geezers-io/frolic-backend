@@ -1,10 +1,11 @@
-package com.modular.restfulserver.file.application;
+package com.frolic.sns.global.common.file.application;
 
-import com.modular.restfulserver.file.exception.FaultFileExtensionException;
+import com.frolic.sns.global.common.file.exception.FaultFileExtensionException;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public interface FileManageable {
@@ -20,6 +21,12 @@ public interface FileManageable {
     String ext = filename.substring(extIndex);
     String name = filename.substring(0, extIndex);
     return name + "_" + UUID.randomUUID() + ext;
+  }
+
+  default String getExtensionName(MultipartFile file) {
+    int extIndex = Objects.requireNonNull(file.getOriginalFilename()).indexOf(".");
+    if (extIndex == -1) throw new FaultFileExtensionException();
+    return file.getOriginalFilename().substring(extIndex);
   }
 
 }
