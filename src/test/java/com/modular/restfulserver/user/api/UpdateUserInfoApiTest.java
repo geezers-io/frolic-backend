@@ -63,6 +63,7 @@ class UpdateUserInfoApiTest {
     testAuthProvider.clearAllTestUser();
   }
 
+  @Order(4)
   @Test
   @DisplayName("사용자 정보를 성공적으로 수정한다.")
   void updateUserInfoSuccess() throws Exception {
@@ -77,26 +78,33 @@ class UpdateUserInfoApiTest {
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(userUpdateRequest));
 
-    TokenInfo tokenInfo = testAuthProvider.getTokenInfo(TestUser.EUNGI);
+    TokenInfo tokenInfo = testAuthProvider.getTokenInfo(TestUser.JUNEJAE);
     MockProvider.setHeaderWithToken(request, tokenInfo.getAccessToken());
     mvc.perform(request)
       .andExpect(status().isOk());
   }
 
+  @Order(1)
   @Test
   @DisplayName("로그인하지 않은 유저의 수정 요청은 403 을 반환한다.")
   void noTokenIs403() throws Exception {
     mvc.perform(put("/api/users")).andExpect(status().isForbidden());
   }
 
+  @Order(2)
   @Test
   @DisplayName("유저 패스워드 변경이 성공적으로 수행된다.")
   void changeUserPasswordSuccess() {
     PasswordUpdateRequest updateRequest = new PasswordUpdateRequest(TestUser.testPassword, "@Perfectsns4275");
     TokenInfo tokenInfo = testAuthProvider.getTokenInfo(TestUser.EUNGI);
     assertDoesNotThrow(() -> userManager.updateUserPassword(tokenInfo.getAccessToken(), updateRequest));
+    userManager.updateUserPassword(
+      tokenInfo.getAccessToken(),
+      new PasswordUpdateRequest("@Perfectsns4275", TestUser.testPassword)
+    );
   }
 
+  @Order(1)
   @Test
   @DisplayName("잘못된 패스워드 변경의 요청은 실패한다.")
   void changeUserPasswordFaultInfo() {

@@ -47,14 +47,14 @@ public class MockProvider {
 
   public static UserLoginResponse mockUserLoginResponse = new UserLoginResponse(mockTokenInfo, mockUserUnitedInfo);
 
-  public static UserSignupRequest createTestUserSignupRequest(int userNumber) {
-    String name = "user" + userNumber;
+  public static UserSignupRequest createTestUserSignupRequest(TestUser testUser) {
+    User user = testUser.getUser();
     return UserSignupRequest.builder()
-      .addUsername(name)
-      .addRealname("realname")
+      .addUsername(user.getUsername())
+      .addRealname(user.getRealname())
       .addPhoneNumber(TestUser.testPhoneNumber)
-      .addEmail(name + "@frolic-sns.io")
-      .addPassword("@Frolic" + name)
+      .addEmail(user.getEmail())
+      .addPassword(TestUser.testPassword)
       .build();
   }
 
