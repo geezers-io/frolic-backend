@@ -52,6 +52,7 @@ dependencies {
   implementation "org.springdoc:springdoc-openapi-security:1.6.14"
   implementation "org.springframework.boot:spring-boot-starter-aop"
   implementation "org.springframework.boot:spring-boot-starter-data-redis"
+  implementation "com.twilio.sdk:twilio:8.8.0"
 }
 
 test {
