@@ -67,5 +67,9 @@ springdoc:
   default-produces-media-type: application/json
 
 custom:
+  twilio:
+    sid:
+    token:
+    phone-number:
   path:
     upload-images: '' # input this for file uploads
