@@ -34,10 +34,7 @@ import java.util.Map;
 public class AuthManager implements AuthManageable {
 
   private final UserRepository userRepository;
-  private final PostRepository postRepository;
-  private final FollowRepository followRepository;
   private final JwtProvider jwtProvider;
-  private final LikeRepository likeRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
 
