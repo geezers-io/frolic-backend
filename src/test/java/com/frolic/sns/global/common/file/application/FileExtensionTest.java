@@ -1,14 +1,18 @@
-package com.modular.restfulserver.file.application;
+package com.frolic.sns.global.common.file.application;
 
-import com.modular.restfulserver.file.exception.FaultFileExtensionException;
+import com.frolic.sns.global.common.file.exception.FaultFileExtensionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileManageableTest {
+@SpringBootTest
+class FileExtensionTest {
 
-  LocalFileManager localFileManager = new LocalFileManager();
+  @Autowired
+  protected LocalFileManager localFileManager;
 
   String correctFilename = "galaxy4276.jpg";
 
