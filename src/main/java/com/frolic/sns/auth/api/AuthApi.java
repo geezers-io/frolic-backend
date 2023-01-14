@@ -2,6 +2,7 @@ package com.frolic.sns.auth.api;
 
 import com.frolic.sns.auth.application.AuthCodeCacheManager;
 import com.frolic.sns.auth.application.AuthManager;
+import com.frolic.sns.auth.application.EmailFindManager;
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
 import com.frolic.sns.auth.dto.UserLoginRequest;
 import com.frolic.sns.auth.dto.UserLoginResponse;
@@ -26,7 +27,7 @@ public class AuthApi {
 
     private final JwtProvider jwtProvider;
     private final AuthManager authManager;
-    private final AuthCodeCacheManager authCodeCacheManager;
+    private final EmailFindManager emailFindManager;
 
 
     @SignupDocs
@@ -64,11 +65,12 @@ public class AuthApi {
     }
 
 
+    @Deprecated
     @SendSMSDocs
     @GetMapping("/sendSMS/{phoneNumber}") // Missing
     public ResponseEntity<String> sendSMS(@PathVariable String phoneNumber) {
         System.out.println("phoneNumber: " + phoneNumber);
-        ResponseEntity<String> sendSMSPhoneNumber = authCodeCacheManager.sendSMS(phoneNumber);
-        return ResponseEntity.ok(ResponseHelper.createDataMap(sendSMSPhoneNumber).toString());
+        emailFindManager.sendSMS(phoneNumber);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
