@@ -1,24 +1,37 @@
 package com.frolic.sns.global.config.spring;
 
 import com.twilio.Twilio;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Getter
+@Slf4j
 @Configuration
 public class SmsTwilioConfiguration {
-  @Value("${custom.twilio.sid}")
-  private String sid;
+  private final String sid;
 
-  @Value("${custom.twilio.token}")
-  private String token;
+  private final String token;
 
-  @Value("{custom.twilioPhoneNumber}")
-  private String twilioPhoneNumber;
+  private final String username;
 
-  @Bean
-  public void twilioConfig() {
-    Twilio.init(sid, token);
+  private final String twilioPhoneNumber;
+
+  @Autowired
+  public SmsTwilioConfiguration(
+    @Value("${custom.twilio.username}") final String username,
+    @Value("${custom.twilio.token}") final String token,
+    @Value("${custom.twilio.phone-number}") final String twilioPhoneNumber,
+    @Value("${custom.twilio.sid}") final String sid
+  ) {
+    this.username = username;
+    this.token = token;
+    this.sid = sid;
+    this.twilioPhoneNumber = twilioPhoneNumber;
+    Twilio.init(username, token, sid);
+    log.info("Initialized Twilio Configuration");
   }
 
 }

@@ -70,6 +70,7 @@ custom:
   twilio:
     sid:
     token:
+    username:
     phone-number:
   path:
     upload-images: '' # input this for file uploads
