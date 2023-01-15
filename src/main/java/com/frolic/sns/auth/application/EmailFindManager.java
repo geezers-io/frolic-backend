@@ -1,13 +1,11 @@
 package com.frolic.sns.auth.application;
 
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
-import com.frolic.sns.auth.dto.UserFindPasswordRequest;
 import com.frolic.sns.user.repository.UserRepository;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -49,7 +47,7 @@ public class EmailFindManager implements UserInfoFindable {
   }
 
   @Override
-  public UserFindPasswordRequest findPassword(UserFindPasswordRequest userFindPasswordRequest) {
+  public UserFindEmailRequest findPassword(UserFindEmailRequest userFindPasswordRequest) {
     return null;
   }
 }
