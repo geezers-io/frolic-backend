@@ -22,9 +22,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
   String getUserRefreshToken(@Param("email") String email);
 
   //@Query("select u.email from users u where u.phoneNumber = :phoneNumber")
-  @Query("select REPLACE(u.email, SUBSTR(SUBSTRING_INDEX(u.email, '@', 1), 5), '***') from users u where u.phoneNumber = :phoneNumber")
-  String getFindEmail(@Param("phoneNumber") String phoneNumber);
+  @Query("select u.email from users u where u.phoneNumber = :phoneNumber")
+  Optional<String> getEmailByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
-  @Query("select u.password from users u where u.email = ?1 and u.phoneNumber = ?2")
-  List<User> getFindPassword(User user);
+//  @Query("select u.password from users u where u.email = ?1 and u.phoneNumber = ?2")
+//  List<User> getFindPassword(User user);
 }
