@@ -10,6 +10,7 @@ import com.frolic.sns.auth.dto.UserSignupRequest;
 import com.frolic.sns.auth.swagger.*;
 import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class AuthApi {
     private final JwtProvider jwtProvider;
     private final AuthManager authManager;
     private final EmailFindManager emailFindManager;
+    private final UserRepository userRepository;
 
 
     @SignupDocs
@@ -65,12 +67,13 @@ public class AuthApi {
     }
 
 
-    @Deprecated
-    @SendSMSDocs
-    @GetMapping("/sendSMS/{phoneNumber}") // Missing
-    public ResponseEntity<String> sendSMS(@PathVariable String phoneNumber) {
-        System.out.println("phoneNumber: " + phoneNumber);
-        emailFindManager.sendSMS(phoneNumber);
+    //@Deprecated
+    @FindEmailDocs
+    @GetMapping("/findEmailsendSMS/{phoneNumber}") // Missing
+    public ResponseEntity<String> findEmailsendSMS(@PathVariable String phoneNumber) {
+        System.out.println("phoneNumber API: " + phoneNumber);
+        //emailFindManager.sendSMS(phoneNumber);
+        emailFindManager.findEmail(phoneNumber);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
