@@ -24,10 +24,12 @@ services:
     build: .
     depends_on:
       - db
+      - redis
     ports:
       - "8080:8080"
     links:
       - db
+      - redis
     env_file: ./conf/spring/.env
     restart: always
 
