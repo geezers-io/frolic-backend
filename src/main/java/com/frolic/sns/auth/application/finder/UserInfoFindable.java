@@ -1,9 +1,17 @@
 package com.frolic.sns.auth.application.finder;
 
 
-public interface UserInfoFindable {
-  AuthCode.MetaData getAuthCodeMedaData(String code, FinderType finderType);
+import java.util.UUID;
 
-  void storeAuthCode(String code, FinderType finderType, String principalInfo);
+public interface UserInfoFindable {
+  AuthCode.MetaData getAuthCode(UUID id, FinderType finderType);
+
+  void storeAuthCode(UUID id, String code, FinderType finderType, String principalInfo);
+
+  UUID createId();
+
+  void removeAuthCode(UUID id);
+
+  String createCode();
 
 }
