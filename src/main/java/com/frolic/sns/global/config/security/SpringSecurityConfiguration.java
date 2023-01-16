@@ -64,6 +64,7 @@ public class SpringSecurityConfiguration {
       .antMatchers(
         "/api/auth/login",
         "/api/auth/signup",
+        "api/auth/finder/**",
         "/api/download/{filename}",
         "/swagger-ui.html",
         "/swagger-ui/**",
