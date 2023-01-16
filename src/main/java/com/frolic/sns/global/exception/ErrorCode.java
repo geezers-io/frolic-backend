@@ -23,7 +23,8 @@ public enum ErrorCode {
   INVALID_TOKEN(BAD_REQUEST, "토큰 값이 유효하지 않습니다."),
   NOT_FOUND_USER(NOT_FOUND, "요청 정보 사용자가 존재하지 않습니다."),
   NOT_FOUND_RESOURCE(NOT_FOUND, "요청한 자원이 존재하지 않습니다."),
-  NOT_PERMISSION(UNAUTHORIZED, "해당 요청을 수행할 권한이 없습니다.");
+  NOT_PERMISSION(UNAUTHORIZED, "해당 요청을 수행할 권한이 없습니다."),
+  MISMATCH_FINDER_TYPE(BAD_REQUEST, "인증코드의 유형이 잘못되었습니다.");
 
   private final HttpStatus status;
   private final String details;
