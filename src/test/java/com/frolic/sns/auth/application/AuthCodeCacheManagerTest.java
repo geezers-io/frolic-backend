@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ValueOperations;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -15,7 +17,13 @@ class AuthCodeCacheManagerTest {
 
   protected final ValueOperations<String, AuthCode.MetaData> cacheKeyValueStore;
 
-  protected final AuthCode authCode = new AuthCode("555555", FinderType.EMAIL, "01026554276");
+  protected final AuthCode authCode = AuthCode.builder()
+    .addId(UUID.randomUUID())
+    .addCode("55555")
+    .addFinderType(FinderType.EMAIL)
+    .addDestination("01026554276")
+    .build();
+
   @Autowired
   AuthCodeCacheManagerTest(ValueOperations<String, AuthCode.MetaData> cacheKeyValueStore) {
     this.cacheKeyValueStore = cacheKeyValueStore;
