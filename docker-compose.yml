@@ -8,18 +8,28 @@ services:
     volumes:
       - "./conf/mariadb/conf.d:/etc/mysql/conf.d"
     env_file: ./conf/mariadb/.env
+    container_name: mariadb
     environment:
       TZ: Asia/Seoul
+    restart: always
+
+  redis:
+    image: redis:7.0
+    ports:
+      - "6379:6379"
+    container_name: redis
     restart: always
 
   spring:
     build: .
     depends_on:
       - db
+      - redis
     ports:
       - "8080:8080"
     links:
       - db
+      - redis
     env_file: ./conf/spring/.env
     restart: always
 
