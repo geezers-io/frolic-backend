@@ -1,5 +1,7 @@
 package com.frolic.sns.auth.application;
 
+import com.frolic.sns.auth.application.finder.AuthCode;
+import com.frolic.sns.auth.application.finder.FinderType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ class AuthCodeCacheManagerTest {
 
   protected final ValueOperations<String, AuthCode.MetaData> cacheKeyValueStore;
 
-  protected final AuthCode authCode = new AuthCode("555555", FinderType.EMAIL);
+  protected final AuthCode authCode = new AuthCode("555555", FinderType.EMAIL, "01026554276");
   @Autowired
   AuthCodeCacheManagerTest(ValueOperations<String, AuthCode.MetaData> cacheKeyValueStore) {
     this.cacheKeyValueStore = cacheKeyValueStore;

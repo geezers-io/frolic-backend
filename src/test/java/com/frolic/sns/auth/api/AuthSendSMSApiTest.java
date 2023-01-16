@@ -1,6 +1,6 @@
 package com.frolic.sns.auth.api;
 
-import com.frolic.sns.auth.application.EmailFindManager;
+import com.frolic.sns.auth.application.finder.EmailFindManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
