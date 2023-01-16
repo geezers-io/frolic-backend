@@ -7,11 +7,9 @@ import com.frolic.sns.auth.exception.OverTriedAuthCodeException;
 import com.frolic.sns.global.config.spring.SmsTwilioConfiguration;
 import com.frolic.sns.user.exception.UserNotFoundException;
 import com.frolic.sns.user.repository.UserRepository;
-import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
@@ -29,18 +27,6 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
     super(authCodeCacheManager);
     this.userRepository = userRepository;
     this.sender = new PhoneNumber(smsTwilioConfiguration.getTwilioPhoneNumber());
-  }
-
-  @Deprecated
-  public void sendSMS(@PathVariable(name = "phoneNumber") String phoneNumber) {
-    String authNum = createCode();
-    String authMsg = "The authentication number is [" + authNum + "]" ;
-
-    Message.creator(
-      new PhoneNumber("+82"+phoneNumber),
-      new PhoneNumber("+14807252713"),
-      authMsg
-    ).create();
   }
 
   public UUID sendCode(UserFindEmailRequest request) {

@@ -13,18 +13,20 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AuthCodeCacheManager {
 
-  private final ValueOperations<UUID, AuthCode.MetaData> redisKeyValueStore;
+  private final ValueOperations<String, AuthCode.MetaData> redisKeyValueStore;
 
   /**
    * @implNote cache 저장소에 인증코드 정보를 저장합니다. ( 제한 시간 10분 )
    * @param authCode 인증 코드 객체
    */
   public void storeAuthenticationCode(AuthCode authCode, int minutes) {
-    redisKeyValueStore.set(authCode.getId(), authCode.getAuthCodeMetaData(), minutes, TimeUnit.MINUTES);
+    String stringId = getStringId(authCode.getId());
+    redisKeyValueStore.set(stringId, authCode.getAuthCodeMetaData(), minutes, TimeUnit.MINUTES);
   }
 
   public void removeAuthenticationCode(UUID id) {
-    redisKeyValueStore.getAndDelete(id);
+    String stringId = getStringId(id);
+    redisKeyValueStore.getAndDelete(stringId);
   }
 
   /**
@@ -32,7 +34,11 @@ public class AuthCodeCacheManager {
    * @param id 인증코드 정보를 가져올 인증코드 키 입니다.
    */
   public AuthCode.MetaData getAuthenticationCode(UUID id) {
-    return redisKeyValueStore.get(id);
+    return redisKeyValueStore.get(getStringId(id));
+  }
+
+  private String getStringId(UUID id) {
+    return id.toString();
   }
 
 }
