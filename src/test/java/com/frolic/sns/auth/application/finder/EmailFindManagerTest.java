@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +34,7 @@ class EmailFindManagerTest {
         .addDestination("01026554276")
         .addCountOfAttempts(0)
         .addFinderType(FinderType.EMAIL)
+        .addLocalTime(LocalTime.now())
         .build()
     );
   }
