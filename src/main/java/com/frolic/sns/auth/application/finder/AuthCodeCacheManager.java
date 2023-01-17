@@ -7,18 +7,19 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class AuthCodeCacheManager {
 
   private final ValueOperations<String, AuthCode.MetaData> redisKeyValueStore;
+
 
   /**
    * @implNote cache 저장소에 인증코드 정보를 저장합니다. ( 제한 시간 10분 )
    * @param authCode 인증 코드 객체
    */
-  public void storeAuthenticationCode(AuthCode authCode, int minutes) {
-    redisKeyValueStore.set(authCode.getId().toString(), authCode.getAuthCodeMetaData(), minutes, TimeUnit.MINUTES);
+  public void storeAuthenticationCode(AuthCode authCode) {
+    redisKeyValueStore.set(authCode.getId().toString(), authCode.getAuthCodeMetaData());
   }
 
   public void removeAuthenticationCode(UUID id) {
