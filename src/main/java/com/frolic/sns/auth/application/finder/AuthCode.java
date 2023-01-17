@@ -19,16 +19,17 @@ public class AuthCode {
   private final FinderType finderType;
   private final String destination; // 인증되었을 때 사용자 정보에 대해 전달할 정보입니다.
 
-  private final int countOfAttempts = 0;
+  private final int countOfAttempts;
 
   @Builder(setterPrefix = "add")
-  public AuthCode(UUID id, String code, FinderType finderType, String destination) {
+  public AuthCode(UUID id, String code, int countOfAttempts, FinderType finderType, String destination) {
     Assert.notNull(id, CommonMessageUtils.getIllegalFieldError("id"));
     Assert.notNull(code, CommonMessageUtils.getIllegalFieldError("code"));
     Assert.notNull(finderType, CommonMessageUtils.getIllegalFieldError("finderType"));
     Assert.notNull(destination, CommonMessageUtils.getIllegalFieldError("destination"));
     this.id = id;
     this.code = code;
+    this.countOfAttempts = countOfAttempts;
     this.finderType = finderType;
     this.destination = destination;
   }
@@ -62,6 +63,16 @@ public class AuthCode {
 
   public MetaData getAuthCodeMetaData() {
     return new MetaData(code, finderType, countOfAttempts, destination);
+  }
+
+  public static AuthCode fromMetadata(UUID id, MetaData metaData) {
+    return AuthCode.builder()
+      .addId(id)
+      .addCode(metaData.getCode())
+      .addFinderType(metaData.getFinderType())
+      .addDestination(metaData.destination)
+      .addCountOfAttempts(metaData.getCountOfAttempts())
+      .build();
   }
 
 }
