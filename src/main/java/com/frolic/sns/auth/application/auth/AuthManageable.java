@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application;
+package com.frolic.sns.auth.application.auth;
 
 import com.frolic.sns.auth.dto.UserLoginRequest;
 import com.frolic.sns.auth.dto.UserLoginResponse;

@@ -21,10 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @Query("select u.refreshToken from users u where u.email = :email")
   String getUserRefreshToken(@Param("email") String email);
 
-  //@Query("select u.email from users u where u.phoneNumber = :phoneNumber")
   @Query("select u.email from users u where u.phoneNumber = :phoneNumber")
   Optional<String> getEmailByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
-//  @Query("select u.password from users u where u.email = ?1 and u.phoneNumber = ?2")
-//  List<User> getFindPassword(User user);
 }

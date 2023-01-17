@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application;
+package com.frolic.sns.auth.application.auth;
 
 import com.frolic.sns.auth.dto.TokenInfo;
 import com.frolic.sns.auth.dto.UserLoginRequest;
@@ -10,13 +10,10 @@ import com.frolic.sns.auth.exception.PasswordNotMatchException;
 import com.frolic.sns.global.config.security.CustomEmailPasswordAuthToken;
 import com.frolic.sns.global.config.security.JwtConstants;
 import com.frolic.sns.global.config.security.JwtProvider;
-import com.frolic.sns.post.repository.LikeRepository;
-import com.frolic.sns.post.repository.PostRepository;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.dto.UserUnitedInfo;
 import com.frolic.sns.user.exception.UserNotFoundException;
 import com.frolic.sns.user.model.User;
-import com.frolic.sns.user.repository.FollowRepository;
 import com.frolic.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
