@@ -5,8 +5,10 @@ import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.UUID;
 
 /**
@@ -19,24 +21,37 @@ public class AuthCode {
   private final FinderType finderType;
   private final String destination; // 인증되었을 때 사용자 정보에 대해 전달할 정보입니다.
 
+  private final LocalTime localTime;
+
   private final int countOfAttempts;
 
   @Builder(setterPrefix = "add")
-  public AuthCode(UUID id, String code, int countOfAttempts, FinderType finderType, String destination) {
+  public AuthCode(
+    UUID id,
+    String code,
+    int countOfAttempts,
+    FinderType finderType,
+    String destination,
+    LocalTime localTime
+  ) {
     Assert.notNull(id, CommonMessageUtils.getIllegalFieldError("id"));
     Assert.notNull(code, CommonMessageUtils.getIllegalFieldError("code"));
     Assert.notNull(finderType, CommonMessageUtils.getIllegalFieldError("finderType"));
     Assert.notNull(destination, CommonMessageUtils.getIllegalFieldError("destination"));
+    Assert.isInstanceOf(LocalTime.class, localTime, CommonMessageUtils.getIllegalFieldError("localTime"));
+
     this.id = id;
     this.code = code;
     this.countOfAttempts = countOfAttempts;
     this.finderType = finderType;
     this.destination = destination;
+    this.localTime = localTime;
   }
 
   @NoArgsConstructor
   @Getter
   public static class MetaData implements Serializable {
+
     private String code;
 
     private FinderType finderType;
@@ -44,15 +59,21 @@ public class AuthCode {
 
     private String destination;
 
+
+    @DateTimeFormat(pattern = "hh:mm:ss")
+    private LocalTime localTime;
+
     @Builder(setterPrefix = "add")
-    public MetaData(String code, FinderType type, int countOfAttempts, String destination) {
+    public MetaData(String code, FinderType type, int countOfAttempts, String destination, LocalTime localTime) {
       Assert.hasText(code, CommonMessageUtils.getIllegalFieldError("code"));
       Assert.hasText(destination, CommonMessageUtils.getIllegalFieldError("destination"));
+      Assert.isInstanceOf(LocalTime.class, localTime, CommonMessageUtils.getIllegalFieldError("localTime"));
 
       this.code = code;
       this.finderType = type;
       this.countOfAttempts = countOfAttempts;
       this.destination = destination;
+      this.localTime = localTime;
     }
 
     public void tryVerification() {
@@ -62,7 +83,7 @@ public class AuthCode {
   }
 
   public MetaData getAuthCodeMetaData() {
-    return new MetaData(code, finderType, countOfAttempts, destination);
+    return new MetaData(code, finderType, countOfAttempts, destination, localTime);
   }
 
   public static AuthCode fromMetadata(UUID id, MetaData metaData) {
@@ -72,6 +93,7 @@ public class AuthCode {
       .addFinderType(metaData.getFinderType())
       .addDestination(metaData.destination)
       .addCountOfAttempts(metaData.getCountOfAttempts())
+      .addLocalTime(metaData.getLocalTime())
       .build();
   }
 

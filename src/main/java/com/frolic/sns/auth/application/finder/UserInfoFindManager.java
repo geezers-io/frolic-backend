@@ -11,9 +11,6 @@ import java.util.UUID;
 public class UserInfoFindManager implements UserInfoFindable {
 
   private final AuthCodeCacheManager authCodeCacheManager;
-  private final int TTL_TIME = 10;
-
-  private final int MAX_TRY_COUNT = 5;
 
   @Override
   public AuthCode.MetaData getAuthCode(UUID id, FinderType finderType) {
@@ -25,7 +22,7 @@ public class UserInfoFindManager implements UserInfoFindable {
 
   @Override
   public void storeAuthCode(AuthCode authCode) {
-    authCodeCacheManager.storeAuthenticationCode(authCode, TTL_TIME);
+    authCodeCacheManager.storeAuthenticationCode(authCode);
   }
 
   @Override
@@ -42,14 +39,6 @@ public class UserInfoFindManager implements UserInfoFindable {
   @Override
   public String createCode() {
     return String.valueOf((Math.random() * 100000) + 999999);
-  }
-
-  public int getTimeToLive() {
-    return TTL_TIME;
-  }
-
-  public int getMaxTryCount() {
-    return MAX_TRY_COUNT;
   }
 
 }

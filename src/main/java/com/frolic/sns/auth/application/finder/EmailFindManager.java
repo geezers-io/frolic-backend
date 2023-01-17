@@ -3,6 +3,7 @@ package com.frolic.sns.auth.application.finder;
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
+import com.frolic.sns.auth.exception.OverTimeAuthCodeException;
 import com.frolic.sns.auth.exception.OverTriedAuthCodeException;
 import com.frolic.sns.global.config.spring.SmsTwilioConfiguration;
 import com.frolic.sns.user.exception.UserNotFoundException;
@@ -11,6 +12,7 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Service
@@ -32,12 +34,14 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
   public UUID sendCode(UserFindEmailRequest request) {
     UUID id = createId();
     String code = createCode();
+    LocalTime expiredTime = LocalTime.now().plusMinutes(FinderConstants.EXPIRE_MINUTES);
     AuthCode authCode = AuthCode.builder()
       .addId(id)
       .addCode(code)
       .addCountOfAttempts(0)
       .addFinderType(FinderType.EMAIL)
       .addDestination(request.getPhoneNumber())
+      .addLocalTime(expiredTime)
       .build();
     storeAuthCode(authCode);
     PhoneNumber receiver = new PhoneNumber(request.getPhoneNumber());
@@ -50,7 +54,7 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
     String receiveCode = request.getCode();
     if (!receiveCode.equals(metaData.getCode())) {
       int tryCount = metaData.getCountOfAttempts();
-      if (tryCount >= getMaxTryCount()) {
+      if (tryCount >= FinderConstants.MAX_TRY_COUNT) {
         removeAuthCode(id);
         throw new OverTriedAuthCodeException();
       }
@@ -58,6 +62,10 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
       storeAuthCode(AuthCode.fromMetadata(id, metaData));
       throw new MisMatchAuthCodeException();
     }
+    LocalTime expiredTime = metaData.getLocalTime();
+    boolean isExpired = LocalTime.now().isAfter(expiredTime);
+    if (isExpired)
+      throw new OverTimeAuthCodeException();
     String receivePhoneNumber = metaData.getDestination();
     String email = userRepository.getEmailByPhoneNumber(receivePhoneNumber)
       .orElseThrow(UserNotFoundException::new);
