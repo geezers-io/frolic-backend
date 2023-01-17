@@ -32,7 +32,14 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
   public UUID sendCode(UserFindEmailRequest request) {
     UUID id = createId();
     String code = createCode();
-    storeAuthCode(id, code, FinderType.EMAIL, request.getPhoneNumber());
+    AuthCode authCode = AuthCode.builder()
+      .addId(id)
+      .addCode(code)
+      .addCountOfAttempts(0)
+      .addFinderType(FinderType.EMAIL)
+      .addDestination(request.getPhoneNumber())
+      .build();
+    storeAuthCode(authCode);
     PhoneNumber receiver = new PhoneNumber(request.getPhoneNumber());
     transfer(receiver, code);
     return id;
@@ -43,11 +50,12 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
     String receiveCode = request.getCode();
     if (!receiveCode.equals(metaData.getCode())) {
       int tryCount = metaData.getCountOfAttempts();
-      if (tryCount > getMaxTryCount()) {
+      if (tryCount >= getMaxTryCount()) {
         removeAuthCode(id);
         throw new OverTriedAuthCodeException();
       }
       metaData.tryVerification();
+      storeAuthCode(AuthCode.fromMetadata(id, metaData));
       throw new MisMatchAuthCodeException();
     }
     String receivePhoneNumber = metaData.getDestination();

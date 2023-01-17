@@ -24,13 +24,7 @@ public class UserInfoFindManager implements UserInfoFindable {
   }
 
   @Override
-  public void storeAuthCode(UUID id, String code, FinderType finderType, String dest) {
-    AuthCode authCode = AuthCode.builder()
-      .addId(id)
-      .addCode(code)
-      .addFinderType(finderType)
-      .addDestination(dest)
-      .build();
+  public void storeAuthCode(AuthCode authCode) {
     authCodeCacheManager.storeAuthenticationCode(authCode, TTL_TIME);
   }
 
