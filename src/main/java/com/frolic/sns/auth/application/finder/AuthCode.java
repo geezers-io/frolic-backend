@@ -83,7 +83,13 @@ public class AuthCode {
   }
 
   public MetaData getAuthCodeMetaData() {
-    return new MetaData(code, finderType, countOfAttempts, destination, localTime);
+    return MetaData.builder()
+      .addCode(code)
+      .addType(finderType)
+      .addLocalTime(localTime)
+      .addDestination(destination)
+      .addCountOfAttempts(countOfAttempts)
+      .build();
   }
 
   public static AuthCode fromMetadata(UUID id, MetaData metaData) {
