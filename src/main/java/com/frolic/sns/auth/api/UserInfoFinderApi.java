@@ -30,7 +30,7 @@ public class UserInfoFinderApi {
     HttpServletResponse response
   ) {
     UUID id = emailFindManager.sendAuthCode(request);
-    setEmailSidCookie(response, SidType.EMAIL_SID, id);
+    setSidCookie(response, SidType.EMAIL_SID, id);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
@@ -45,11 +45,17 @@ public class UserInfoFinderApi {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  private void setEmailSidCookie(HttpServletResponse response, SidType sidType, UUID emailSid) {
+  /**
+   * @implNote 요청한 클라이언트에 지정한 세션 쿠키 값을 설정합니다.
+   */
+  private void setSidCookie(HttpServletResponse response, SidType sidType, UUID emailSid) {
     Cookie cookie = new Cookie(sidType.name(), emailSid.toString());
     response.addCookie(cookie);
   }
 
+  /**
+   * @implNote 요청한 클라이언트의 쿠키 값 배열에서 지정한 세션 쿠키의 값을 가져옵니다. 없으면 오류
+   */
   private UUID parseSidFromCookies(Cookie[] cookies, SidType sidType) {
     for (Cookie cookie : cookies) {
       if (cookie.getName().equals(sidType.name()))
