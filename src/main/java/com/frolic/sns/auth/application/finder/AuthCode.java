@@ -55,6 +55,7 @@ public class AuthCode {
     private String code;
 
     private FinderType finderType;
+
     private int countOfAttempts;
 
     private String destination;

@@ -46,7 +46,7 @@ class AuthSignupApiTest {
       .addRealname(realname)
       .addEmail(email)
       .addPassword("@Testtest12")
-      .addPhoneNumber("010-3333-4444")
+      .addPhoneNumber("01033334444")
       .build();
   }
 

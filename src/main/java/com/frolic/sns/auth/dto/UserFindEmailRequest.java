@@ -14,8 +14,14 @@ public class UserFindEmailRequest {
   )
   private String phoneNumber;
 
-  public UserFindEmailRequest(String phoneNumber){
-        this.phoneNumber = phoneNumber;
-    }
+  public UserFindEmailRequest(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    return obj != null && getClass() == obj.getClass();
+  }
 
 }
