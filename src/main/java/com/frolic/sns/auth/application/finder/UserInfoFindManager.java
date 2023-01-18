@@ -38,7 +38,7 @@ public class UserInfoFindManager implements UserInfoFindable {
   @Deprecated
   @Override
   public String createCode() {
-    return String.valueOf((Math.random() * 100000) + 999999);
+    return String.valueOf( Math.floor((Math.random() * 100000) + 999999));
   }
 
 }

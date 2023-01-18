@@ -26,10 +26,14 @@ public class UserInfoFinderApi {
     @RequestBody @Valid UserFindEmailRequest request,
     HttpServletResponse response
   ) {
-    UUID id = emailFindManager.sendCode(request);
-    Cookie cookie = new Cookie("EMAIL_SID", String.valueOf(id));
-    response.addCookie(cookie);
+    UUID id = emailFindManager.sendAuthCode(request);
+    setEmailSidCookie(response, id);
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  private void setEmailSidCookie(HttpServletResponse response, UUID emailSid) {
+    Cookie cookie = new Cookie("EMAIL_SID", emailSid.toString());
+    response.addCookie(cookie);
   }
 
 }

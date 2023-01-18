@@ -103,4 +103,16 @@ public class AuthCode {
       .build();
   }
 
+  public static AuthCode createAuthCode(UUID id, String code, FinderType finderType, String destination) {
+    LocalTime expiredTime = LocalTime.now().plusMinutes(FinderConstants.EXPIRE_MINUTES);
+    return AuthCode.builder()
+      .addId(id)
+      .addCode(code)
+      .addDestination(destination)
+      .addCountOfAttempts(0)
+      .addLocalTime(expiredTime)
+      .addFinderType(finderType)
+      .build();
+  }
+
 }
