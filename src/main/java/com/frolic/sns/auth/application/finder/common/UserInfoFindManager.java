@@ -1,6 +1,7 @@
-package com.frolic.sns.auth.application.finder;
+package com.frolic.sns.auth.application.finder.common;
 
 import com.frolic.sns.auth.exception.MisMatchFinderTypeException;
+import com.frolic.sns.global.exception.NotFoundResourceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,8 @@ public class UserInfoFindManager implements UserInfoFindable {
 
   @Override
   public AuthCode.MetaData getAuthCode(UUID id, FinderType finderType) {
-    AuthCode.MetaData metaData = authCodeCacheManager.getAuthenticationCode(id);
+    AuthCode.MetaData metaData = authCodeCacheManager.getAuthenticationCode(id)
+      .orElseThrow(NotFoundResourceException::new);
     if (!metaData.getFinderType().equals(finderType))
       throw new MisMatchFinderTypeException();
     return metaData;
@@ -35,10 +37,11 @@ public class UserInfoFindManager implements UserInfoFindable {
     authCodeCacheManager.removeAuthenticationCode(id);
   }
 
-  @Deprecated
   @Override
   public String createCode() {
-    return String.valueOf((Math.random() * 100000) + 999999);
+    return String.valueOf(
+      (int)(Math.random() * (999999 - 100000 + 1)) + 100000
+    );
   }
 
 }

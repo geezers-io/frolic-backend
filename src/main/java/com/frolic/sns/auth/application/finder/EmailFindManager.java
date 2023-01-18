@@ -1,5 +1,6 @@
 package com.frolic.sns.auth.application.finder;
 
+import com.frolic.sns.auth.application.finder.common.*;
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
@@ -16,7 +17,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Service
-public class EmailFindManager extends UserInfoFindManager implements UserInfoTransmittable {
+public class EmailFindManager extends UserInfoFindManager implements UserInfoFinderSubManageable {
 
   private final UserRepository userRepository;
   private final PhoneNumber sender;
@@ -31,27 +32,40 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
     this.sender = new PhoneNumber(smsTwilioConfiguration.getTwilioPhoneNumber());
   }
 
-  public UUID sendCode(UserFindEmailRequest request) {
+  public UUID sendAuthCode(UserFindEmailRequest request) {
+    userRepository.getEmailByPhoneNumber(request.getPhoneNumber()).orElseThrow(UserNotFoundException::new);
     UUID id = createId();
     String code = createCode();
-    LocalTime expiredTime = LocalTime.now().plusMinutes(FinderConstants.EXPIRE_MINUTES);
-    AuthCode authCode = AuthCode.builder()
-      .addId(id)
-      .addCode(code)
-      .addCountOfAttempts(0)
-      .addFinderType(FinderType.EMAIL)
-      .addDestination(request.getPhoneNumber())
-      .addLocalTime(expiredTime)
-      .build();
+    AuthCode authCode = AuthCode.createAuthCode(id, code, FinderType.EMAIL, request.getPhoneNumber());
     storeAuthCode(authCode);
-    PhoneNumber receiver = new PhoneNumber(request.getPhoneNumber());
-    transfer(receiver, code);
+    send(request.getPhoneNumber(), FinderConstants.EMAIL_AUTHCODE_SEND_MESSAGE + code);
     return id;
   }
 
-  public void verify(UUID id, VerifyCodeRequest request) {
+  @Override
+  public String authCodeVerify(UUID id, VerifyCodeRequest request) {
     AuthCode.MetaData metaData = getAuthCode(id, FinderType.EMAIL);
+
     String receiveCode = request.getCode();
+    authCodeVerifyFailureCheck(metaData, id, receiveCode);
+
+    LocalTime expiredTime = metaData.getLocalTime();
+    authCodeOverTriedCheck(expiredTime);
+
+    String receivePhoneNumber = metaData.getDestination();
+    String email = userRepository.getEmailByPhoneNumber(receivePhoneNumber).orElseThrow(UserNotFoundException::new);
+    removeAuthCode(id);
+    return email;
+  }
+
+  @Override
+  public void send(String receiver, String textContent) {
+    String convertedPhoneNumber = "+82" + receiver.substring(1);
+    PhoneNumber receiverPhoneNumber = new PhoneNumber(convertedPhoneNumber);
+    Message.creator(receiverPhoneNumber, sender, textContent).create();
+  }
+
+  private void authCodeVerifyFailureCheck(AuthCode.MetaData metaData, UUID id, String receiveCode) {
     if (!receiveCode.equals(metaData.getCode())) {
       int tryCount = metaData.getCountOfAttempts();
       if (tryCount >= FinderConstants.MAX_TRY_COUNT) {
@@ -62,23 +76,12 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoTra
       storeAuthCode(AuthCode.fromMetadata(id, metaData));
       throw new MisMatchAuthCodeException();
     }
-    LocalTime expiredTime = metaData.getLocalTime();
+  }
+
+  private void authCodeOverTriedCheck(LocalTime expiredTime) {
     boolean isExpired = LocalTime.now().isAfter(expiredTime);
     if (isExpired)
       throw new OverTimeAuthCodeException();
-    String receivePhoneNumber = metaData.getDestination();
-    String email = userRepository.getEmailByPhoneNumber(receivePhoneNumber)
-      .orElseThrow(UserNotFoundException::new);
-    transfer(new PhoneNumber(receivePhoneNumber), email);
-  }
-
-  @Override
-  public void sendPrincipalInfo(String principalInfo, String dest) {
-    transfer(new PhoneNumber(dest), principalInfo);
-  }
-
-  private void transfer(PhoneNumber receiver, String textContent) {
-    Message.creator(receiver, sender, textContent).create();
   }
 
 }

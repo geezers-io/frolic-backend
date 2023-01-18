@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application.finder;
+package com.frolic.sns.auth.application.finder.common;
 
 import com.frolic.sns.global.util.message.CommonMessageUtils;
 import io.jsonwebtoken.lang.Assert;
@@ -55,6 +55,7 @@ public class AuthCode {
     private String code;
 
     private FinderType finderType;
+
     private int countOfAttempts;
 
     private String destination;
@@ -100,6 +101,18 @@ public class AuthCode {
       .addDestination(metaData.destination)
       .addCountOfAttempts(metaData.getCountOfAttempts())
       .addLocalTime(metaData.getLocalTime())
+      .build();
+  }
+
+  public static AuthCode createAuthCode(UUID id, String code, FinderType finderType, String destination) {
+    LocalTime expiredTime = LocalTime.now().plusMinutes(FinderConstants.EXPIRE_MINUTES);
+    return AuthCode.builder()
+      .addId(id)
+      .addCode(code)
+      .addDestination(destination)
+      .addCountOfAttempts(0)
+      .addLocalTime(expiredTime)
+      .addFinderType(finderType)
       .build();
   }
 

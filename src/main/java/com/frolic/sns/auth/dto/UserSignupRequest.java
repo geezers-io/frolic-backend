@@ -43,7 +43,7 @@ public class UserSignupRequest {
 
   @NotNull
   @Pattern(
-    regexp = "\\d{3}\\-\\d{3,4}\\-\\d{4}$",
+    regexp = "\\d{11}$",
     message = "폰 번호 형식이 잘못되었습니다."
   )
   private String phoneNumber;

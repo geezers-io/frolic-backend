@@ -1,5 +1,7 @@
 package com.frolic.sns.auth.application.finder;
 
+import com.frolic.sns.auth.application.finder.common.AuthCode;
+import com.frolic.sns.auth.application.finder.common.FinderType;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
 import com.frolic.sns.auth.exception.OverTriedAuthCodeException;
@@ -59,7 +61,7 @@ class EmailFindManagerTest {
     VerifyCodeRequest request = new VerifyCodeRequest("wrongCode");
 
     // then
-    assertThrows(MisMatchAuthCodeException.class, () -> emailFindManager.verify(id, request));
+    assertThrows(MisMatchAuthCodeException.class, () -> emailFindManager.authCodeVerify(id, request));
   }
 
   @Test
@@ -71,12 +73,12 @@ class EmailFindManagerTest {
     // when
     for (int i = 0; i < 5; i++) {
       assertThrows(MisMatchAuthCodeException.class, () -> {
-        emailFindManager.verify(id, request);
+        emailFindManager.authCodeVerify(id, request);
       });
     }
 
     // then
-    assertThrows(OverTriedAuthCodeException.class, () -> emailFindManager.verify(id, request));
+    assertThrows(OverTriedAuthCodeException.class, () -> emailFindManager.authCodeVerify(id, request));
   }
 
 }
