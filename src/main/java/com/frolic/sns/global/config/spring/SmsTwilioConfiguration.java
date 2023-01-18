@@ -15,18 +15,15 @@ public class SmsTwilioConfiguration {
 
   private final String token;
 
-  private final String username;
 
   private final String twilioPhoneNumber;
 
   @Autowired
   public SmsTwilioConfiguration(
-    @Value("${custom.twilio.username}") final String username,
     @Value("${custom.twilio.token}") final String token,
     @Value("${custom.twilio.phone-number}") final String twilioPhoneNumber,
     @Value("${custom.twilio.sid}") final String sid
   ) {
-    this.username = username;
     this.token = token;
     this.sid = sid;
     this.twilioPhoneNumber = twilioPhoneNumber;
