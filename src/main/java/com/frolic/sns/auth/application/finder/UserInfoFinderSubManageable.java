@@ -8,7 +8,7 @@ import java.util.UUID;
  * @implNote UserInfoFinderManager 를 상속받은 하위 관리자 객체에 대한 명세입니다.
  */
 public interface UserInfoFinderSubManageable {
-  void authCodeVerify(UUID id, VerifyCodeRequest request);
+  String authCodeVerify(UUID id, VerifyCodeRequest request);
 
   void send(String receiver, String textContent);
 

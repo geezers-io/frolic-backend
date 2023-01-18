@@ -2,7 +2,9 @@ package com.frolic.sns.auth.api;
 
 import com.frolic.sns.auth.application.finder.EmailFindManager;
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
+import com.frolic.sns.auth.dto.UserFindEmailResponse;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
+import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.exception.NotFoundCookieException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -35,14 +38,15 @@ public class UserInfoFinderApi {
   }
 
   @PostMapping("/email/check")
-  public ResponseEntity<Void> verifyEmailAuthCodeApi(
+  public ResponseEntity<Map<String, UserFindEmailResponse>> verifyEmailAuthCodeApi(
     @RequestBody @Valid VerifyCodeRequest verifyCodeRequest,
     HttpServletRequest httpRequest
   ) {
     Cookie[] cookies = httpRequest.getCookies();
     UUID id = parseSidFromCookies(cookies, SidType.EMAIL_SID);
-    emailFindManager.authCodeVerify(id, verifyCodeRequest);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    String email = emailFindManager.authCodeVerify(id, verifyCodeRequest);
+    UserFindEmailResponse response = new UserFindEmailResponse(email);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(response));
   }
 
   /**

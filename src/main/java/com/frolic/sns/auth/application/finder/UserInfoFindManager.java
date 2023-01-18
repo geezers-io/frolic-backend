@@ -37,10 +37,11 @@ public class UserInfoFindManager implements UserInfoFindable {
     authCodeCacheManager.removeAuthenticationCode(id);
   }
 
-  @Deprecated
   @Override
   public String createCode() {
-    return String.valueOf( Math.floor((Math.random() * 100000) + 999999));
+    return String.valueOf(
+      (int)Math.floor((Math.random() * 100000) + 999999)
+    );
   }
 
 }
