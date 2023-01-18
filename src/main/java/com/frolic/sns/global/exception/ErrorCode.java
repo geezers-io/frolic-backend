@@ -27,7 +27,8 @@ public enum ErrorCode {
   MISMATCH_FINDER_TYPE(BAD_REQUEST, "인증코드의 유형이 잘못되었습니다."),
   OVER_TRIED_AUTH_CODE(BAD_REQUEST, "인증코드 유효 횟수를 초과하였습니다."),
   MISMATCH_AUTH_CODE(BAD_REQUEST, "인증코드가 맞지 않습니다."),
-  OVER_TIME_AUTH_CODE(BAD_REQUEST, "인증코드의 유효기간이 만료되었습니다.");
+  OVER_TIME_AUTH_CODE(BAD_REQUEST, "인증코드의 유효기간이 만료되었습니다."),
+  NOT_FOUND_COOKIE(BAD_REQUEST, "클라이언트 쿠키 값이 잘못되었습니다.");
 
   private final HttpStatus status;
   private final String details;
