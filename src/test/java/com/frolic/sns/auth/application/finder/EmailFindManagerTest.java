@@ -1,5 +1,7 @@
 package com.frolic.sns.auth.application.finder;
 
+import com.frolic.sns.auth.application.finder.common.AuthCode;
+import com.frolic.sns.auth.application.finder.common.FinderType;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
 import com.frolic.sns.auth.exception.OverTriedAuthCodeException;

@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application.finder;
+package com.frolic.sns.auth.application.finder.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ValueOperations;

@@ -1,5 +1,6 @@
 package com.frolic.sns.auth.application.finder;
 
+import com.frolic.sns.auth.application.finder.common.*;
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;

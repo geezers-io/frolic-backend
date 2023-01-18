@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application.finder;
+package com.frolic.sns.auth.application.finder.common;
 
 public class FinderConstants {
   public static final int EXPIRE_MINUTES = 5;

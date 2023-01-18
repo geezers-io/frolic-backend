@@ -1,7 +1,7 @@
 package com.frolic.sns.auth.application;
 
-import com.frolic.sns.auth.application.finder.AuthCode;
-import com.frolic.sns.auth.application.finder.FinderType;
+import com.frolic.sns.auth.application.finder.common.AuthCode;
+import com.frolic.sns.auth.application.finder.common.FinderType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

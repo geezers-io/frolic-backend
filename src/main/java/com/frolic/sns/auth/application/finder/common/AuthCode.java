@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application.finder;
+package com.frolic.sns.auth.application.finder.common;
 
 import com.frolic.sns.global.util.message.CommonMessageUtils;
 import io.jsonwebtoken.lang.Assert;

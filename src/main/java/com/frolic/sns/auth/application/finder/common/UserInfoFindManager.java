@@ -1,4 +1,4 @@
-package com.frolic.sns.auth.application.finder;
+package com.frolic.sns.auth.application.finder.common;
 
 import com.frolic.sns.auth.exception.MisMatchFinderTypeException;
 import com.frolic.sns.global.exception.NotFoundResourceException;
