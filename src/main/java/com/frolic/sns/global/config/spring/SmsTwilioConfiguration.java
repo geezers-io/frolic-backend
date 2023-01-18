@@ -30,8 +30,10 @@ public class SmsTwilioConfiguration {
     this.token = token;
     this.sid = sid;
     this.twilioPhoneNumber = twilioPhoneNumber;
-    Twilio.init(username, token, sid);
-    log.info("Initialized Twilio Configuration");
+    Twilio.setAccountSid(sid);
+    Twilio.setUsername(sid);
+    Twilio.setPassword(token);
+    log.info("Initializing Twilio Configuration");
   }
 
 }
