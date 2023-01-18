@@ -6,6 +6,7 @@ import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
 import com.frolic.sns.auth.exception.OverTimeAuthCodeException;
 import com.frolic.sns.auth.exception.OverTriedAuthCodeException;
 import com.frolic.sns.global.config.spring.SmsTwilioConfiguration;
+import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.user.exception.UserNotFoundException;
 import com.frolic.sns.user.repository.UserRepository;
 import com.twilio.rest.api.v2010.account.Message;
@@ -32,6 +33,7 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoFin
   }
 
   public UUID sendAuthCode(UserFindEmailRequest request) {
+    userRepository.getEmailByPhoneNumber(request.getPhoneNumber()).orElseThrow(UserNotFoundException::new);
     UUID id = createId();
     String code = createCode();
     AuthCode authCode = AuthCode.createAuthCode(id, code, FinderType.EMAIL, request.getPhoneNumber());
@@ -52,6 +54,7 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoFin
     String receivePhoneNumber = metaData.getDestination();
     String email = userRepository.getEmailByPhoneNumber(receivePhoneNumber).orElseThrow(UserNotFoundException::new);
     send(receivePhoneNumber, email);
+    removeAuthCode(id);
   }
 
   @Override

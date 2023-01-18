@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -30,8 +30,8 @@ public class AuthCodeCacheManager {
    * @implNote 인증코드를 통해 해당 인증코드 객체의 부가 정보를 가져옵니다.
    * @param id 인증코드 정보를 가져올 인증코드 키 입니다.
    */
-  public AuthCode.MetaData getAuthenticationCode(UUID id) {
-    return redisKeyValueStore.get(id.toString());
+  public Optional<AuthCode.MetaData> getAuthenticationCode(UUID id) {
+    return Optional.ofNullable(redisKeyValueStore.get(id.toString()));
   }
 
 }

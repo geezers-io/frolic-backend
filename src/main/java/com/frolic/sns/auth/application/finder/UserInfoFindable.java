@@ -1,6 +1,5 @@
 package com.frolic.sns.auth.application.finder;
 
-
 import java.util.UUID;
 
 public interface UserInfoFindable {
