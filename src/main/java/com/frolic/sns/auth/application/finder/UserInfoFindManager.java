@@ -40,7 +40,7 @@ public class UserInfoFindManager implements UserInfoFindable {
   @Override
   public String createCode() {
     return String.valueOf(
-      (int)Math.floor((Math.random() * 100000) + 999999)
+      (int)(Math.random() * (999999 - 100000 + 1)) + 999999
     );
   }
 
