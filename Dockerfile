@@ -1,5 +1,14 @@
+FROM openjdk:11-jdk AS builder
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
+COPY conf conf
+RUN chmod +x ./gradlew
+RUN ./gradlew :bootJar --warning-mode all
+
 FROM openjdk:11-jdk
-ARG JAR_FILE=./build/libs/restful-server-1.2.0-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-EXPOSE 8080:8080
+ARG JAR_FILE=restful-server-1.2.0-SNAPSHOT.jar
+COPY --from=builder build/libs/${JAR_FILE} app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
