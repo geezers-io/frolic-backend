@@ -71,7 +71,7 @@ class UpdateUserInfoApiTest {
       .addEmail("update64@gmail.com")
       .addRealname("정지용")
       .addUsername("jedily123")
-      .addPhoneNumber("010-3343-5456")
+      .addPhoneNumber("01033435456")
       .build();
 
     MockHttpServletRequestBuilder request = put("/api/users")
