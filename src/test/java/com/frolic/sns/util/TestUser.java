@@ -42,7 +42,7 @@ public enum TestUser {
   ;
 
   public static final String testPassword = "@PerfectSns4276";
-  public static final String testPhoneNumber = "010-3434-4343";
+  public static final String testPhoneNumber = "01034344343";
 
   private final User user;
 
