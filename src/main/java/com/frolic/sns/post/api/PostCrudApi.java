@@ -2,6 +2,7 @@ package com.frolic.sns.post.api;
 
 import com.frolic.sns.post.application.PostCrudManager;
 import com.frolic.sns.post.dto.CreatePostRequest;
+import com.frolic.sns.post.dto.CreatePostRequestV2;
 import com.frolic.sns.post.dto.PostInfo;
 import com.frolic.sns.post.dto.UpdatePostRequest;
 import com.frolic.sns.post.swagger.*;
@@ -45,6 +46,12 @@ public class PostCrudApi {
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(post));
+  }
+
+  @PostMapping("/v2")
+  public ResponseEntity createPostApiV2(@Valid CreatePostRequestV2 createPostRequest, HttpServletRequest request) {
+//    PostInfo post = postCrudManager.createPostV2(getToken(request), createPostRequest);
+    return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }
 
   @GetPostDocs
