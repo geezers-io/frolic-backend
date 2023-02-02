@@ -1,13 +1,23 @@
 package com.frolic.sns.global.common.file.application;
 
+import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.exception.FileDownloadFailureException;
 import com.frolic.sns.global.common.file.exception.FileSaveFailException;
+import com.frolic.sns.global.common.file.model.ApplicationFile;
+import com.frolic.sns.global.common.file.repository.FileRepository;
+import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.user.exception.UserNotFoundException;
+import com.frolic.sns.user.model.User;
+import com.frolic.sns.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,28 +28,41 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-@Slf4j
+@Primary
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class LocalFileManager implements FileManageable {
 
-  private final String uploadDir;
+  private final FileRepository fileRepository;
 
-  public LocalFileManager(
-    @Value("${custom.path.upload-images}") final String uploadDir
-  ) throws IOException {
-    this.uploadDir = uploadDir;
+  private final UserRepository userRepository;
+  private final JwtProvider jwtProvider;
+
+  @Value("${system.path.upload-images}")
+  private String uploadDir;
+
+  @Value("${server.address}")
+  private String host;
+
+  @Value("${server.port}")
+  private String port;
+
+  @PostConstruct
+  public void postConstruct() throws IOException {
     createUploadDirectory();
   }
 
   @Override
-  public void singleUpload(MultipartFile file) {
-    store(file);
+  public FileInfo singleUpload(MultipartFile file, String token) {
+    return store(file, token);
   }
 
   @Override
-  public void multipleUpload(List<MultipartFile> files) {
-    files.forEach(this::store);
+  public List<FileInfo> multipleUpload(List<MultipartFile> files, String token) {
+    return files.stream().map(file -> store(file, token)).collect(Collectors.toList());
   }
 
   @Override
@@ -58,12 +81,33 @@ public class LocalFileManager implements FileManageable {
       Files.createDirectory(Paths.get(this.uploadDir));
   }
 
-  private void store(MultipartFile file) {
+  private FileInfo store(MultipartFile file, String token) {
+    String email = jwtProvider.getUserEmailByToken(token);
+    User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+
     String filename = Objects.requireNonNull(file.getOriginalFilename());
     String temperedFilename = getTemperedFilename(filename);
+
     try (InputStream inputStream = file.getInputStream()) {
       Path updateDirPath = Paths.get(uploadDir + "/" + temperedFilename);
       Files.copy(inputStream, updateDirPath, StandardCopyOption.REPLACE_EXISTING);
+      ApplicationFile applicationFile = ApplicationFile.builder()
+        .addName(temperedFilename)
+        .addSize(file.getSize())
+        .addUser(user)
+        .build();
+      Long id = fileRepository.saveAndFlush(applicationFile).getId();
+
+      String downloadUrl = "http://" + host +
+        ":" +
+        port +
+        "/images/" +
+        temperedFilename;
+      return FileInfo.builder()
+        .addId(id)
+        .addDownloadUrl(downloadUrl)
+        .build();
+
     } catch (Exception ex) {
       log.error(ex.toString());
       throw new FileSaveFailException();
