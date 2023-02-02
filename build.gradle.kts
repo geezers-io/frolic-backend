@@ -76,6 +76,9 @@ dependencies {
   implementation("org.mockito:mockito-core:4.11.0")
 
   implementation("com.google.code.findbugs:jsr305:3.0.2")
+
+  implementation("com.amazonaws:aws-java-sdk:1.12.397")
+
 }
 
 tasks.withType<Test> {
@@ -107,8 +110,14 @@ sourceSets {
   }
 }
 
-//sourceSets {
-//  main.java.srcDir querydslDir
+//tasks.withType<QuerydslCompile> {
+//  doFirst {
+//    delete("$buildDir/generated/querydsl/com")
+//  }
+//
+//  options.annotationProcessorPath {
+//    configurations.querydsl
+//  }
 //}
 
 //compileQuerydsl {
