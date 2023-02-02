@@ -1,9 +1,8 @@
 package com.frolic.sns.post.application;
 
-import com.frolic.sns.post.dto.CreatePostRequest;
-import com.frolic.sns.post.dto.PostInfo;
-import com.frolic.sns.post.dto.CommentInfo;
-import com.frolic.sns.post.dto.UpdatePostRequest;
+import com.frolic.sns.global.common.file.model.ApplicationFile;
+import com.frolic.sns.global.common.file.repository.FileRepository;
+import com.frolic.sns.post.dto.*;
 import com.frolic.sns.post.model.*;
 import com.frolic.sns.post.repository.*;
 import com.frolic.sns.global.common.file.application.CustomFile;
@@ -72,7 +71,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     post.updateTextContent(singleArticleInfoDto.getTextContent()); // 본문 갱신
 
     // 파일 삭제내용이 있다면 게시글 연관 파일 삭제
-    int articleOwnedFileSize = post.getFiles().size();
+    int articleOwnedFileSize = post.getApplicationFiles().size();
     int updateRequestFileSize = singleArticleInfoDto.getFileDownloadUrls().size();
 
     if (articleOwnedFileSize != updateRequestFileSize) {
@@ -87,10 +86,10 @@ public class PostCrudManagerImpl implements PostCrudManager {
         updatedFilenames.addAll(createdFilenames);
       }
 
-      List<File> filteredFiles = fileRepository.findAllByPost(post).stream()
+      List<ApplicationFile> filteredApplicationFiles = fileRepository.findAllByPost(post).stream()
         .filter(file -> !updatedFilenames.contains(file.getName()))
         .collect(Collectors.toList());
-      fileRepository.deleteAll(filteredFiles);
+      fileRepository.deleteAll(filteredApplicationFiles);
       post.updateFiles(fileRepository.findAllByPost(post));
       postRepository.save(post);
     }
@@ -142,6 +141,28 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addLikeCount(0L)
       .addUserInfo(userInfo)
       .addFileDownloadUrls(fileDownloadUrls)
+      .addCreatedDate(newPost.getCreatedDate())
+      .addUpdatedDate(newPost.getUpdatedDate())
+      .addIsLikeUp(false)
+      .build();
+  }
+
+  public PostInfo createPostV2(String token, CreatePostRequestV2 createPostRequest) {
+    User user = getUserIsTokenAble(token);
+    Post newPost = postRepository.saveAndFlush(
+      Post.builder()
+        .addUser(user)
+        .addTextContent(createPostRequest.getTextContent())
+        .build()
+    );
+
+    return PostInfo.builder()
+      .addId(newPost.getId())
+      .addTextContent(newPost.getTextContent())
+      .addComments(new ArrayList<>())
+      .addHashtags(createPostRequest.getHashtags())
+      .addLikeCount(0L)
+      .addUserInfo(UserInfo.from(user))
       .addCreatedDate(newPost.getCreatedDate())
       .addUpdatedDate(newPost.getUpdatedDate())
       .addIsLikeUp(false)

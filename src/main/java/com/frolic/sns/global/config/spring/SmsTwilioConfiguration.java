@@ -20,9 +20,9 @@ public class SmsTwilioConfiguration {
 
   @Autowired
   public SmsTwilioConfiguration(
-    @Value("${custom.twilio.token}") final String token,
-    @Value("${custom.twilio.phone-number}") final String twilioPhoneNumber,
-    @Value("${custom.twilio.sid}") final String sid
+    @Value("${system.twilio.token}") final String token,
+    @Value("${system.twilio.phone-number}") final String twilioPhoneNumber,
+    @Value("${system.twilio.sid}") final String sid
   ) {
     this.token = token;
     this.sid = sid;

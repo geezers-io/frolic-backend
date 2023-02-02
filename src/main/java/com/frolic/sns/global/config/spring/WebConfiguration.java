@@ -9,16 +9,17 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-  @Value("${custom.path.upload-images}")
+  @Value("${system.path.upload-images}")
   private String uploadImagesPath;
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry
-      .addResourceHandler("/static/img/**")
+      .addResourceHandler("/images/**")
       .addResourceLocations("file:///" + uploadImagesPath + "/")
       .setCachePeriod(3600)
       .resourceChain(true)
       .addResolver(new PathResourceResolver());
   }
+
 }

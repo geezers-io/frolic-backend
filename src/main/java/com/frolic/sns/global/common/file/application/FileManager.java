@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public interface FileManager {
 
   void singleFileUpload(CustomFile file);
