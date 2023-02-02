@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class FileUtilTest {
+public class ApplicationFileUtilTest {
 
   private final String fileDownloadUrl =
     "http://localhost:8080/api/download/KakaoTalk_20210130_201328352_8d5a64ed-8db9-4077-90c6-a3424eae00601669379150304.jpg";

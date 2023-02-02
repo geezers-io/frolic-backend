@@ -1,6 +1,10 @@
-package com.frolic.sns.post.model;
+package com.frolic.sns.global.common.file.model;
 
 import com.frolic.sns.global.common.file.application.CustomFile;
+import com.frolic.sns.global.util.message.CommonMessageUtils;
+import com.frolic.sns.post.model.Post;
+import com.frolic.sns.user.model.User;
+import io.jsonwebtoken.lang.Assert;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +17,7 @@ import javax.persistence.*;
 @Entity(name = "files")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class File {
+public class ApplicationFile {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,23 +39,31 @@ public class File {
   @JoinColumn(name = "post_id")
   private Post post;
 
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
   // TODO: 2022-11-24 안정성 수정 필요 
   @Builder(setterPrefix = "add")
-  public File(String name, Long size, Post post) {
+  public ApplicationFile(String name, Long size, User user) {
+    Assert.hasText(name, CommonMessageUtils.getIllegalFieldError("name"));
+    Assert.isInstanceOf(Long.class, size, CommonMessageUtils.getIllegalFieldError("size"));
+    Assert.notNull(user, CommonMessageUtils.getIllegalFieldError("user"));
     this.name = name;
     this.size = size;
-    this.post = post;
+    this.user = user;
   }
 
-  public static File createFileByCustomFile(CustomFile file, Post post) {
+  @Deprecated
+  public static ApplicationFile createFileByCustomFile(CustomFile file, Post post) {
     MultipartFile multipartFile = file.getFile();
-    return File.builder()
+    return com.frolic.sns.global.common.file.model.ApplicationFile.builder()
       .addName(file.getCustomFilename())
       .addSize(multipartFile.getSize())
-      .addPost(post)
       .build();
   }
 
+  @Deprecated
   public String getDownloadUrl() {
     return HOST + ":" + PORT + "/api/download/" + name;
   }

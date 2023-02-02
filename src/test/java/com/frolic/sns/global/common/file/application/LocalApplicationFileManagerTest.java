@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LocalFileManagerTest {
+class LocalApplicationFileManagerTest {
 
   @Autowired
   protected LocalFileManager localFileManager;
