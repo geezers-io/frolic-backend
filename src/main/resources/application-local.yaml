@@ -1,0 +1,56 @@
+spring:
+
+  profiles:
+    include:
+      - 'system'
+      - 'jwt-config'
+
+  devtools:
+    add-properties: true
+    restart:
+      enabled: true
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 50MB
+      max-request-size: 50MB
+      location: /uploads
+
+  level:
+    org.hibernate.sql: DEBUG
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+springdoc:
+  swagger-ui:
+    path: '/swagger.html'
+    groups-order: desc
+    operations-sorter: method
+    enabled: true
+  api-docs:
+    path: '/api-docs'
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

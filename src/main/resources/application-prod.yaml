@@ -1,0 +1,30 @@
+spring:
+
+  profiles:
+    include:
+      - 'system'
+      - 'jwt-config'
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 50MB
+      max-request-size: 50MB
+      location: /uploads
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+  show-actuator: false
