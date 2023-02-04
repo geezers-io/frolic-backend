@@ -3,13 +3,20 @@ package com.frolic.sns.auth.api;
 import com.frolic.sns.auth.application.finder.EmailFindManager;
 import com.frolic.sns.auth.application.finder.SendTempPasswordManager;
 import com.frolic.sns.auth.application.finder.TempPasswordCreator;
+import com.frolic.sns.auth.application.finder.common.AuthCode;
+import com.frolic.sns.auth.application.finder.common.AuthCodeCacheManager;
+import com.frolic.sns.auth.application.finder.common.FinderType;
+import com.frolic.sns.auth.application.finder.common.UserInfoFindManager;
 import com.frolic.sns.auth.dto.*;
 import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.exception.NotFoundCookieException;
-import com.frolic.sns.user.exception.UserNotFoundException;
+import com.frolic.sns.user.model.User;
+import com.frolic.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +36,13 @@ public class UserInfoFinderApi {
   private final EmailFindManager emailFindManager;
   private final SendTempPasswordManager sendTempPasswordManager;
   private final TempPasswordCreator tempPasswordCreator;
+  private final UserRepository userRepository;
+
+  private final UserInfoFindManager userInfoFindManager;
+
+  private final PasswordEncoder passwordEncoder;
+
+  private final AuthCodeCacheManager authCodeCacheManager;
 
   @PostMapping("/email")
   public ResponseEntity<Void> sendEmailFinderAuthCodeApi(
@@ -41,7 +55,8 @@ public class UserInfoFinderApi {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @PostMapping("/tempPassword")
+  @Cacheable(value = "password", key = "#request.email")
+  @PostMapping("/password")
   public ResponseEntity<Void> sendTempPasswordAuthCodeApi(
           @RequestBody @Valid UserTempPasswordRequest request,
           HttpServletResponse response
@@ -59,27 +74,33 @@ public class UserInfoFinderApi {
     Cookie[] cookies = httpRequest.getCookies();
     UUID id = parseSidFromCookies(cookies, SidType.EMAIL_SID);
     String email = emailFindManager.authCodeVerify(id, verifyCodeRequest);
-    System.out.println("verifyCodeRequest : " + verifyCodeRequest);
     UserFindEmailResponse response = new UserFindEmailResponse(email);
     return ResponseEntity.ok(ResponseHelper.createDataMap(response));
   }
 
-  @PostMapping("/tempPassword/check")
+  @PostMapping("/password/check")
   public ResponseEntity<Map<String, UserTempPasswordResponse>> verifyTempPasswordAuthCodeApi(
           @RequestBody @Valid VerifyCodeRequest verifyCodeRequest,
           HttpServletRequest httpRequest
   ) {
     Cookie[] cookies = httpRequest.getCookies();
     UUID id = parseSidFromCookies(cookies, SidType.TEMP_PASSWORD_SID);
+
     String email = sendTempPasswordManager.authCodeVerify(id, verifyCodeRequest);
-    String phoneNumber = sendTempPasswordManager.phoneNumberVal(email);
 
-    //임시 비밀번호 생성
+    //String testhp = userInfoFindManager.getAuthCode(id, FinderType.PASSWORD).getDestination();
+    AuthCode.MetaData metaData_1 = userInfoFindManager.getAuthCode(id, FinderType.PASSWORD);
+    String testhp = metaData_1.getDestination();
+
+    System.out.println("testhp : "+ testhp);
+    System.out.println("controller phoneNumber : " + testhp);
     String password = tempPasswordCreator.create();
-    System.out.println("password : " + password);
+    System.out.println("controller password : " + password);
 
-    // 생성된 다음 db에 encoding해서 저장 후 메일 발송
-    sendTempPasswordManager.changeTempPassword(email, phoneNumber, password);
+    String encodedPassword = passwordEncoder.encode(password);
+
+    userRepository.save(User.builder().addEmail(email).addPhoneNumber(testhp).addPassword(encodedPassword).build());
+    sendTempPasswordManager.sendMsgMail(email, password);
     
     return ResponseEntity.status(HttpStatus.OK).build();
   }
