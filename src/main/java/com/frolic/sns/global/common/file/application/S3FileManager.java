@@ -16,12 +16,12 @@ public class S3FileManager implements FileManageable {
   private final FileRepository fileRepository;
 
   @Override
-  public FileInfo singleUpload(MultipartFile file, String token) {
+  public FileInfo singleUpload(MultipartFile file) {
     return null;
   }
 
   @Override
-  public List<FileInfo> multipleUpload(List<MultipartFile> files, String token) {
+  public List<FileInfo> multipleUpload(List<MultipartFile> files) {
     return null;
   }
 

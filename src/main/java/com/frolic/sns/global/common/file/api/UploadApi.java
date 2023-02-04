@@ -20,14 +20,10 @@ import java.util.Map;
 public class UploadApi {
 
   private final FileManageable fileManager;
-  private final JwtProvider jwtProvider;
 
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-  public ResponseEntity<Map<String, FileInfo>> uploadFileApi(
-    @RequestPart MultipartFile file,
-    HttpServletRequest request
-  ) {
-    FileInfo fileInfo = fileManager.singleUpload(file, jwtProvider.getTokenByHttpRequestHeader(request));
+  public ResponseEntity<Map<String, FileInfo>> uploadFileApi(@RequestPart MultipartFile file) {
+    FileInfo fileInfo = fileManager.singleUpload(file);
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseHelper.createDataMap(fileInfo));
   }
 

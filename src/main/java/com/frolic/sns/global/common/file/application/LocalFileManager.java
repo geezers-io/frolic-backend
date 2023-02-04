@@ -56,13 +56,13 @@ public class LocalFileManager implements FileManageable {
   }
 
   @Override
-  public FileInfo singleUpload(MultipartFile file, String token) {
-    return store(file, token);
+  public FileInfo singleUpload(MultipartFile file) {
+    return store(file);
   }
 
   @Override
-  public List<FileInfo> multipleUpload(List<MultipartFile> files, String token) {
-    return files.stream().map(file -> store(file, token)).collect(Collectors.toList());
+  public List<FileInfo> multipleUpload(List<MultipartFile> files) {
+    return files.stream().map(this::store).collect(Collectors.toList());
   }
 
   @Override
@@ -81,10 +81,7 @@ public class LocalFileManager implements FileManageable {
       Files.createDirectory(Paths.get(this.uploadDir));
   }
 
-  private FileInfo store(MultipartFile file, String token) {
-    String email = jwtProvider.getUserEmailByToken(token);
-    User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-
+  private FileInfo store(MultipartFile file) {
     String filename = Objects.requireNonNull(file.getOriginalFilename());
     String temperedFilename = getTemperedFilename(filename);
 
@@ -94,7 +91,6 @@ public class LocalFileManager implements FileManageable {
       ApplicationFile applicationFile = ApplicationFile.builder()
         .addName(temperedFilename)
         .addSize(file.getSize())
-        .addUser(user)
         .build();
       Long id = fileRepository.saveAndFlush(applicationFile).getId();
 
