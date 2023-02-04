@@ -33,9 +33,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Optional<String> getUserInfoPwExist(@Param("email") String email, @Param("phoneNumber") String phoneNumber);
 
   @Modifying
-  @Transactional
   @Query("update users u set u.password = ?1 where u.email = ?2 and u.phoneNumber = ?3")
-  void setTempPassword(@Param("password") String password,
+  void changeTempPassword(@Param("password") String password,
                           @Param("email") String email,
                           @Param("phoneNumber") String phoneNumber);
 }
