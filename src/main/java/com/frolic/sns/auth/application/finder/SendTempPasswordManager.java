@@ -57,7 +57,7 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
   }
 
   @Override
-  public String authCodeVerify(UUID id, VerifyCodeRequest request) {
+  public AuthCode.MetaData verifyAuthCode(UUID id, VerifyCodeRequest request) {
     AuthCode.MetaData metaData = getAuthCode(id, FinderType.PASSWORD);
 
     String receiveCode = request.getCode();
@@ -75,7 +75,7 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
     System.out.println("service receivePhoneNumber : " + receivePhoneNumber);
 
     removeAuthCode(id);
-    return userInfoExist;
+    return metaData;
   }
 
   @Override

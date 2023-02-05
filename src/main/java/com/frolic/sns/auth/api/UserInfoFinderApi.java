@@ -13,7 +13,6 @@ import com.frolic.sns.global.exception.NotFoundCookieException;
 import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +54,7 @@ public class UserInfoFinderApi {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @Cacheable(value = "password", key = "#request.email")
+//  @Cacheable(value = "password", key = "#request.email")
   @PostMapping("/password")
   public ResponseEntity<Void> sendTempPasswordAuthCodeApi(
           @RequestBody @Valid UserTempPasswordRequest request,
@@ -73,9 +72,9 @@ public class UserInfoFinderApi {
   ) {
     Cookie[] cookies = httpRequest.getCookies();
     UUID id = parseSidFromCookies(cookies, SidType.EMAIL_SID);
-    String email = emailFindManager.authCodeVerify(id, verifyCodeRequest);
-    UserFindEmailResponse response = new UserFindEmailResponse(email);
-    return ResponseEntity.ok(ResponseHelper.createDataMap(response));
+    AuthCode.MetaData metaData = emailFindManager.verifyAuthCode(id, verifyCodeRequest);
+    UserFindEmailResponse emailResponse = emailFindManager.getFindEmailByDest(metaData.getDestination());
+    return ResponseEntity.ok(ResponseHelper.createDataMap(emailResponse));
   }
 
   @PostMapping("/password/check")
@@ -86,11 +85,10 @@ public class UserInfoFinderApi {
     Cookie[] cookies = httpRequest.getCookies();
     UUID id = parseSidFromCookies(cookies, SidType.TEMP_PASSWORD_SID);
 
-    String email = sendTempPasswordManager.authCodeVerify(id, verifyCodeRequest);
+    AuthCode.MetaData metaData = sendTempPasswordManager.verifyAuthCode(id, verifyCodeRequest);
 
     //String testhp = userInfoFindManager.getAuthCode(id, FinderType.PASSWORD).getDestination();
-    AuthCode.MetaData metaData_1 = userInfoFindManager.getAuthCode(id, FinderType.PASSWORD);
-    String testhp = metaData_1.getDestination();
+    String testhp = metaData.getDestination();
 
     System.out.println("testhp : "+ testhp);
     System.out.println("controller phoneNumber : " + testhp);
@@ -99,8 +97,8 @@ public class UserInfoFinderApi {
 
     String encodedPassword = passwordEncoder.encode(password);
 
-    userRepository.save(User.builder().addEmail(email).addPhoneNumber(testhp).addPassword(encodedPassword).build());
-    sendTempPasswordManager.sendMsgMail(email, password);
+//    userRepository.save(User.builder().addEmail(email).addPhoneNumber(testhp).addPassword(encodedPassword).build());
+//    sendTempPasswordManager.sendMsgMail(email, password);
     
     return ResponseEntity.status(HttpStatus.OK).build();
   }
