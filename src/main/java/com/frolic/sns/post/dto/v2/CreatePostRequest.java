@@ -2,6 +2,7 @@ package com.frolic.sns.post.dto.v2;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.Max;
@@ -10,14 +11,15 @@ import java.util.List;
 import static com.frolic.sns.global.util.message.CommonMessageUtils.getIllegalFieldError;
 
 @Getter
+@NoArgsConstructor
 public class CreatePostRequest {
 
-  @Max(value = 150, message = "게시글 본문은 150 글자 이하여야 합니다.")
-  private final String textContent;
+//  @Max(value = 150, message = "게시글 본문은 150 글자 이하여야 합니다.")
+  private String textContent;
 
-  private final List<String> hashtags;
+  private List<String> hashtags;
 
-  private final List<Long> imageIds;
+  private List<Long> imageIds;
 
   @Builder(setterPrefix = "add")
   public CreatePostRequest(

@@ -88,17 +88,17 @@ public class LocalFileManager implements FileManageable {
     try (InputStream inputStream = file.getInputStream()) {
       Path updateDirPath = Paths.get(uploadDir + "/" + temperedFilename);
       Files.copy(inputStream, updateDirPath, StandardCopyOption.REPLACE_EXISTING);
-      ApplicationFile applicationFile = ApplicationFile.builder()
-        .addName(temperedFilename)
-        .addSize(file.getSize())
-        .build();
-      Long id = fileRepository.saveAndFlush(applicationFile).getId();
-
       String downloadUrl = "http://" + host +
         ":" +
         port +
         "/images/" +
         temperedFilename;
+      ApplicationFile applicationFile = ApplicationFile.builder()
+        .addName(temperedFilename)
+        .addSize(file.getSize())
+        .addDownloadUrl(downloadUrl)
+        .build();
+      Long id = fileRepository.saveAndFlush(applicationFile).getId();
       return FileInfo.builder()
         .addId(id)
         .addDownloadUrl(downloadUrl)

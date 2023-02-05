@@ -21,7 +21,6 @@ public class HashTagManager {
 
   protected void connectHashtagsWithPost(List<String> hashtags, Post post) {
     List<Hashtag> entities = hashtagDslRepository.createHashtagsIfNotExists(hashtags);
-
     entities.forEach(entity -> {
       boolean isAlreadyExistsRelation = postHashtagRepository.existsByPostAndHashtag(post, entity);
       if (!isAlreadyExistsRelation) {
