@@ -12,13 +12,16 @@ public class FileInfo {
 
   private final Long id;
   private final String downloadUrl;
+  private final String filename;
 
   @Builder(setterPrefix = "add")
-  public FileInfo(final Long id, final String downloadUrl) {
+  public FileInfo(final Long id, final String downloadUrl, final String filename) {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("id"));
     Assert.hasText(downloadUrl, getIllegalFieldError("downloadUrl"));
+    Assert.hasText(filename, getIllegalFieldError("filename"));
     this.id = id;
     this.downloadUrl = downloadUrl;
+    this.filename = filename;
   }
 
 }

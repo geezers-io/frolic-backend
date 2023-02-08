@@ -38,9 +38,6 @@ public class LocalFileManager implements FileManageable {
 
   private final FileRepository fileRepository;
 
-  private final UserRepository userRepository;
-  private final JwtProvider jwtProvider;
-
   @Value("${system.path.upload-images}")
   private String uploadDir;
 
@@ -49,6 +46,9 @@ public class LocalFileManager implements FileManageable {
 
   @Value("${server.port}")
   private String port;
+
+  @Value("${system.protocol}")
+  private String protocol;
 
   @PostConstruct
   public void postConstruct() throws IOException {
@@ -88,11 +88,7 @@ public class LocalFileManager implements FileManageable {
     try (InputStream inputStream = file.getInputStream()) {
       Path updateDirPath = Paths.get(uploadDir + "/" + temperedFilename);
       Files.copy(inputStream, updateDirPath, StandardCopyOption.REPLACE_EXISTING);
-      String downloadUrl = "http://" + host +
-        ":" +
-        port +
-        "/images/" +
-        temperedFilename;
+      String downloadUrl = protocol + "://" + host + ":" + port + "/images/" + temperedFilename;
       ApplicationFile applicationFile = ApplicationFile.builder()
         .addName(temperedFilename)
         .addSize(file.getSize())
@@ -102,6 +98,7 @@ public class LocalFileManager implements FileManageable {
       return FileInfo.builder()
         .addId(id)
         .addDownloadUrl(downloadUrl)
+        .addFilename(temperedFilename)
         .build();
 
     } catch (Exception ex) {
