@@ -31,9 +31,6 @@ public class Post extends CreateAndModifiedTimeAuditEntity {
   private User user;
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-  private final List<PostHashTag> postHashTags = new ArrayList<>();
-
-  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
   private List<ApplicationFile> applicationFiles = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
@@ -58,6 +55,7 @@ public class Post extends CreateAndModifiedTimeAuditEntity {
     this.textContent = textContent;
   }
 
+  @Deprecated
   public void updateFiles(List<ApplicationFile> applicationFiles) {
     this.applicationFiles = applicationFiles;
   }
