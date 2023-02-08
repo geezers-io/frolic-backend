@@ -35,23 +35,21 @@ public class ApplicationFile {
   @Value("${server.port}")
   private String PORT;
 
+  private String downloadUrl;
+
+  @Deprecated
   @ManyToOne
   @JoinColumn(name = "post_id")
   private Post post;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
-
   // TODO: 2022-11-24 안정성 수정 필요 
   @Builder(setterPrefix = "add")
-  public ApplicationFile(String name, Long size, User user) {
+  public ApplicationFile(String name, Long size, String downloadUrl) {
     Assert.hasText(name, CommonMessageUtils.getIllegalFieldError("name"));
     Assert.isInstanceOf(Long.class, size, CommonMessageUtils.getIllegalFieldError("size"));
-    Assert.notNull(user, CommonMessageUtils.getIllegalFieldError("user"));
     this.name = name;
     this.size = size;
-    this.user = user;
+    this.downloadUrl = downloadUrl;
   }
 
   @Deprecated
@@ -61,11 +59,6 @@ public class ApplicationFile {
       .addName(file.getCustomFilename())
       .addSize(multipartFile.getSize())
       .build();
-  }
-
-  @Deprecated
-  public String getDownloadUrl() {
-    return HOST + ":" + PORT + "/api/download/" + name;
   }
 
 }

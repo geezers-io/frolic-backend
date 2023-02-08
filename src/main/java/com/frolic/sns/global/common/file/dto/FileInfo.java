@@ -5,6 +5,8 @@ import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
 
+import static com.frolic.sns.global.util.message.CommonMessageUtils.getIllegalFieldError;
+
 @Getter
 public class FileInfo {
 
@@ -13,8 +15,8 @@ public class FileInfo {
 
   @Builder(setterPrefix = "add")
   public FileInfo(final Long id, final String downloadUrl) {
-    Assert.isInstanceOf(Long.class, id, CommonMessageUtils.getIllegalFieldError("id"));
-    Assert.hasText(downloadUrl, CommonMessageUtils.getIllegalFieldError("downloadUrl"));
+    Assert.isInstanceOf(Long.class, id, getIllegalFieldError("id"));
+    Assert.hasText(downloadUrl, getIllegalFieldError("downloadUrl"));
     this.id = id;
     this.downloadUrl = downloadUrl;
   }

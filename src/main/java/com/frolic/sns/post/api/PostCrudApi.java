@@ -1,8 +1,7 @@
 package com.frolic.sns.post.api;
 
 import com.frolic.sns.post.application.PostCrudManager;
-import com.frolic.sns.post.dto.CreatePostRequest;
-import com.frolic.sns.post.dto.CreatePostRequestV2;
+import com.frolic.sns.post.dto.v2.CreatePostRequest;
 import com.frolic.sns.post.dto.PostInfo;
 import com.frolic.sns.post.dto.UpdatePostRequest;
 import com.frolic.sns.post.swagger.*;
@@ -38,7 +37,7 @@ public class PostCrudApi {
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<Map<String, PostInfo>> createPostApi(
     HttpServletRequest request,
-    @RequestPart @Valid CreatePostRequest createPostRequest,
+    @RequestPart @Valid com.frolic.sns.post.dto.CreatePostRequest createPostRequest,
     @RequestPart(required = false) List<MultipartFile> files
   ) {
     List<CustomFile> customFiles = FileManager.createCustomFileList(files);
@@ -49,7 +48,7 @@ public class PostCrudApi {
   }
 
   @PostMapping("/v2")
-  public ResponseEntity createPostApiV2(@Valid CreatePostRequestV2 createPostRequest, HttpServletRequest request) {
+  public ResponseEntity createPostApiV2(@Valid CreatePostRequest createPostRequest, HttpServletRequest request) {
 //    PostInfo post = postCrudManager.createPostV2(getToken(request), createPostRequest);
     return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }
