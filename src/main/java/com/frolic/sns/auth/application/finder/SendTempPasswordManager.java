@@ -8,12 +8,10 @@ import com.frolic.sns.auth.exception.OverTimeAuthCodeException;
 import com.frolic.sns.auth.exception.OverTriedAuthCodeException;
 import com.frolic.sns.global.config.spring.SmsTwilioConfiguration;
 import com.frolic.sns.user.exception.UserNotFoundException;
+import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.repository.UserRepository;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +29,7 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
   private final PasswordEncoder passwordEncoder;
   private final PhoneNumber sender;
   private final JavaMailSender javaMailSender;
+  private final EntityManager entityManager;
   private static final String senderEmail = "han05081486@gmail.com";
 
   public SendTempPasswordManager(
@@ -38,12 +37,13 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
           UserRepository userRepository,
           PasswordEncoder passwordEncoder,
           SmsTwilioConfiguration smsTwilioConfiguration,
-          JavaMailSender javaMailSender) {
+          JavaMailSender javaMailSender, EntityManager entityManager) {
     super(authCodeCacheManager);
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.sender = new PhoneNumber(smsTwilioConfiguration.getTwilioPhoneNumber());
     this.javaMailSender = javaMailSender;
+    this.entityManager = entityManager;
   }
 
   public UUID sendAuthCode(UserTempPasswordRequest request) {
@@ -74,7 +74,7 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
     System.out.println("service userInfoExist : " + userInfoExist);
     System.out.println("service receivePhoneNumber : " + receivePhoneNumber);
 
-    removeAuthCode(id);
+    //removeAuthCode(id);
     return metaData;
   }
 
@@ -104,26 +104,31 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
       throw new OverTimeAuthCodeException();
   }
 
-  public String phoneNumberVal(String email){
-    return userRepository.getPhoneNumberByEmail(email).orElseThrow(UserNotFoundException::new);
-  }
-
-  @Autowired
-  private EntityManager entityManager;
 
   //임시 비밀번호 db에 저장
 
   @Transactional
-  public void changeTempPassword(String email, String phoneNumber, String password) {
+  public void changeTempPassword(String password, String phoneNumber) {
+    System.out.println("service : " + password + " ," + phoneNumber);
     String encodedPassword = passwordEncoder.encode(password);
+    System.out.println("service encodepw : " + encodedPassword);
+    String email = userRepository.getEmailByPhoneNumber(phoneNumber).orElseThrow();
+    System.out.println("service email : " + email);
 
-    //entityManager.persist(encodedPassword);
+    UserTempPasswordRequest userTempPasswordRequest = UserTempPasswordRequest.builder()
+            .addEmail(email)
+            .addPhoneNumber(phoneNumber)
+            .addPassword(encodedPassword)
+            .build();
+
+    entityManager.persist(userTempPasswordRequest.toEntity());
     userRepository.changeTempPassword(encodedPassword, email, phoneNumber);
   }
 
 
-  public void sendMsgMail(String email, String password){
+  public void sendMsgMail(String password, String phoneNumber){
     SimpleMailMessage message = new SimpleMailMessage();
+    String email = userRepository.getEmailByPhoneNumber(phoneNumber).orElseThrow();
 
     message.setFrom(senderEmail);
     message.setTo(email);

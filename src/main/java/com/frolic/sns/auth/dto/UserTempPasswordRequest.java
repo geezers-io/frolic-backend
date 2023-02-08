@@ -1,8 +1,11 @@
 package com.frolic.sns.auth.dto;
 
+import com.frolic.sns.user.model.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -19,10 +22,24 @@ public class UserTempPasswordRequest {
     message = "폰 번호 형식이 잘못되었습니다."
   )
   private String phoneNumber;
+  private String password;
 
-  public UserTempPasswordRequest(String email, String phoneNumber) {
+  public User toEntity() {
+    return User.builder()
+            .addEmail(email)
+            .addPhoneNumber(phoneNumber)
+            .addPassword(password)
+            .build();
+  }
+
+  @Builder(setterPrefix = "add")
+  public UserTempPasswordRequest(
+          String email,
+          String phoneNumber,
+          String password) {
     this.email = email;
     this.phoneNumber = phoneNumber;
+    this.password = password;
   }
 
   @Override

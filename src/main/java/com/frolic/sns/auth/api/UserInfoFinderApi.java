@@ -87,18 +87,17 @@ public class UserInfoFinderApi {
 
     AuthCode.MetaData metaData = sendTempPasswordManager.verifyAuthCode(id, verifyCodeRequest);
 
-    //String testhp = userInfoFindManager.getAuthCode(id, FinderType.PASSWORD).getDestination();
-    String testhp = metaData.getDestination();
+    String phoneNumner = metaData.getDestination();
 
-    System.out.println("testhp : "+ testhp);
-    System.out.println("controller phoneNumber : " + testhp);
+    System.out.println("controller phoneNumber : " + phoneNumner);
     String password = tempPasswordCreator.create();
     System.out.println("controller password : " + password);
 
     String encodedPassword = passwordEncoder.encode(password);
 
 //    userRepository.save(User.builder().addEmail(email).addPhoneNumber(testhp).addPassword(encodedPassword).build());
-//    sendTempPasswordManager.sendMsgMail(email, password);
+    sendTempPasswordManager.changeTempPassword(password, phoneNumner);  //임시 비번 저장 메소드
+    sendTempPasswordManager.sendMsgMail(password, phoneNumner);  //임시비번 메일로 전송하는 메소드
     
     return ResponseEntity.status(HttpStatus.OK).build();
   }
