@@ -1,4 +1,5 @@
 system:
+  protocol: "http"
   twilio:
     sid: ${TWILIO_SID}
     token: ${TWILIO_TOKEN}

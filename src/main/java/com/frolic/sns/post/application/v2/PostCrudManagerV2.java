@@ -1,27 +1,22 @@
 package com.frolic.sns.post.application.v2;
 
-import com.frolic.sns.global.common.file.application.FileManageable;
 import com.frolic.sns.global.common.file.dto.FileInfo;
-import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.global.common.jwt.JwtEntityLoader;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
+import com.frolic.sns.post.dto.v2.UpdatePostRequest;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.model.PostFile;
 import com.frolic.sns.post.repository.*;
-import com.frolic.sns.user.dto.UserInfo;
+import com.frolic.sns.user.exception.NotPermissionException;
 import com.frolic.sns.user.model.User;
-import com.frolic.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,48 +28,45 @@ public class PostCrudManagerV2 {
   private final PostRepository postRepository;
   private final PostFileDslRepository postFileDslRepository;
   private final JwtEntityLoader entityLoader;
+  private final CreatePostBusinessManager createPostBusinessManager;
+  private final UpdatePostBusinessManager updatePostBusinessManager;
 
   public PostInfo createPost(String token, CreatePostRequest createPostRequest) {
     User user = entityLoader.getUser(token);
     List<String> hashtags = createPostRequest.getHashtags();
-    Post newPost = commitAndReturnPost(createPostRequest, user);
+    Post newPost = createPostBusinessManager.commitAndReturnPost(createPostRequest, user);
     hashTagManager.connectHashtagsWithPost(hashtags, newPost);
+
     List<PostFile> createdPostFiles = postFileDslRepository.createPostFilesByIds(newPost, createPostRequest.getImageIds());
-    List<FileInfo> fileInfos = createdPostFiles.stream().map((postFile) -> {
-        ApplicationFile file = postFile.getFile();
-        log.warn("filename: {}", file.getName());
-        return FileInfo.builder()
-          .addId(file.getId())
-          .addDownloadUrl(file.getDownloadUrl())
-          .build();
-      }
-    )
-      .collect(Collectors.toList());
+    List<FileInfo> fileInfos = createPostBusinessManager.getFileInfosFromPostFiles(createdPostFiles);
 
-    return getInitializedPostInfoBuilder(newPost)
+    return createPostBusinessManager.getInitializedPostInfoBuilder(newPost, createPostRequest, user)
       .addFiles(fileInfos)
-      .addHashtags(hashtags)
-      .addUserInfo(UserInfo.from(user))
       .build();
   }
 
-  private Post commitAndReturnPost(CreatePostRequest createPostRequest, User user) {
-    Post buildedPost = Post.builder()
-      .addUser(user)
-      .addTextContent(createPostRequest.getTextContent())
+  public PostInfo updatePost(Long postId, String token, UpdatePostRequest updatePostRequest) {
+    User user = entityLoader.getUser(token);
+    Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
+    updatePostBusinessManager.checkUserPermission(user, post.getUser());
+    updatePostBusinessManager.updateHashtags(post, updatePostRequest.getHashtags());
+    List<FileInfo> fileInfos = updatePostBusinessManager.updateImages(post, updatePostRequest.getImageIds());
+    post.updateTextContent(updatePostRequest.getTextContent());
+    postRepository.save(post);
+
+    return updatePostBusinessManager.getBuilder(post, user)
+      .addHashtags(updatePostRequest.getHashtags())
+      .addFiles(fileInfos)
       .build();
-    return postRepository.saveAndFlush(buildedPost);
   }
 
-  private PostInfo.PostInfoBuilder getInitializedPostInfoBuilder(Post post) {
-    return PostInfo.builder()
-      .addId(post.getId())
-      .addTextContent(post.getTextContent())
-      .addCreatedDate(LocalDateTime.now())
-      .addUpdatedDate(LocalDateTime.now())
-      .addIsLikeUp(false)
-      .addLikeCount(0L)
-      .addComments(new ArrayList<>());
+  public void deletePost(Long postId, String token) {
+    User user = entityLoader.getUser(token);
+    Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
+    boolean isOwner = post.getUser().getId().equals(user.getId());
+    if (!isOwner)
+      throw new NotPermissionException();
+    postRepository.delete(post);
   }
 
 }
