@@ -5,6 +5,9 @@ import com.frolic.sns.post.application.v2.PostCrudManagerV2;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.dto.v2.UpdatePostRequest;
+import com.frolic.sns.post.swagger.CreatePostDocs;
+import com.frolic.sns.post.swagger.DeletePostDocs;
+import com.frolic.sns.post.swagger.UpdatePostDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,8 @@ public class PostCrudV2Api {
   private final JwtProvider jwtProvider;
 
   private final PostCrudManagerV2 postCrudManager;
+
+  @CreatePostDocs
   @PostMapping()
   public ResponseEntity<Map<String, PostInfo>> createPostApi(
     @Valid @RequestBody CreatePostRequest createPostRequest,
@@ -36,6 +41,7 @@ public class PostCrudV2Api {
     return ResponseEntity.status(HttpStatus.CREATED).body(createDataMap(postInfo));
   }
 
+  @UpdatePostDocs
   @PutMapping("/{postId}")
   public ResponseEntity<Map<String, PostInfo>> updatePostApi(
     HttpServletRequest request,
@@ -47,6 +53,7 @@ public class PostCrudV2Api {
     return ResponseEntity.ok(createDataMap(updatedPostInfo));
   }
 
+  @DeletePostDocs
   @DeleteMapping("/{postId}")
   public ResponseEntity<Void> deletePostApi(HttpServletRequest request, @PathVariable(name = "postId") Long postId) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
