@@ -34,12 +34,6 @@ public class PostFileDslRepository {
       .fetch();
   }
 
-  public List<Long> getIdsByIds(List<Long> ids) {
-    return queryFactory.select(postFile.id)
-      .where(postFile.file.id.in(ids))
-      .fetch();
-  }
-
   public List<Long> getIdsByPostId(Long id) {
     return queryFactory.select(postFile.id)
       .from(postFile)
@@ -53,7 +47,7 @@ public class PostFileDslRepository {
       .execute();
   }
 
-  public Boolean exists(Post post, Long id) {
+  public boolean exists(Post post, Long id) {
     Long fetchOne = queryFactory.from(postFile)
       .where(postFile.post.id.eq(post.getId()), postFile.id.eq(id))
       .select(postFile.id)
