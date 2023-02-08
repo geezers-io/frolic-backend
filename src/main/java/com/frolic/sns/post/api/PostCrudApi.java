@@ -47,12 +47,6 @@ public class PostCrudApi {
       .body(ResponseHelper.createDataMap(post));
   }
 
-  @PostMapping("/v2")
-  public ResponseEntity createPostApiV2(@Valid CreatePostRequest createPostRequest, HttpServletRequest request) {
-//    PostInfo post = postCrudManager.createPostV2(getToken(request), createPostRequest);
-    return ResponseEntity.status(HttpStatus.CREATED).body(null);
-  }
-
   @GetPostDocs
   @GetMapping("/{postId}")
   public ResponseEntity<Map<String, PostInfo>> getPostByIdApi(
