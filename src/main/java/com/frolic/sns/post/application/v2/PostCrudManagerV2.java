@@ -40,9 +40,7 @@ public class PostCrudManagerV2 {
     List<PostFile> createdPostFiles = postFileDslRepository.createPostFilesByIds(newPost, createPostRequest.getImageIds());
     List<FileInfo> fileInfos = createPostBusinessManager.getFileInfosFromPostFiles(createdPostFiles);
 
-    return createPostBusinessManager.getInitializedPostInfoBuilder(newPost, createPostRequest, user)
-      .addFiles(fileInfos)
-      .build();
+    return createPostBusinessManager.getPostInfo(newPost, createPostRequest, user, fileInfos);
   }
 
   public PostInfo updatePost(Long postId, String token, UpdatePostRequest updatePostRequest) {
@@ -54,10 +52,7 @@ public class PostCrudManagerV2 {
     post.updateTextContent(updatePostRequest.getTextContent());
     postRepository.save(post);
 
-    return updatePostBusinessManager.getBuilder(post, user)
-      .addHashtags(updatePostRequest.getHashtags())
-      .addFiles(fileInfos)
-      .build();
+    return updatePostBusinessManager.getPostInfo(post, user, updatePostRequest.getHashtags(), fileInfos);
   }
 
   public void deletePost(Long postId, String token) {

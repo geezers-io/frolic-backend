@@ -6,10 +6,7 @@ import com.frolic.sns.global.common.file.repository.FileRepository;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.dto.v2.PostInfo;
-import com.frolic.sns.post.model.Hashtag;
-import com.frolic.sns.post.model.Post;
-import com.frolic.sns.post.model.PostFile;
-import com.frolic.sns.post.model.PostHashTag;
+import com.frolic.sns.post.model.*;
 import com.frolic.sns.post.repository.*;
 import com.frolic.sns.user.dto.UserInfo;
 import com.frolic.sns.user.exception.NotPermissionException;
@@ -84,21 +81,10 @@ public class UpdatePostBusinessManager {
     }).collect(Collectors.toList());
   }
 
-  public PostInfo.PostInfoBuilder getBuilder(Post post, User user) {
+  public PostInfo getPostInfo(Post post, User user, List<String> hashtags, List<FileInfo> fileInfos) {
     UserInfo userInfo = UserInfo.from(user);
     boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
-    List<CommentInfo> comments = commentRepository.findAllByPost(post)
-      .stream()
-      .map(comment ->
-          CommentInfo.builder()
-            .addId(comment.getId())
-            .addPostId(post.getId())
-            .addUserInfo(userInfo)
-            .addReplyUserId(null)
-            .addTextContent(comment.getTextContent())
-            .build()
-        )
-      .collect(Collectors.toList());
+    List<CommentInfo> commentInfos = getCommentInfos(post, userInfo);
     long likeCount = likeRepository.countAllByPost(post);
 
     return PostInfo.builder()
@@ -109,7 +95,27 @@ public class UpdatePostBusinessManager {
       .addIsLikeUp(isLikeUp)
       .addLikeCount(likeCount)
       .addUserInfo(userInfo)
-      .addComments(comments);
+      .addComments(commentInfos)
+      .addHashtags(hashtags)
+      .addFiles(fileInfos)
+      .build();
+  }
+
+  private List<CommentInfo> getCommentInfos(Post post , UserInfo userInfo) {
+    return commentRepository.findAllByPost(post)
+      .stream()
+      .map(comment -> this.getCommentInfo(comment, userInfo, post.getId()))
+      .collect(Collectors.toList());
+  }
+
+  private CommentInfo getCommentInfo(Comment comment, UserInfo userInfo, Long postId) {
+    return CommentInfo.builder()
+      .addId(comment.getId())
+      .addPostId(postId)
+      .addUserInfo(userInfo)
+      .addReplyUserId(null)
+      .addTextContent(comment.getTextContent())
+      .build();
   }
 
 }

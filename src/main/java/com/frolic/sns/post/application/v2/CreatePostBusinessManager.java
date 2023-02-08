@@ -31,7 +31,7 @@ public class CreatePostBusinessManager {
     return postRepository.saveAndFlush(buildedPost);
   }
 
-  public PostInfo.PostInfoBuilder getInitializedPostInfoBuilder(Post post, CreatePostRequest createPostRequest, User user) {
+  public PostInfo getPostInfo(Post post, CreatePostRequest createPostRequest, User user, List<FileInfo> fileInfos) {
     return PostInfo.builder()
       .addId(post.getId())
       .addHashtags(createPostRequest.getHashtags())
@@ -41,19 +41,21 @@ public class CreatePostBusinessManager {
       .addUpdatedDate(LocalDateTime.now())
       .addIsLikeUp(false)
       .addLikeCount(0L)
-      .addComments(new ArrayList<>());
+      .addComments(new ArrayList<>())
+      .addFiles(fileInfos)
+      .build();
   }
 
   public List<FileInfo> getFileInfosFromPostFiles(List<PostFile> postFiles) {
-    return postFiles.stream().map((postFile) -> {
-          ApplicationFile file = postFile.getFile();
-          return FileInfo.builder()
-            .addId(file.getId())
-            .addDownloadUrl(file.getDownloadUrl())
-            .build();
-        }
-      )
-      .collect(Collectors.toList());
+    return postFiles.stream().map(this::createFileInfo).collect(Collectors.toList());
+  }
+
+  private FileInfo createFileInfo(PostFile postFile) {
+    ApplicationFile file = postFile.getFile();
+    return FileInfo.builder()
+      .addId(file.getId())
+      .addDownloadUrl(file.getDownloadUrl())
+      .build();
   }
 
 }
