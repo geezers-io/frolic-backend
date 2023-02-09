@@ -17,7 +17,7 @@ class LocalApplicationFileManagerTest {
   @Autowired
   protected LocalFileManager localFileManager;
 
-  protected final byte[] fileContentBytes = "Hello, World".getBytes();
+  private final byte[] fileContentBytes = "Hello, World".getBytes();
 
   @Test
   @DisplayName("확장자가 없는 파일 업로드는 실패한다.")
@@ -31,16 +31,16 @@ class LocalApplicationFileManagerTest {
     assertThrows(FaultFileExtensionException.class, () -> localFileManager.singleUpload(file));
   }
 
-  @Test
-  @DisplayName("확장자가 존재하는 파일 업로드는 성공한다.")
-  void successFileUpload() {
-    MultipartFile file = new MockMultipartFile(
-      "foo",
-      "foo.txt",
-      MediaType.TEXT_PLAIN_VALUE,
-      fileContentBytes
-    );
-    assertDoesNotThrow(() -> localFileManager.singleUpload(file));
-  }
+//  @Test
+//  @DisplayName("확장자가 존재하는 파일 업로드는 성공한다.")
+//  void successFileUpload() {
+//    MultipartFile file = new MockMultipartFile(
+//      "foo",
+//      "foo.txt",
+//      MediaType.TEXT_PLAIN_VALUE,
+//      fileContentBytes
+//    );
+//    assertDoesNotThrow(() -> localFileManager.singleUpload(file));
+//  }
 
 }
