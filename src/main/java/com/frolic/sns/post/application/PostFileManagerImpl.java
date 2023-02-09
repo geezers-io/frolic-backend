@@ -1,8 +1,8 @@
 package com.frolic.sns.post.application;
 
+import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.post.model.Post;
-import com.frolic.sns.post.model.File;
-import com.frolic.sns.post.repository.FileRepository;
+import com.frolic.sns.global.common.file.repository.FileRepository;
 import com.frolic.sns.global.common.file.application.CustomFile;
 import com.frolic.sns.global.common.file.application.FileManager;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class PostFileManagerImpl implements PostFileManager {
     fileManager.multipleFileUpload(files);
 
     files.forEach(customFile -> {
-        File newFile = File.createFileByCustomFile(customFile, post);
-        fileRepository.save(newFile);
+        ApplicationFile newApplicationFile = ApplicationFile.createFileByCustomFile(customFile, post);
+        fileRepository.save(newApplicationFile);
     });
 
     return files.stream()
@@ -37,14 +37,14 @@ public class PostFileManagerImpl implements PostFileManager {
 
   @Override
   public List<String> getFileDownloadUrlsByArticle(Post post) {
-    return post.getFiles().stream()
-      .map(File::getDownloadUrl)
+    return post.getApplicationFiles().stream()
+      .map(com.frolic.sns.global.common.file.model.ApplicationFile::getDownloadUrl)
       .collect(Collectors.toList());
   }
 
   @Override
   public void deleteAllFilesByArticle(Post post) {
-    fileRepository.deleteAll(post.getFiles());
+    fileRepository.deleteAll(post.getApplicationFiles());
   }
 
 }

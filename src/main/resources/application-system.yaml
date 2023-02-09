@@ -1,0 +1,8 @@
+system:
+  protocol: "http"
+  twilio:
+    sid: ${TWILIO_SID}
+    token: ${TWILIO_TOKEN}
+    phone-number: ${TWILIO_PHONE_NUMBER}
+  path:
+    upload-images: ${FILE_UPLOAD_DIR}

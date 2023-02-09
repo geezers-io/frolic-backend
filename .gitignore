@@ -4,7 +4,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-application.yaml
 uploads/
 
 ### STS ###
@@ -38,3 +37,4 @@ out/
 ### VS Code ###
 .vscode/
 .env
+.local.spring.env

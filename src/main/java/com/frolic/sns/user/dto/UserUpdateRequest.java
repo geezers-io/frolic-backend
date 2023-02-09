@@ -17,7 +17,7 @@ public class UserUpdateRequest {
   private String email;
 
   @Pattern(
-    regexp = "[^!@#$%^&]([a-zA-Z가-힣0-9]){3,10}",
+    regexp = "^(?=.*[a-zA-Z0-9])(?=.*_?)[a-zA-Z0-9_]{4,15}$",
     message = "사용자 이름 형식이 잘못되었습니다."
   )
   private String username;
@@ -29,7 +29,7 @@ public class UserUpdateRequest {
   private String realname;
 
   @Pattern(
-    regexp = "\\d{3}\\-\\d{3,4}\\-\\d{4}$",
+    regexp = "\\d{9,11}",
     message = "폰 번호 형식이 잘못되었습니다."
   )
   private String phoneNumber;

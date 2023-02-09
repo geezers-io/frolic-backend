@@ -1,13 +1,13 @@
 package com.frolic.sns.global.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.*;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum ErrorCode {
   ALREADY_EXISTS_USER(BAD_REQUEST, "이미 존재하는 회원 정보입니다."),
   ALREADY_FOLLOW_INFO(BAD_REQUEST, "이미 팔로우된 사용자입니다."),
@@ -23,7 +23,12 @@ public enum ErrorCode {
   INVALID_TOKEN(BAD_REQUEST, "토큰 값이 유효하지 않습니다."),
   NOT_FOUND_USER(NOT_FOUND, "요청 정보 사용자가 존재하지 않습니다."),
   NOT_FOUND_RESOURCE(NOT_FOUND, "요청한 자원이 존재하지 않습니다."),
-  NOT_PERMISSION(UNAUTHORIZED, "해당 요청을 수행할 권한이 없습니다.");
+  NOT_PERMISSION(UNAUTHORIZED, "해당 요청을 수행할 권한이 없습니다."),
+  MISMATCH_FINDER_TYPE(BAD_REQUEST, "인증코드의 유형이 잘못되었습니다."),
+  OVER_TRIED_AUTH_CODE(BAD_REQUEST, "인증코드 유효 횟수를 초과하였습니다."),
+  MISMATCH_AUTH_CODE(BAD_REQUEST, "인증코드가 맞지 않습니다."),
+  OVER_TIME_AUTH_CODE(BAD_REQUEST, "인증코드의 유효기간이 만료되었습니다."),
+  NOT_FOUND_COOKIE(BAD_REQUEST, "클라이언트 쿠키 값이 잘못되었습니다.");
 
   private final HttpStatus status;
   private final String details;

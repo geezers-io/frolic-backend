@@ -1,5 +1,6 @@
 package com.frolic.sns.global.common.file.application;
 
+import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.exception.FaultFileExtensionException;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,9 +10,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public interface FileManageable {
-  void singleUpload(MultipartFile file);
+  FileInfo singleUpload(MultipartFile file);
 
-  void multipleUpload(List<MultipartFile> files);
+  List<FileInfo> multipleUpload(List<MultipartFile> files);
 
   UrlResource download(String filename);
 
