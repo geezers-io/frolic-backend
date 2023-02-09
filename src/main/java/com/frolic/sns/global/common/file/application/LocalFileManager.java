@@ -15,13 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,7 +32,7 @@ public class LocalFileManager implements FileManageable {
   private final FileRepository fileRepository;
 
   @Value("${system.path.upload-images}")
-  private String uploadDir;
+  private String uploadDirPath;
 
   @Value("${server.address}")
   private String host;
@@ -47,7 +44,7 @@ public class LocalFileManager implements FileManageable {
   private String protocol;
 
   @PostConstruct
-  public void postConstruct() throws IOException {
+  public void postConstruct() {
     createUploadDirectory();
   }
 
@@ -63,7 +60,7 @@ public class LocalFileManager implements FileManageable {
 
   @Override
   public UrlResource download(String filename) {
-    String path = uploadDir + "/" + filename;
+    String path = uploadDirPath + "/" + filename;
     try {
       return new UrlResource(path);
     } catch (MalformedURLException exception) {
@@ -71,10 +68,10 @@ public class LocalFileManager implements FileManageable {
     }
   }
 
-  private void createUploadDirectory() throws IOException {
-    File existsFile = new File(this.uploadDir);
-    if (!existsFile.isDirectory() || !existsFile.exists())
-      Files.createDirectory(Paths.get(this.uploadDir));
+  private void createUploadDirectory() {
+    File uploadDirectory = new File(uploadDirPath);
+    if (!uploadDirectory.exists())
+      uploadDirectory.mkdir();
   }
 
   private FileInfo store(MultipartFile file) {
@@ -84,9 +81,9 @@ public class LocalFileManager implements FileManageable {
   }
 
   private FileInfo createFile(MultipartFile file, String temperedName) {
-    try (InputStream inputStream = file.getInputStream()) {
-      Path updateDirPath = Paths.get(uploadDir + "/" + temperedName);
-      Files.copy(inputStream, updateDirPath, StandardCopyOption.REPLACE_EXISTING);
+    try {
+      Path createFilePath = Paths.get(uploadDirPath + "/" + temperedName);
+      Files.write(createFilePath, file.getBytes());
       return FileInfo.from(createFileModel(file, temperedName));
     } catch (Exception ex) {
       log.error(ex.toString());
