@@ -1,9 +1,12 @@
 package com.frolic.sns.global.common.file.dto;
 
+import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.global.util.message.CommonMessageUtils;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.io.File;
 
 import static com.frolic.sns.global.util.message.CommonMessageUtils.getIllegalFieldError;
 
@@ -22,6 +25,14 @@ public class FileInfo {
     this.id = id;
     this.downloadUrl = downloadUrl;
     this.filename = filename;
+  }
+
+  public static FileInfo from(ApplicationFile file) {
+    return FileInfo.builder()
+      .addId(file.getId())
+      .addDownloadUrl(file.getDownloadUrl())
+      .addFilename(file.getName())
+      .build();
   }
 
 }
