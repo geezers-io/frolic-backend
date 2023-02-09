@@ -84,9 +84,10 @@ public class LocalFileManager implements FileManageable {
   }
 
   private FileInfo createFile(MultipartFile file, String temperedName) {
-    try (InputStream inputStream = file.getInputStream()) {
-      Path updateDirPath = Paths.get(uploadDirPath + "/" + temperedName);
-      Files.copy(inputStream, updateDirPath, StandardCopyOption.REPLACE_EXISTING);
+    try {
+      Path createFilePath = Paths.get(uploadDirPath + "/" + temperedName);
+      File newFile = new File(createFilePath.toUri());
+      newFile.createNewFile();
       return FileInfo.from(createFileModel(file, temperedName));
     } catch (Exception ex) {
       log.error(ex.toString());
