@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -84,9 +83,9 @@ public class LocalFileManager implements FileManageable {
   }
 
   private FileInfo createFile(MultipartFile file, String temperedName) {
-    try {
+    try(InputStream inputStream = file.getInputStream()) {
       Path createFilePath = Paths.get(uploadDirPath + "/" + temperedName);
-      Files.write(createFilePath, file.getBytes());
+      Files.copy(inputStream, createFilePath, StandardCopyOption.REPLACE_EXISTING);
       return FileInfo.from(createFileModel(file, temperedName));
     } catch (Exception ex) {
       log.error(ex.toString());
