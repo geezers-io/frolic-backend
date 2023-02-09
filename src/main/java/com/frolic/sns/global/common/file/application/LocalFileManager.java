@@ -35,7 +35,7 @@ public class LocalFileManager implements FileManageable {
   private final FileRepository fileRepository;
 
   @Value("${system.path.upload-images}")
-  private String uploadDir;
+  private String uploadDirPath;
 
   @Value("${server.address}")
   private String host;
@@ -47,7 +47,7 @@ public class LocalFileManager implements FileManageable {
   private String protocol;
 
   @PostConstruct
-  public void postConstruct() throws IOException {
+  public void postConstruct() {
     createUploadDirectory();
   }
 
@@ -63,7 +63,7 @@ public class LocalFileManager implements FileManageable {
 
   @Override
   public UrlResource download(String filename) {
-    String path = uploadDir + "/" + filename;
+    String path = uploadDirPath + "/" + filename;
     try {
       return new UrlResource(path);
     } catch (MalformedURLException exception) {
@@ -71,10 +71,10 @@ public class LocalFileManager implements FileManageable {
     }
   }
 
-  private void createUploadDirectory() throws IOException {
-    File existsFile = new File(this.uploadDir);
-    if (!existsFile.isDirectory() || !existsFile.exists())
-      Files.createDirectory(Paths.get(this.uploadDir));
+  private void createUploadDirectory() {
+    File uploadDirectory = new File(uploadDirPath);
+    if (!uploadDirectory.exists())
+      uploadDirectory.mkdir();
   }
 
   private FileInfo store(MultipartFile file) {
@@ -85,7 +85,7 @@ public class LocalFileManager implements FileManageable {
 
   private FileInfo createFile(MultipartFile file, String temperedName) {
     try (InputStream inputStream = file.getInputStream()) {
-      Path updateDirPath = Paths.get(uploadDir + "/" + temperedName);
+      Path updateDirPath = Paths.get(uploadDirPath + "/" + temperedName);
       Files.copy(inputStream, updateDirPath, StandardCopyOption.REPLACE_EXISTING);
       return FileInfo.from(createFileModel(file, temperedName));
     } catch (Exception ex) {
