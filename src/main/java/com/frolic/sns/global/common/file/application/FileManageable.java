@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public interface FileManageable {
-  FileInfo singleUpload(MultipartFile file, String token);
+  FileInfo singleUpload(MultipartFile file);
 
-  List<FileInfo> multipleUpload(List<MultipartFile> files, String token);
+  List<FileInfo> multipleUpload(List<MultipartFile> files);
 
   UrlResource download(String filename);
 

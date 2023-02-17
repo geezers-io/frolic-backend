@@ -1,6 +1,6 @@
 package com.frolic.sns.post.swagger;
 
-import com.frolic.sns.post.dto.PostInfo;
+import com.frolic.sns.post.dto.v2.PostInfo;
 import lombok.Getter;
 
 import java.util.List;

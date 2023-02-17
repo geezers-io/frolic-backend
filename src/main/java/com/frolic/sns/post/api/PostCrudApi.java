@@ -1,8 +1,6 @@
 package com.frolic.sns.post.api;
 
 import com.frolic.sns.post.application.PostCrudManager;
-import com.frolic.sns.post.dto.CreatePostRequest;
-import com.frolic.sns.post.dto.CreatePostRequestV2;
 import com.frolic.sns.post.dto.PostInfo;
 import com.frolic.sns.post.dto.UpdatePostRequest;
 import com.frolic.sns.post.swagger.*;
@@ -34,11 +32,10 @@ public class PostCrudApi {
   private final JwtProvider jwtProvider;
   private final PostCrudManager postCrudManager;
 
-  @CreatePostDocs
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<Map<String, PostInfo>> createPostApi(
     HttpServletRequest request,
-    @RequestPart @Valid CreatePostRequest createPostRequest,
+    @RequestPart @Valid com.frolic.sns.post.dto.CreatePostRequest createPostRequest,
     @RequestPart(required = false) List<MultipartFile> files
   ) {
     List<CustomFile> customFiles = FileManager.createCustomFileList(files);
@@ -46,12 +43,6 @@ public class PostCrudApi {
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(post));
-  }
-
-  @PostMapping("/v2")
-  public ResponseEntity createPostApiV2(@Valid CreatePostRequestV2 createPostRequest, HttpServletRequest request) {
-//    PostInfo post = postCrudManager.createPostV2(getToken(request), createPostRequest);
-    return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }
 
   @GetPostDocs
@@ -65,7 +56,6 @@ public class PostCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfo));
   }
 
-  @UpdatePostDocs
   @PutMapping("/{postId}")
   public ResponseEntity<Map<String, PostInfo>> updatePostByIdApi(
     HttpServletRequest request,
@@ -79,7 +69,6 @@ public class PostCrudApi {
     return ResponseEntity.ok(ResponseHelper.createDataMap(articleInfoDto));
   }
 
-  @DeletePostDocs
   @DeleteMapping("/{postId}")
   public ResponseEntity<Void> deletePostByIdApi(HttpServletRequest request, @PathVariable(name = "postId") Long postId) {
     String token = getToken(request);

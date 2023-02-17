@@ -3,11 +3,13 @@ package com.frolic.sns.post.model;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity(name =  "post_files")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostFile {
 

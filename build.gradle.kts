@@ -16,8 +16,6 @@ java {
 }
 
 plugins {
-  val kotlinVersion = "1.8"
-
   java
   id("org.springframework.boot") version "2.7.5"
   id("io.spring.dependency-management") version "1.1.0"
@@ -50,8 +48,10 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-aop")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-  compileOnly("org.projectlombok:lombok")
-  annotationProcessor("org.projectlombok:lombok")
+  compileOnly("org.projectlombok:lombok:1.18.26")
+  testCompileOnly("org.projectlombok:lombok:1.18.26")
+  annotationProcessor("org.projectlombok:lombok:1.18.26")
+  testAnnotationProcessor("org.projectlombok:lombok:1.18.26")
 
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
@@ -67,6 +67,7 @@ dependencies {
   implementation("com.querydsl:querydsl-core:${queryDslVersion}")
   implementation("com.querydsl:querydsl-jpa:${queryDslVersion}")
   implementation("com.querydsl:querydsl-apt:${queryDslVersion}")
+  implementation("com.querydsl:querydsl-sql:${queryDslVersion}")
 
   implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
   implementation("org.springdoc:springdoc-openapi-security:1.6.14")
@@ -92,11 +93,13 @@ tasks.withType<Test> {
   useJUnitPlatform()
 }
 
+val querydslDir = "$buildDir/generated/querydsl"
+
 tasks.withType<QuerydslCompile> {
+  doFirst { delete(querydslDir) }
   options.annotationProcessorPath = configurations.querydsl.get()
 }
 
-val querydslDir = "$buildDir/generated/querydsl"
 querydsl {
   jpa = true
   querydslSourcesDir = querydslDir
@@ -109,20 +112,3 @@ sourceSets {
     }
   }
 }
-
-//tasks.withType<QuerydslCompile> {
-//  doFirst {
-//    delete("$buildDir/generated/querydsl/com")
-//  }
-//
-//  options.annotationProcessorPath {
-//    configurations.querydsl
-//  }
-//}
-
-//compileQuerydsl {
-//  doFirst {
-//    delete "$buildDir/generated/querydsl/com"
-//  }
-//  options.annotationProcessorPath = configurations.querydsl
-//}

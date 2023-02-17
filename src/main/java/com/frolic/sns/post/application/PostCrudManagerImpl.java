@@ -3,6 +3,7 @@ package com.frolic.sns.post.application;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.global.common.file.repository.FileRepository;
 import com.frolic.sns.post.dto.*;
+import com.frolic.sns.post.dto.v2.CreatePostRequest;
 import com.frolic.sns.post.model.*;
 import com.frolic.sns.post.repository.*;
 import com.frolic.sns.global.common.file.application.CustomFile;
@@ -121,7 +122,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
   }
 
   @Override
-  public PostInfo createPost(String token, CreatePostRequest createInfo, List<CustomFile> files) {
+  public PostInfo createPost(String token, com.frolic.sns.post.dto.CreatePostRequest createInfo, List<CustomFile> files) {
     User user = getUserIsTokenAble(token);
     List<String> hashtags = createInfo.getHashtags();
     Post newPost = Post.createPost(createInfo, user);
@@ -141,28 +142,6 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addLikeCount(0L)
       .addUserInfo(userInfo)
       .addFileDownloadUrls(fileDownloadUrls)
-      .addCreatedDate(newPost.getCreatedDate())
-      .addUpdatedDate(newPost.getUpdatedDate())
-      .addIsLikeUp(false)
-      .build();
-  }
-
-  public PostInfo createPostV2(String token, CreatePostRequestV2 createPostRequest) {
-    User user = getUserIsTokenAble(token);
-    Post newPost = postRepository.saveAndFlush(
-      Post.builder()
-        .addUser(user)
-        .addTextContent(createPostRequest.getTextContent())
-        .build()
-    );
-
-    return PostInfo.builder()
-      .addId(newPost.getId())
-      .addTextContent(newPost.getTextContent())
-      .addComments(new ArrayList<>())
-      .addHashtags(createPostRequest.getHashtags())
-      .addLikeCount(0L)
-      .addUserInfo(UserInfo.from(user))
       .addCreatedDate(newPost.getCreatedDate())
       .addUpdatedDate(newPost.getUpdatedDate())
       .addIsLikeUp(false)
