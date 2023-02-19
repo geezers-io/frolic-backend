@@ -22,24 +22,10 @@ public class UserTempPasswordRequest {
     message = "폰 번호 형식이 잘못되었습니다."
   )
   private String phoneNumber;
-  private String password;
 
-  public User toEntity() {
-    return User.builder()
-            .addEmail(email)
-            .addPhoneNumber(phoneNumber)
-            .addPassword(password)
-            .build();
-  }
-
-  @Builder(setterPrefix = "add")
-  public UserTempPasswordRequest(
-          String email,
-          String phoneNumber,
-          String password) {
+  public UserTempPasswordRequest(String email, String phoneNumber) {
     this.email = email;
     this.phoneNumber = phoneNumber;
-    this.password = password;
   }
 
   @Override

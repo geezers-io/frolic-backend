@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(exclude = { MailSenderAutoConfiguration.class })
-@EntityScan("com.frolic.sns.*")
 @EnableJpaAuditing
 public class RestfulServerApplication {
 
