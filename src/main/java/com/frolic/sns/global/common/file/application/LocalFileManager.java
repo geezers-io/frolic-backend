@@ -1,5 +1,6 @@
 package com.frolic.sns.global.common.file.application;
 
+import com.frolic.sns.global.common.file.config.LocalFileProperties;
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.exception.FileDownloadFailureException;
 import com.frolic.sns.global.common.file.exception.FileSaveFailException;
@@ -27,21 +28,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class LocalFileManager implements FileManageable {
+public final class LocalFileManager implements FileManageable {
 
   private final FileRepository fileRepository;
 
-  @Value("${system.path.upload-images}")
-  private String uploadDirPath;
-
-  @Value("${server.address}")
-  private String host;
-
-  @Value("${server.port}")
-  private String port;
-
-  @Value("${system.protocol}")
-  private String protocol;
+  private final LocalFileProperties localFileProperties;
 
   @PostConstruct
   public void postConstruct() {
@@ -60,7 +51,7 @@ public class LocalFileManager implements FileManageable {
 
   @Override
   public UrlResource download(String filename) {
-    String path = uploadDirPath + "/" + filename;
+    String path = localFileProperties.getUploadDirPath() + "/" + filename;
     try {
       return new UrlResource(path);
     } catch (MalformedURLException exception) {
@@ -69,7 +60,7 @@ public class LocalFileManager implements FileManageable {
   }
 
   private void createUploadDirectory() {
-    File uploadDirectory = new File(uploadDirPath);
+    File uploadDirectory = new File(localFileProperties.getUploadDirPath());
     if (!uploadDirectory.exists())
       uploadDirectory.mkdir();
   }
@@ -82,7 +73,7 @@ public class LocalFileManager implements FileManageable {
 
   private FileInfo createFile(MultipartFile file, String temperedName) {
     try {
-      Path createFilePath = Paths.get(uploadDirPath + "/" + temperedName);
+      Path createFilePath = Paths.get(localFileProperties.getUploadDirPath() + "/" + temperedName);
       Files.write(createFilePath, file.getBytes());
       return FileInfo.from(createFileModel(file, temperedName));
     } catch (Exception ex) {
@@ -95,7 +86,7 @@ public class LocalFileManager implements FileManageable {
     ApplicationFile applicationFile = ApplicationFile.builder()
       .addName(name)
       .addSize(file.getSize())
-      .addDownloadUrl(protocol + "://" + host + ":" + port + "/images/" + name)
+      .addDownloadUrl(localFileProperties.getHost() + ":" + localFileProperties.getPort() + "/images/" + name)
       .build();
     return fileRepository.saveAndFlush(applicationFile);
   }
