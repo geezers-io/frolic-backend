@@ -60,7 +60,6 @@ public class AuthCode {
 
     private String destination;
 
-
     @DateTimeFormat(pattern = "hh:mm:ss")
     private LocalTime localTime;
 
