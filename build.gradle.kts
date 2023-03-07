@@ -1,10 +1,5 @@
 import com.ewerk.gradle.plugins.tasks.QuerydslCompile
 import org.gradle.api.JavaVersion;
-import java.io.BufferedReader
-import java.io.FileReader
-import java.nio.file.Files
-import java.nio.file.Paths
-
 
 val queryDslVersion = "5.0.0"
 
@@ -79,6 +74,7 @@ dependencies {
   implementation("com.google.code.findbugs:jsr305:3.0.2")
 
   implementation("com.amazonaws:aws-java-sdk:1.12.397")
+  implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 
 }
 
