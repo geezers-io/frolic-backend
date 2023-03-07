@@ -1,6 +1,8 @@
 package com.frolic.sns.post.dto;
 
 import static com.frolic.sns.global.util.message.CommonMessageUtils.*;
+
+import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.user.dto.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +20,7 @@ public class PostInfo {
   private final List<CommentInfo> comments;
   private final List<String> hashtags;
   private final Long likeCount;
-  private final List<String> fileDownloadUrls;
+  private final List<FileInfo> fileDownloadUrls;
   private final LocalDateTime createdDate;
   private final LocalDateTime updatedDate;
   private final boolean isLikeUp;
@@ -32,7 +34,7 @@ public class PostInfo {
     List<String> hashtags,
     Long likeCount,
     boolean isLikeUp,
-    List<String> fileDownloadUrls,
+    List<FileInfo> fileDownloadUrls,
     LocalDateTime createdDate,
     LocalDateTime updatedDate
   ) {

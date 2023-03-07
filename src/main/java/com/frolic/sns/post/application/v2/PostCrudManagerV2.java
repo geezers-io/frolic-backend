@@ -1,6 +1,7 @@
 package com.frolic.sns.post.application.v2;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
+import com.frolic.sns.global.common.file.repository.FileRepository;
 import com.frolic.sns.global.common.jwt.JwtEntityLoader;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
@@ -13,6 +14,8 @@ import com.frolic.sns.user.exception.NotPermissionException;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,6 +26,7 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class PostCrudManagerV2 {
+  private final FileRepository fileRepository;
 
   private final HashTagManager hashTagManager;
   private final PostRepository postRepository;
@@ -30,6 +34,14 @@ public class PostCrudManagerV2 {
   private final JwtEntityLoader entityLoader;
   private final CreatePostBusinessManager createPostBusinessManager;
   private final UpdatePostBusinessManager updatePostBusinessManager;
+  private final SelectPostBusinessManager selectPostBusinessManager;
+
+  //게시물 조회 기능
+  public PostInfo selectPost(Pageable pageable, String token) {
+    User user = entityLoader.getUser(token);
+    Page<Post> articlePage = postRepository.findAllCreatedDateDesc(pageable);
+    return selectPostBusinessManager.getListOfSingleArticleDtoByPageResults(articlePage, user);
+  }
 
   public PostInfo createPost(String token, CreatePostRequest createPostRequest) {
     User user = entityLoader.getUser(token);
@@ -63,5 +75,6 @@ public class PostCrudManagerV2 {
       throw new NotPermissionException();
     postRepository.delete(post);
   }
+
 
 }

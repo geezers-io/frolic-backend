@@ -18,7 +18,8 @@ public class PostInfo {
   private final Long id;
   private final UserInfo userInfo;
   private final String textContent;
-  private final List<CommentInfo> comments;
+  //private final List<CommentInfo> comments;
+  private final Long commentCount;
   private final List<String> hashtags;
   private final Long likeCount;
   private final List<FileInfo> files;
@@ -31,7 +32,8 @@ public class PostInfo {
     Long id,
     String textContent,
     UserInfo userInfo,
-    List<CommentInfo> comments,
+    //List<CommentInfo> comments,
+    Long commentCount,
     List<String> hashtags,
     Long likeCount,
     boolean isLikeUp,
@@ -42,17 +44,17 @@ public class PostInfo {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("postId"));
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
     Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
-    Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
+    Assert.isInstanceOf(List.class, commentCount, getIllegalFieldError("comments"));
     Assert.isInstanceOf(List.class, hashtags, getIllegalFieldError("hashtags"));
     Assert.isInstanceOf(Long.class, likeCount, getIllegalFieldError("likeCount"));
-    Assert.notNull(files, getIllegalFieldError("fileDownloadUrls"));
+    Assert.notNull(files, getIllegalFieldError("files"));
     Assert.isInstanceOf(LocalDateTime.class, createdDate, getIllegalFieldError("createdDate"));
     Assert.isInstanceOf(LocalDateTime.class, updatedDate, getIllegalFieldError("updatedDate"));
 
     this.id = id;
     this.textContent = textContent;
     this.userInfo = userInfo;
-    this.comments = comments;
+    this.commentCount = commentCount;
     this.hashtags = hashtags;
     this.likeCount = likeCount;
     this.isLikeUp = isLikeUp;

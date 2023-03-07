@@ -1,5 +1,6 @@
 package com.frolic.sns.post.api;
 
+import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.config.security.JwtProvider;
 import com.frolic.sns.post.application.v2.PostCrudManagerV2;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
@@ -10,6 +11,7 @@ import com.frolic.sns.post.swagger.DeletePostDocs;
 import com.frolic.sns.post.swagger.UpdatePostDocs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +22,10 @@ import java.util.Map;
 
 import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@Slf4j
-@RequestMapping("/api/v2/posts")
+@RequestMapping("/api/V2/posts")
 public class PostCrudV2Api {
 
   private final JwtProvider jwtProvider;
@@ -59,6 +61,17 @@ public class PostCrudV2Api {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
     postCrudManager.deletePost(postId, token);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @GetMapping("/lists")
+  public ResponseEntity<Map<String, PostInfo>> selectPostApi(
+          HttpServletRequest request,
+          Long cursorId,
+          Pageable pageable
+  ) {
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
+    PostInfo selectPostInfo = postCrudManager.selectPost(pageable, token);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(selectPostInfo));
   }
 
 }

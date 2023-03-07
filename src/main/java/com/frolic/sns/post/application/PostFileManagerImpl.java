@@ -1,5 +1,6 @@
 package com.frolic.sns.post.application;
 
+import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.global.common.file.repository.FileRepository;

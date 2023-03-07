@@ -1,5 +1,6 @@
 package com.frolic.sns.post.application;
 
+import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.global.common.file.repository.FileRepository;
 import com.frolic.sns.post.dto.*;
@@ -141,7 +142,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addHashtags(hashtags)
       .addLikeCount(0L)
       .addUserInfo(userInfo)
-      .addFileDownloadUrls(fileDownloadUrls)
+      //.addFileDownloadUrls(fileDownloadUrls)
       .addCreatedDate(newPost.getCreatedDate())
       .addUpdatedDate(newPost.getUpdatedDate())
       .addIsLikeUp(false)
