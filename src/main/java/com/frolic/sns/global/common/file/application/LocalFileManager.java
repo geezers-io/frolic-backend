@@ -16,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,11 +52,15 @@ public final class LocalFileManager implements FileManageable {
     return files.stream().map(this::store).collect(Collectors.toList());
   }
 
-  public UrlResource download(String filename) {
+  @Override
+  public InputStream download(String filename) {
     String path = localFileProperties.getUploadDirPath() + "/" + filename;
-    try {
-      return new UrlResource(path);
-    } catch (MalformedURLException exception) {
+    File file = new File(path);
+
+    try (FileInputStream stream = new FileInputStream(file)) {
+      return stream;
+    } catch (IOException e) {
+      log.error(e.getMessage());
       throw new FileDownloadFailureException();
     }
   }

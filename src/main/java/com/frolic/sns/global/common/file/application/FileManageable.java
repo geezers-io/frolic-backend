@@ -6,14 +6,17 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public interface FileManageable {
-  FileInfo singleUpload(MultipartFile file) throws IOException;
+  FileInfo singleUpload(MultipartFile file);
 
   List<FileInfo> multipleUpload(List<MultipartFile> files);
+
+  InputStream download(String filename);
 
   default String getTemperedFilename(String filename) {
     int extIndex = filename.indexOf(".");

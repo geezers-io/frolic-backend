@@ -9,11 +9,13 @@ import com.frolic.sns.global.common.file.exception.FaultFilenameException;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.global.common.file.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ServerErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Qualifier("S3FileManager")
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class S3FileManager implements FileManageable {
 
   private final FileRepository fileRepository;
@@ -62,6 +65,7 @@ public class S3FileManager implements FileManageable {
     return files.stream().map(this::singleUpload).collect(Collectors.toList());
   }
 
+  @Override
   public S3ObjectInputStream download(String filename) {
     return s3Client.getObject(bucketName, filename).getObjectContent();
   }
@@ -72,7 +76,8 @@ public class S3FileManager implements FileManageable {
     try {
       file = new File(multipartFile.getInputStream().toString());
     } catch (IOException e) {
-      throw new ServerErrorException("파일 업로드가 실패하였습니다." + e.toString());
+      log.error(e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드가 실패하였습니다." + e.toString());
     }
 
     return file;
