@@ -55,6 +55,7 @@ public class CreatePostBusinessManager {
     return FileInfo.builder()
       .addId(file.getId())
       .addDownloadUrl(file.getDownloadUrl())
+      .addFilename(file.getName())
       .build();
   }
 
