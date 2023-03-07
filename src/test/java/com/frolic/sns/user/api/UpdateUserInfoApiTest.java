@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frolic.sns.auth.api.AuthApi;
 import com.frolic.sns.auth.dto.TokenInfo;
 import com.frolic.sns.auth.exception.PasswordNotMatchException;
-import com.frolic.sns.user.application.UserManager;
+import com.frolic.sns.user.application.UserService;
 import com.frolic.sns.user.dto.PasswordUpdateRequest;
 import com.frolic.sns.user.dto.UserUpdateRequest;
 import com.frolic.sns.user.repository.UserRepository;
@@ -51,7 +51,7 @@ class UpdateUserInfoApiTest {
   protected TestAuthProvider testAuthProvider;
 
   @Autowired
-  protected UserManager userManager;
+  protected UserService userService;
 
   @BeforeAll
   protected void beforeAll() {
@@ -97,8 +97,8 @@ class UpdateUserInfoApiTest {
   void changeUserPasswordSuccess() {
     PasswordUpdateRequest updateRequest = new PasswordUpdateRequest(TestUser.testPassword, "@Perfectsns4275");
     TokenInfo tokenInfo = testAuthProvider.getTokenInfo(TestUser.EUNGI);
-    assertDoesNotThrow(() -> userManager.updateUserPassword(tokenInfo.getAccessToken(), updateRequest));
-    userManager.updateUserPassword(
+    assertDoesNotThrow(() -> userService.updateUserPassword(tokenInfo.getAccessToken(), updateRequest));
+    userService.updateUserPassword(
       tokenInfo.getAccessToken(),
       new PasswordUpdateRequest("@Perfectsns4275", TestUser.testPassword)
     );
@@ -111,7 +111,7 @@ class UpdateUserInfoApiTest {
     PasswordUpdateRequest updateRequest = new PasswordUpdateRequest("@Faultpassword12", "@Newpassword12");
     TokenInfo tokenInfo = testAuthProvider.getTokenInfo(TestUser.EUNGI);
     assertThrows(PasswordNotMatchException.class, () -> {
-      userManager.updateUserPassword(tokenInfo.getAccessToken(), updateRequest);
+      userService.updateUserPassword(tokenInfo.getAccessToken(), updateRequest);
     });
   }
 
