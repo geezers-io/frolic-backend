@@ -121,6 +121,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
     postRepository.deleteById(id);
   }
 
+  @Deprecated
   @Override
   public PostInfo createPost(String token, com.frolic.sns.post.dto.CreatePostRequest createInfo, List<CustomFile> files) {
     User user = getUserIsTokenAble(token);
@@ -248,7 +249,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .map(article -> {
         List<String> hashtags = postHashtagRepository.findAllByPost(article);
         UserInfo articleOwner = UserInfo.from(article.getUser());
-        return getSingleArticleDto(article,hashtags, articleOwner, user);
+        return getSingleArticleDto(article, hashtags, articleOwner, user);
       })
       .collect(Collectors.toList());
   }
