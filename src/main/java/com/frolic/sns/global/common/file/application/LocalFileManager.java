@@ -49,7 +49,6 @@ public final class LocalFileManager implements FileManageable {
     return files.stream().map(this::store).collect(Collectors.toList());
   }
 
-  @Override
   public UrlResource download(String filename) {
     String path = localFileProperties.getUploadDirPath() + "/" + filename;
     try {

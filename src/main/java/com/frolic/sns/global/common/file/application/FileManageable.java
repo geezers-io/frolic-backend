@@ -5,16 +5,15 @@ import com.frolic.sns.global.common.file.exception.FaultFileExtensionException;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public interface FileManageable {
-  FileInfo singleUpload(MultipartFile file);
+  FileInfo singleUpload(MultipartFile file) throws IOException;
 
   List<FileInfo> multipleUpload(List<MultipartFile> files);
-
-  UrlResource download(String filename);
 
   default String getTemperedFilename(String filename) {
     int extIndex = filename.indexOf(".");
