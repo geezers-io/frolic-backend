@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserManager implements UserManageable {
+public class UserService {
 
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
@@ -30,13 +30,10 @@ public class UserManager implements UserManageable {
   private final PasswordEncoder passwordEncoder;
 
   private final JwtProvider jwtProvider;
+  private final UserManager userManager;
 
-  @Override
-  public UserInfo updateUserDetail(String token, UserUpdateRequest userUpdateRequest) {
-    User user = getUserByToken(token);
-
+  public UserInfo updateUserDetail(User user, UserUpdateRequest userUpdateRequest) {
     checkDuplicatedUserDetailWhenModified(userUpdateRequest, user);
-
     user.changeEmail(userUpdateRequest.getEmail());
     user.changeUsername(userUpdateRequest.getUsername());
     user.changeRealname(userUpdateRequest.getRealname());
@@ -46,7 +43,6 @@ public class UserManager implements UserManageable {
     return UserInfo.from(user);
   }
 
-  @Override
   public void updateUserPassword(String token, PasswordUpdateRequest updateRequest) {
     User user = getUserByToken(token);
     boolean isMatchPassword = passwordEncoder.matches(updateRequest.getPrevPassword(), user.getPassword());
@@ -58,7 +54,6 @@ public class UserManager implements UserManageable {
     userRepository.save(user);
   }
 
-  @Override
   public void deleteUser(String token, String password) {
     User user = getUserByToken(token);
     if (!passwordEncoder.matches(password, user.getPassword()))
@@ -66,18 +61,12 @@ public class UserManager implements UserManageable {
     userRepository.delete(user);
   }
 
-  @Override
   public UserUnitedInfo getUserUnitedDetail(String username) {
-    User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+    User user = userManager.getUserByusername(username);
     return buildUserUnitedDetail(user);
   }
 
-  @Override
-  public UserUnitedInfo getUserUnitedDetailByToken(String token) {
-    String email = jwtProvider.getUserEmailByToken(token);
-    User user = userRepository.findByEmail(email)
-      .orElseThrow(UserNotFoundException::new);
-
+  public UserUnitedInfo getUserUnitedInfoByUser(User user) {
     return buildUserUnitedDetail(user);
   }
 
