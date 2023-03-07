@@ -6,7 +6,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "./conf/mariadb/conf.d:/etc/mysql/conf.d"
+      - db_vol:/var/lib/mysql
     env_file: ./conf/mariadb/.env
     container_name: mariadb
     environment:
@@ -35,3 +35,6 @@ services:
 
 networks:
   backend:
+
+volumes:
+  db_vol:
