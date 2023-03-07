@@ -12,6 +12,8 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    volumes:
+      - db_vol:/var/lib/mysql
 
   redis_local:
     image: redis:7.0
@@ -59,3 +61,6 @@ services:
 networks:
   backend:
     driver: bridge
+
+volumes:
+  db_vol:
