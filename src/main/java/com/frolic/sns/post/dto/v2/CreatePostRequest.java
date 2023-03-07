@@ -28,6 +28,7 @@ public class CreatePostRequest {
     List<Long> imageIds
   ) {
     Assert.hasText(textContent, getIllegalFieldError("textContent"));
+    Assert.notNull(hashtags, getIllegalFieldError("hashtags"));
     this.textContent = textContent;
     this.hashtags = hashtags;
     this.imageIds = imageIds;

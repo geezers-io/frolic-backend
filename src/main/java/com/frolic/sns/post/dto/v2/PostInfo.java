@@ -43,7 +43,6 @@ public class PostInfo {
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
     Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
     Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
-    Assert.isInstanceOf(List.class, hashtags, getIllegalFieldError("hashtags"));
     Assert.isInstanceOf(Long.class, likeCount, getIllegalFieldError("likeCount"));
     Assert.notNull(files, getIllegalFieldError("fileDownloadUrls"));
     Assert.isInstanceOf(LocalDateTime.class, createdDate, getIllegalFieldError("createdDate"));
