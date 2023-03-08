@@ -1,10 +1,8 @@
 package com.frolic.sns.global.common.file.config;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.frolic.sns.global.common.file.application.FileManager;
-import com.frolic.sns.global.common.file.application.LocalFileManager;
-import com.frolic.sns.global.common.file.application.S3FileManager;
-import com.frolic.sns.global.common.file.repository.FileRepository;
+import com.frolic.sns.global.common.file.application.FileService;
+import com.frolic.sns.global.common.file.application.LocalFileService;
+import com.frolic.sns.global.common.file.application.S3FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,19 +17,19 @@ public class FileManagerConfig {
   @Value("${spring.profiles.active}")
   private String applicationEnv;
 
-  private final LocalFileProperties localFileProperties;
-  private final FileRepository fileRepository;
-  private final AmazonS3Client s3Client;
+  private final LocalFileService localFileService;
+
+  private final S3FileService s3FileService;
 
   @Bean
-  public FileManager fileManager() {
+  public FileService fileService() {
     if (applicationEnv.equals("local")) {
-      log.info("LocalFileManager Initialized!");
-      return new LocalFileManager(fileRepository, localFileProperties);
+      log.info("LocalFileService Initialized!");
+      return localFileService;
     }
     if (applicationEnv.equals("prod")) {
-      log.info("S3FileManager Initialized!");
-      return new S3FileManager(fileRepository, s3Client);
+      log.info("S3FileService Initialized!");
+      return s3FileService;
     }
     throw new RuntimeException("fileManager 초기화 실패");
   }
