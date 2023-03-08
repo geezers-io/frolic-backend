@@ -37,7 +37,7 @@ public class S3FileManager implements FileManager {
   private String bucketName;
 
   @Override
-  public FileInfo singleUpload(MultipartFile multipartFile) {
+  public FileInfo uploadSingleFile(MultipartFile multipartFile) {
     ApplicationFile applicationFile = createApplicationFile(multipartFile);
     File newFile = createFile(multipartFile, applicationFile.getName());
     PutObjectRequest objectRequest = new PutObjectRequest(bucketName, applicationFile.getName(), newFile)
@@ -48,8 +48,8 @@ public class S3FileManager implements FileManager {
   }
 
   @Override
-  public List<FileInfo> multipleUpload(List<MultipartFile> files) {
-    return files.stream().map(this::singleUpload).collect(Collectors.toList());
+  public List<FileInfo> uploadMultipleFile(List<MultipartFile> files) {
+    return files.stream().map(this::uploadSingleFile).collect(Collectors.toList());
   }
 
   @Override

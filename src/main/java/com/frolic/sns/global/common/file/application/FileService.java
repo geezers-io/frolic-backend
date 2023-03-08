@@ -10,9 +10,9 @@ import java.util.UUID;
 
 public interface FileManager {
 
-  FileInfo singleUpload(MultipartFile file);
+  FileInfo uploadSingleFile(MultipartFile file);
 
-  List<FileInfo> multipleUpload(List<MultipartFile> files);
+  List<FileInfo> uploadMultipleFile(List<MultipartFile> files);
 
   byte[] download(String filename);
 

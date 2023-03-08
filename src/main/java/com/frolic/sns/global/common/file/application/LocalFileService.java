@@ -39,12 +39,12 @@ public final class LocalFileManager implements FileManager {
   }
 
   @Override
-  public FileInfo singleUpload(MultipartFile file) {
+  public FileInfo uploadSingleFile(MultipartFile file) {
     return store(file);
   }
 
   @Override
-  public List<FileInfo> multipleUpload(List<MultipartFile> files) {
+  public List<FileInfo> uploadMultipleFile(List<MultipartFile> files) {
     return files.stream().map(this::store).collect(Collectors.toList());
   }
 
