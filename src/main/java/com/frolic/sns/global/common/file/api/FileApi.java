@@ -3,7 +3,6 @@ package com.frolic.sns.global.common.file.api;
 import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.common.file.application.FileManageable;
 import com.frolic.sns.global.common.file.dto.FileInfo;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +13,11 @@ import java.util.Map;
 
 @RequestMapping("/api/file")
 @RestController
-public class UploadApi {
+public class  UploadApi {
 
   private final FileManageable fileManager;
 
-  public UploadApi(@Qualifier("LocalFileManager") FileManageable fileManager) {
+  public UploadApi(FileManageable fileManager) {
     this.fileManager = fileManager;
   }
 
