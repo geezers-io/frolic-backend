@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public interface FileManager {
+public interface FileService {
 
   FileInfo uploadSingleFile(MultipartFile file);
 

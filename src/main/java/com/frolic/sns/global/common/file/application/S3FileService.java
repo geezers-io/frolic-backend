@@ -28,10 +28,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class S3FileManager implements FileManager {
+public class S3FileService implements FileService {
 
   private final FileRepository fileRepository;
   private final AmazonS3Client s3Client;
+
+  private final FileManager fileManager;
 
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
@@ -54,7 +56,8 @@ public class S3FileManager implements FileManager {
 
   @Override
   public byte[] download(String filename) {
-    try (S3ObjectInputStream stream = s3Client.getObject(bucketName, filename).getObjectContent()) {
+    ApplicationFile applicationFile = fileManager.getFileByName(filename);
+    try (S3ObjectInputStream stream = s3Client.getObject(bucketName, applicationFile.getName()).getObjectContent()) {
       return stream.readAllBytes();
     } catch (IOException e) {
       throw new FileDownloadFailureException();

@@ -27,11 +27,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public final class LocalFileManager implements FileManager {
+public final class LocalFileService implements FileService {
 
   private final FileRepository fileRepository;
 
   private final LocalFileProperties localFileProperties;
+
+  private final FileManager fileManager;
 
   @PostConstruct
   public void postConstruct() {
@@ -50,7 +52,8 @@ public final class LocalFileManager implements FileManager {
 
   @Override
   public byte[] download(String filename) {
-    String path = localFileProperties.getUploadDirPath() + "/" + filename;
+    ApplicationFile applicationFile = fileManager.getFileByName(filename);
+    String path = localFileProperties.getUploadDirPath() + "/" + applicationFile.getName();
     File file = new File(path);
 
     try (FileInputStream stream = new FileInputStream(file)) {
