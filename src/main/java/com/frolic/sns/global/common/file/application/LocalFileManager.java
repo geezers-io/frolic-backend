@@ -9,8 +9,6 @@ import com.frolic.sns.global.common.file.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,8 +16,6 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public final class LocalFileManager implements FileManageable {
+public final class LocalFileManager implements FileManager {
 
   private final FileRepository fileRepository;
 
@@ -53,12 +49,12 @@ public final class LocalFileManager implements FileManageable {
   }
 
   @Override
-  public InputStream download(String filename) {
+  public byte[] download(String filename) {
     String path = localFileProperties.getUploadDirPath() + "/" + filename;
     File file = new File(path);
 
     try (FileInputStream stream = new FileInputStream(file)) {
-      return stream;
+      return stream.readAllBytes();
     } catch (IOException e) {
       log.error(e.getMessage());
       throw new FileDownloadFailureException();
@@ -92,7 +88,6 @@ public final class LocalFileManager implements FileManageable {
     ApplicationFile applicationFile = ApplicationFile.builder()
       .addName(name)
       .addSize(file.getSize())
-      .addDownloadUrl(localFileProperties.getHost() + ":" + localFileProperties.getPort() + "/images/" + name)
       .build();
     return fileRepository.saveAndFlush(applicationFile);
   }
