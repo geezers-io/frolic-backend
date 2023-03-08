@@ -1,5 +1,6 @@
 package com.frolic.sns.global.common.file.application;
 
+import com.frolic.sns.global.common.file.config.LocalFileProperties;
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.exception.FileDownloadFailureException;
 import com.frolic.sns.global.common.file.exception.FileSaveFailException;
@@ -8,14 +9,13 @@ import com.frolic.sns.global.common.file.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,21 +27,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class LocalFileManager implements FileManageable {
+public final class LocalFileService implements FileService {
 
   private final FileRepository fileRepository;
 
-  @Value("${system.path.upload-images}")
-  private String uploadDirPath;
+  private final LocalFileProperties localFileProperties;
 
-  @Value("${server.address}")
-  private String host;
-
-  @Value("${server.port}")
-  private String port;
-
-  @Value("${system.protocol}")
-  private String protocol;
+  private final FileManager fileManager;
 
   @PostConstruct
   public void postConstruct() {
@@ -49,27 +41,31 @@ public class LocalFileManager implements FileManageable {
   }
 
   @Override
-  public FileInfo singleUpload(MultipartFile file) {
+  public FileInfo uploadSingleFile(MultipartFile file) {
     return store(file);
   }
 
   @Override
-  public List<FileInfo> multipleUpload(List<MultipartFile> files) {
+  public List<FileInfo> uploadMultipleFile(List<MultipartFile> files) {
     return files.stream().map(this::store).collect(Collectors.toList());
   }
 
   @Override
-  public UrlResource download(String filename) {
-    String path = uploadDirPath + "/" + filename;
-    try {
-      return new UrlResource(path);
-    } catch (MalformedURLException exception) {
+  public byte[] download(String filename) {
+    ApplicationFile applicationFile = fileManager.getFileByName(filename);
+    String path = localFileProperties.getUploadDirPath() + "/" + applicationFile.getName();
+    File file = new File(path);
+
+    try (FileInputStream stream = new FileInputStream(file)) {
+      return stream.readAllBytes();
+    } catch (IOException e) {
+      log.error(e.getMessage());
       throw new FileDownloadFailureException();
     }
   }
 
   private void createUploadDirectory() {
-    File uploadDirectory = new File(uploadDirPath);
+    File uploadDirectory = new File(localFileProperties.getUploadDirPath());
     if (!uploadDirectory.exists())
       uploadDirectory.mkdir();
   }
@@ -82,7 +78,7 @@ public class LocalFileManager implements FileManageable {
 
   private FileInfo createFile(MultipartFile file, String temperedName) {
     try {
-      Path createFilePath = Paths.get(uploadDirPath + "/" + temperedName);
+      Path createFilePath = Paths.get(localFileProperties.getUploadDirPath() + "/" + temperedName);
       Files.write(createFilePath, file.getBytes());
       return FileInfo.from(createFileModel(file, temperedName));
     } catch (Exception ex) {
@@ -95,7 +91,6 @@ public class LocalFileManager implements FileManageable {
     ApplicationFile applicationFile = ApplicationFile.builder()
       .addName(name)
       .addSize(file.getSize())
-      .addDownloadUrl(protocol + "://" + host + ":" + port + "/images/" + name)
       .build();
     return fileRepository.saveAndFlush(applicationFile);
   }

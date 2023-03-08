@@ -24,7 +24,6 @@ public class AuthApi {
   private final JwtProvider jwtProvider;
   private final AuthManager authManager;
 
-
   @SignupDocs
   @PostMapping("/signup")
   public ResponseEntity<Map<String, UserLoginResponse>> signup(@RequestBody @Valid UserSignupRequest dto) {

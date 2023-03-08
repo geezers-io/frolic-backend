@@ -75,7 +75,6 @@ public class UpdatePostBusinessManager {
       ApplicationFile file = postFile.getFile();
       return FileInfo.builder()
         .addId(file.getId())
-        .addDownloadUrl(file.getDownloadUrl())
         .addFilename(file.getName())
         .build();
     }).collect(Collectors.toList());

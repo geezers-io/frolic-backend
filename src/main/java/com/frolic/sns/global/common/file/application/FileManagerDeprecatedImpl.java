@@ -18,11 +18,11 @@ import java.util.Objects;
 @Deprecated
 @Slf4j
 @Service
-public class FileManagerImpl implements FileManager {
+public class FileManagerDeprecatedImpl implements FileManagerDeprecated {
 
   private final Path uploadDirPath;
 
-  public FileManagerImpl() {
+  public FileManagerDeprecatedImpl() {
     this.uploadDirPath = Paths.get(System.getProperty("user.dir") + "/uploads");
     try {
       if (!Files.exists(uploadDirPath))
