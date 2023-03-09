@@ -64,7 +64,7 @@ public class SendTempPasswordManagerTest {
         VerifyCodeRequest request = new VerifyCodeRequest("wrongCode");
 
         // then
-        assertThrows(MisMatchAuthCodeException.class, () -> sendTempPasswordManager.authCodeVerify(id, request));
+        assertThrows(MisMatchAuthCodeException.class, () -> sendTempPasswordManager.verifyAuthCode(id, request));
     }
 
     @Test
@@ -76,12 +76,12 @@ public class SendTempPasswordManagerTest {
         // when
         for (int i = 0; i < 5; i++) {
             assertThrows(MisMatchAuthCodeException.class, () -> {
-                sendTempPasswordManager.authCodeVerify(id, request);
+                sendTempPasswordManager.verifyAuthCode(id, request);
             });
         }
 
         // then
-        assertThrows(OverTriedAuthCodeException.class, () -> sendTempPasswordManager.authCodeVerify(id, request));
+        assertThrows(OverTriedAuthCodeException.class, () -> sendTempPasswordManager.verifyAuthCode(id, request));
     }
 
     @Test

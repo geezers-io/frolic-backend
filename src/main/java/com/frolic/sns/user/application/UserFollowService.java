@@ -4,7 +4,7 @@ import com.frolic.sns.user.dto.FollowUserRequest;
 
 import java.util.List;
 
-public interface UserFollowManageable {
+public interface UserFollowService {
 
   List<FollowUserRequest> getFollowerListBySelf(String token);
 

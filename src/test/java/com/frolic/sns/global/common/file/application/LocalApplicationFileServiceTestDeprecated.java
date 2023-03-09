@@ -12,10 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LocalApplicationFileManagerTest {
+class LocalApplicationFileServiceTestDeprecated {
 
   @Autowired
-  protected LocalFileManager localFileManager;
+  protected LocalFileService localFileManager;
 
   private final byte[] fileContentBytes = "Hello, World".getBytes();
 

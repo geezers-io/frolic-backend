@@ -1,23 +1,19 @@
 package com.frolic.sns.global.common.file.application;
 
-import org.springframework.web.multipart.MultipartFile;
+import com.frolic.sns.global.common.file.model.ApplicationFile;
+import com.frolic.sns.global.common.file.repository.FileRepository;
+import com.frolic.sns.global.exception.NotFoundResourceException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+@Component
+@RequiredArgsConstructor
+public final class FileManager {
 
-@Deprecated
-public interface FileManager {
+  private final FileRepository fileRepository;
 
-  void singleFileUpload(CustomFile file);
-
-  void multipleFileUpload(List<CustomFile> files);
-
-  byte[] download(String fileKey);
-
-  static List<CustomFile> createCustomFileList(List<MultipartFile> multipartFiles) {
-    if (multipartFiles == null || multipartFiles.get(0).isEmpty()) return new ArrayList<>();
-    return multipartFiles.stream().map(CustomFile::new).collect(Collectors.toList());
+  public ApplicationFile getFileByName(String name) {
+    return fileRepository.findByName(name).orElseThrow(NotFoundResourceException::new);
   }
 
 }

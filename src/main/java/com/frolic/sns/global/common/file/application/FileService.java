@@ -2,19 +2,19 @@ package com.frolic.sns.global.common.file.application;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.exception.FaultFileExtensionException;
-import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public interface FileManageable {
-  FileInfo singleUpload(MultipartFile file);
+public interface FileService {
 
-  List<FileInfo> multipleUpload(List<MultipartFile> files);
+  FileInfo uploadSingleFile(MultipartFile file);
 
-  UrlResource download(String filename);
+  List<FileInfo> uploadMultipleFile(List<MultipartFile> files);
+
+  byte[] download(String filename);
 
   default String getTemperedFilename(String filename) {
     int extIndex = filename.indexOf(".");
