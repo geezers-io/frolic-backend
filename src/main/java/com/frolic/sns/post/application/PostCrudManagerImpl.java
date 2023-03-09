@@ -205,7 +205,7 @@ public class PostCrudManagerImpl implements PostCrudManager {
       .addIsLikeUp(isLikeUp)
       .addLikeCount(likeCount)
       .addTextContent(post.getTextContent())
-      .addFileDownloadUrls(fileDownloadUrls)
+      //.addFileDownloadUrls(fileDownloadUrls)
       .addCreatedDate(post.getCreatedDate())
       .addUpdatedDate(post.getUpdatedDate())
       .build();

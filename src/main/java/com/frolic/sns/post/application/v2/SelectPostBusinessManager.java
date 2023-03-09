@@ -27,13 +27,11 @@ public class SelectPostBusinessManager {
 
     private final PostFileRepository postFileRepository;
     public PostInfo getListOfSingleArticleDtoByPageResults(Page<Post> articlePage, User user) {
-        return (PostInfo) articlePage.stream()
-                .map(article -> {
-                    List<String> hashtags = postHashtagRepository.findAllByPost(article);
-                    UserInfo articleOwner = UserInfo.from(article.getUser());
-                    return getSingleArticleDto(article,hashtags, articleOwner, user);
-                })
-                .collect(Collectors.toList());
+        List<String> hashtags = postHashtagRepository.findAllByPost((Post) articlePage);
+        UserInfo articleOwner = UserInfo.from(((Post) articlePage).getUser());
+        PostInfo getPostInfo = getSingleArticleDto((Post) articlePage, hashtags, articleOwner, user);
+
+        return getPostInfo;
     }
 
     private PostInfo getSingleArticleDto(Post post, List<String> hashtags, UserInfo userInfo, User user) {
@@ -43,7 +41,7 @@ public class SelectPostBusinessManager {
                 .map(comment -> getSingleCommentDtoByEntity(comment, post))
                 .collect(Collectors.toList());
         long commentCount = commentRepository.countAllByPost(post);
-        List<FileInfo> files = postFileRepository.getFilesByPostId(post.getId());
+        //List<FileInfo> files = postFileRepository.getFilesByPostId(post.getId());
         boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
 
         return PostInfo.builder()
@@ -54,7 +52,7 @@ public class SelectPostBusinessManager {
                 .addIsLikeUp(isLikeUp)
                 .addLikeCount(likeCount)
                 .addTextContent(post.getTextContent())
-                .addFiles(files)
+                //.addFiles(files)
                 .addCreatedDate(post.getCreatedDate())
                 .addUpdatedDate(post.getUpdatedDate())
                 .build();

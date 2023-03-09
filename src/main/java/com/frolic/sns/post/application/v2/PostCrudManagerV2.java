@@ -1,7 +1,6 @@
 package com.frolic.sns.post.application.v2;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
-import com.frolic.sns.global.common.file.repository.FileRepository;
 import com.frolic.sns.global.common.jwt.JwtEntityLoader;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
@@ -26,8 +25,6 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class PostCrudManagerV2 {
-  private final FileRepository fileRepository;
-
   private final HashTagManager hashTagManager;
   private final PostRepository postRepository;
   private final PostFileDslRepository postFileDslRepository;

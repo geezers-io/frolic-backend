@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface PostDslRepository {
 
-  List<Post> findBySearchParamsByPagination(List<String> searchParams, Pageable pageable);
+  List<Post> findBySearchParamsByPagination(List<String> searchParams, Long cursorId, Pageable pageable);
 
 }
