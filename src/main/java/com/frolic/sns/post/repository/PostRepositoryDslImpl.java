@@ -44,7 +44,6 @@ public class PostRepositoryDslImpl implements PostDslRepository {
                             .from(hashtag)
                             .where(hashtag.name.in(searchParams))
             ), eqCursorId(cursorId))
-            .offset(pageable.getPageNumber())
             .limit(pageable.getPageNumber())
             .fetch();
   }
