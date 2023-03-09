@@ -1,6 +1,8 @@
 package com.frolic.sns.global.common.file.api;
 
 import com.frolic.sns.global.common.ResponseHelper;
+import com.frolic.sns.global.common.file.api.swagger.DownloadFileDocs;
+import com.frolic.sns.global.common.file.api.swagger.UploadFileDocs;
 import com.frolic.sns.global.common.file.application.FileService;
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class FileApi {
 
   private final FileService fileService;
 
+  @UploadFileDocs
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public ResponseEntity<Map<String, FileInfo>> uploadFileApi(@RequestPart("image") MultipartFile file) {
     if (file == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "파일 객체가 존재하지 않습니다.");
@@ -28,6 +31,7 @@ public class FileApi {
     return ResponseEntity.status(HttpStatus.CREATED).body(ResponseHelper.createDataMap(fileInfo));
   }
 
+  @DownloadFileDocs
   @GetMapping("/{filename}")
   public ResponseEntity<byte[]> downloadFileApi(@PathVariable("filename") String filename) {
     byte[] fileBytes = fileService.download(filename);
