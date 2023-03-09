@@ -10,7 +10,7 @@ import com.frolic.sns.auth.exception.PasswordNotMatchException;
 import com.frolic.sns.global.config.security.CustomEmailPasswordAuthToken;
 import com.frolic.sns.global.config.security.JwtConstants;
 import com.frolic.sns.global.config.security.JwtProvider;
-import com.frolic.sns.user.application.UserManager;
+import com.frolic.sns.user.application.UserService;
 import com.frolic.sns.user.dto.UserUnitedInfo;
 import com.frolic.sns.user.exception.UserNotFoundException;
 import com.frolic.sns.user.model.User;
@@ -35,7 +35,7 @@ public class AuthManager implements AuthManageable {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
 
-  private final UserManager userManager;
+  private final UserService userService;
 
   public UserLoginResponse saveUser(UserSignupRequest userSignupRequest) {
     boolean isExistsEmail = userRepository.existsByEmail(userSignupRequest.getEmail());
@@ -75,7 +75,7 @@ public class AuthManager implements AuthManageable {
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)
       .build();
-    UserUnitedInfo userUnitedInfo = userManager.getUserUnitedDetail(user.getUsername());
+    UserUnitedInfo userUnitedInfo = userService.getUserUnitedDetail(user.getUsername());
 
     return UserLoginResponse.create(tokenInfo, userUnitedInfo);
   }

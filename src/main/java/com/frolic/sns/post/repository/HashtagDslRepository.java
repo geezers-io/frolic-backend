@@ -1,6 +1,8 @@
 package com.frolic.sns.post.repository;
 
 import com.frolic.sns.post.model.Hashtag;
+import com.frolic.sns.post.model.PostHashTag;
+import com.frolic.sns.post.model.QPostHashTag;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.frolic.sns.post.model.QHashtag.*;
+import static com.frolic.sns.post.model.QPostHashTag.postHashTag;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,7 +28,14 @@ public class HashtagDslRepository {
       .fetchFirst() > 0;
   }
 
+  public List<PostHashTag> getAllPostHashtagByPostId(Long id) {
+    return queryFactory.selectFrom(postHashTag)
+      .where(postHashTag.post.id.eq(id))
+      .fetch();
+  }
+
   public List<Hashtag> createHashtagsIfNotExists(List<String> tags) {
+    if (tags == null) return null;
     List<String> exists = queryFactory
       .select(hashtag.name)
       .from(hashtag)

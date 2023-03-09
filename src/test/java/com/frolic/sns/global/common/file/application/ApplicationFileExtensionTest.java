@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ApplicationFileExtensionTest {
 
   @Autowired
-  protected LocalFileManager localFileManager;
+  protected LocalFileService localFileManager;
 
   String correctFilename = "galaxy4276.jpg";
 

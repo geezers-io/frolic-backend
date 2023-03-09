@@ -3,7 +3,9 @@ package com.frolic.sns.user.api;
 import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.config.security.JwtProvider;
 import com.frolic.sns.user.application.UserManager;
+import com.frolic.sns.user.application.UserService;
 import com.frolic.sns.user.dto.*;
+import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.swagger.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,21 +23,22 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserManagementApi {
 
+  private final UserService userService;
   private final UserManager userManager;
   private final JwtProvider jwtProvider;
 
   @UserInfoDocs
   @GetMapping("")
   public ResponseEntity<Map<String, UserUnitedInfo>> getUserInfoByTokenApi(HttpServletRequest request) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserUnitedInfo userUnitedInfo = userManager.getUserUnitedDetailByToken(token);
+    User user = userManager.getUserByHttpRequest(request);
+    UserUnitedInfo userUnitedInfo = userService.getUserUnitedInfoByUser(user);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userUnitedInfo));
   }
 
   @GetUserByUsernameDocs
   @GetMapping("/{username}")
   public ResponseEntity<Map<String, UserUnitedInfo>> getUserInfoByUsernameParamApi(@PathVariable String username) {
-    UserUnitedInfo userUnitedInfo = userManager.getUserUnitedDetail(username);
+    UserUnitedInfo userUnitedInfo = userService.getUserUnitedDetail(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(userUnitedInfo));
   }
 
@@ -43,10 +46,10 @@ public class UserManagementApi {
   @PutMapping("")
   public ResponseEntity<Map<String, UserInfo>> updateUserInfoApi(
     HttpServletRequest request,
-    @RequestBody @Valid UserUpdateRequest dto
+    @RequestBody @Valid UserUpdateRequest updateRequest
   ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    UserInfo userInfo = userManager.updateUserDetail(token, dto);
+    User user = userManager.getUserByHttpRequest(request);
+    UserInfo userInfo = userService.updateUserDetail(user, updateRequest);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(userInfo));
@@ -59,7 +62,7 @@ public class UserManagementApi {
     @RequestBody @Valid PasswordUpdateRequest dto
     ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userManager.updateUserPassword(token, dto);
+    userService.updateUserPassword(token, dto);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
@@ -70,7 +73,7 @@ public class UserManagementApi {
     @RequestBody @Valid UserDeleteRequest dto
     ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userManager.deleteUser(token, dto.getPassword());
+    userService.deleteUser(token, dto.getPassword());
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

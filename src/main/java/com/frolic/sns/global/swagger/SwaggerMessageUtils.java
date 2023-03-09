@@ -6,4 +6,5 @@ public class SwaggerMessageUtils {
   public static final String FollowApi = "팔로우 또는 팔로잉 API";
   public static final String ArticleManagementApi = "피드 API";
   public static final String CommentApi = "댓글 API";
+  public static final String fileApi = "파일 API";
 }

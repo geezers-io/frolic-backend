@@ -2,7 +2,7 @@ package com.frolic.sns.user.api;
 
 import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.config.security.JwtProvider;
-import com.frolic.sns.user.application.UserFollowManager;
+import com.frolic.sns.user.application.UserFollowServiceImpl;
 import com.frolic.sns.user.dto.FollowUserRequest;
 import com.frolic.sns.user.swagger.*;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserFollowManagementApi {
 
-  private final UserFollowManager userFollowManager;
+  private final UserFollowServiceImpl userFollowServiceImpl;
   private final JwtProvider jwtProvider;
 
 
@@ -29,7 +29,7 @@ public class UserFollowManagementApi {
     HttpServletRequest request
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    List<FollowUserRequest> followList = userFollowManager.getFollowerListBySelf(token);
+    List<FollowUserRequest> followList = userFollowServiceImpl.getFollowerListBySelf(token);
     return ResponseEntity
       .ok(ResponseHelper.createDataMap(followList));
   }
@@ -37,14 +37,14 @@ public class UserFollowManagementApi {
   @GetFollowerListByUsernameDocs
   @GetMapping("/follower/{username}")
   public ResponseEntity<Map<String, List<FollowUserRequest>>> getFollowerListByUsernameApi(@PathVariable String username) {
-    List<FollowUserRequest> followerList = userFollowManager.getFollowerListByUsername(username);
+    List<FollowUserRequest> followerList = userFollowServiceImpl.getFollowerListByUsername(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(followerList));
   }
 
   @GetFollowingListByUsernameDocs
   @GetMapping("/following/{username}")
   public ResponseEntity<Map<String, List<FollowUserRequest>>> getFollowingListByUsernameApi(@PathVariable String username) {
-    List<FollowUserRequest> followingList = userFollowManager.getFollowingListByUsername(username);
+    List<FollowUserRequest> followingList = userFollowServiceImpl.getFollowingListByUsername(username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(followingList));
   }
 
@@ -55,7 +55,7 @@ public class UserFollowManagementApi {
     HttpServletRequest request
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    List<FollowUserRequest> followerList = userFollowManager.getFollowingListBySelf(token);
+    List<FollowUserRequest> followerList = userFollowServiceImpl.getFollowingListBySelf(token);
     return ResponseEntity
       .ok(ResponseHelper.createDataMap(followerList));
   }
@@ -67,7 +67,7 @@ public class UserFollowManagementApi {
     @RequestParam(name = "username") String username
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userFollowManager.addFollowToUsername(token, username);
+    userFollowServiceImpl.addFollowToUsername(token, username);
     return ResponseEntity
       .status(HttpStatus.OK)
       .build();
@@ -80,7 +80,7 @@ public class UserFollowManagementApi {
     @RequestParam(name = "username") String username
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userFollowManager.removeFollowToUsername(token, username);
+    userFollowServiceImpl.removeFollowToUsername(token, username);
     return ResponseEntity
       .status(HttpStatus.OK)
       .build();
@@ -90,7 +90,7 @@ public class UserFollowManagementApi {
   @GetMapping("/follow/exists")
   public ResponseEntity<Map<String, Boolean>> checkFollowExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    boolean isFollow = userFollowManager.checkExistsFollow(token, username);
+    boolean isFollow = userFollowServiceImpl.checkExistsFollow(token, username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(isFollow));
   }
 
@@ -98,7 +98,7 @@ public class UserFollowManagementApi {
   @GetMapping("/following/exists")
   public ResponseEntity<Map<String, Boolean>> checkFollowingExistsApi(HttpServletRequest request, @RequestParam(name="username") String username) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    boolean isFollowing = userFollowManager.checkExistsFollowing(token, username);
+    boolean isFollowing = userFollowServiceImpl.checkExistsFollowing(token, username);
     return ResponseEntity.ok(ResponseHelper.createDataMap(isFollowing));
   }
 
