@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class S3FileService implements FileService {
 
   private final FileRepository fileRepository;
+
   private final AmazonS3Client s3Client;
 
   private final FileManager fileManager;
@@ -38,8 +39,11 @@ public class S3FileService implements FileService {
   @Value("${cloud.aws.s3.bucket}")
   private String bucketName;
 
+  private final ImageFileExtensionValidator imageFileExtensionValidator;
+
   @Override
   public FileInfo uploadSingleFile(MultipartFile multipartFile) {
+    imageFileExtensionValidator.validate(multipartFile);
     ApplicationFile applicationFile = createApplicationFile(multipartFile);
     File newFile = createFile(multipartFile, applicationFile.getName());
     PutObjectRequest objectRequest = new PutObjectRequest(bucketName, applicationFile.getName(), newFile)
