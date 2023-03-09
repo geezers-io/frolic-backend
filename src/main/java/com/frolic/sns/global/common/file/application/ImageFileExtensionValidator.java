@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public final class ImageFileExtensionValidator implements FileExtensionValidator {
 
-  private final List<String> extensionNameList = Arrays.asList("jpg", ".jpeg", ".png", "gif", "bmp", "svg", "webp");
+  private final List<String> extensionNameList = Arrays.asList("jpg", "jpeg", "png", "gif", "bmp", "svg", "webp");
 
   public void validate(MultipartFile file) {
     if (file == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "요청 파일 형식이 잘못되었습니다.");
