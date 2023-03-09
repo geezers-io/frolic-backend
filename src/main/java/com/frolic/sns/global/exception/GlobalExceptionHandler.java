@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(CustomException.class)
-  protected ResponseEntity<ErrorResponse> handleAlreadyUserException(
-    CustomException exception
-  ) {
+  protected ResponseEntity<ErrorResponse> handleAlreadyUserException(CustomException exception) {
     return ErrorResponse.toResponseEntity(exception.getErrorCode());
   }
 
@@ -48,6 +47,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
       .body(response);
+  }
+
+  @ExceptionHandler(ResponseStatusException.class)
+  protected ResponseEntity<Error> handleResponseStatusException(ResponseStatusException ex) {
+    return ResponseEntity
+      .status(ex.getStatus())
+      .body(new Error(ex.getMessage()));
   }
 
 }

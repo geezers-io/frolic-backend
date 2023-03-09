@@ -8,8 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * @implNote json web token 내 정보로 Entity 를 손쉽게 가져올 수 있는 유틸입니다.
+ * @deprecated 직접적으로 User 를 관리하는 객체로 기능이 대체되었음 ( UserManager.class )
  */
+@Deprecated
 @Component
 @RequiredArgsConstructor
 public class JwtEntityLoader {

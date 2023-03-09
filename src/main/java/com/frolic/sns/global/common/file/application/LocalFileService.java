@@ -35,6 +35,8 @@ public final class LocalFileService implements FileService {
 
   private final FileManager fileManager;
 
+  private final ImageFileExtensionValidator imageFileExtensionValidator;
+
   @PostConstruct
   public void postConstruct() {
     createUploadDirectory();
@@ -71,6 +73,7 @@ public final class LocalFileService implements FileService {
   }
 
   private FileInfo store(MultipartFile file) {
+    imageFileExtensionValidator.validate(file);
     String filename = Objects.requireNonNull(file.getOriginalFilename());
     String temperedFilename = getTemperedFilename(filename);
     return createFile(file, temperedFilename);
