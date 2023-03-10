@@ -1,5 +1,6 @@
 package com.frolic.sns.post.application;
 
+import com.frolic.sns.global.common.file.application.FileService;
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.post.model.Post;
@@ -15,22 +16,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Deprecated
 public class PostFileManagerImpl implements PostFileManager {
 
   private final FileRepository fileRepository;
-  private final FileManager fileManager;
+  private final FileService fileService;
 
   @Override
   public List<String> saveFilesWithArticle(Post post, List<CustomFile> files) {
     if (files.size() == 0) return new ArrayList<>();
 
-    fileManager.multipleFileUpload(files);
-
-    files.forEach(customFile -> {
-        ApplicationFile newApplicationFile = ApplicationFile.createFileByCustomFile(customFile, post);
-        fileRepository.save(newApplicationFile);
-    });
-
+//    fileService.uploadMultipleFile(files);
     return files.stream()
       .map(CustomFile::getDownloadUrl)
       .collect(Collectors.toList());
@@ -38,14 +34,10 @@ public class PostFileManagerImpl implements PostFileManager {
 
   @Override
   public List<String> getFileDownloadUrlsByArticle(Post post) {
-    return post.getApplicationFiles().stream()
-      .map(com.frolic.sns.global.common.file.model.ApplicationFile::getDownloadUrl)
-      .collect(Collectors.toList());
+    return null;
   }
 
   @Override
-  public void deleteAllFilesByArticle(Post post) {
-    fileRepository.deleteAll(post.getApplicationFiles());
-  }
+  public void deleteAllFilesByArticle(Post post) {}
 
 }

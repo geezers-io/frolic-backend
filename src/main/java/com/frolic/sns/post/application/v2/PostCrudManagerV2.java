@@ -1,9 +1,9 @@
 package com.frolic.sns.post.application.v2;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
-import com.frolic.sns.global.common.jwt.JwtEntityLoader;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
+import com.frolic.sns.post.dto.v2.GetPostCursorRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.dto.v2.UpdatePostRequest;
 import com.frolic.sns.post.model.Post;
@@ -13,8 +13,6 @@ import com.frolic.sns.user.exception.NotPermissionException;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,21 +25,25 @@ import java.util.List;
 public class PostCrudManagerV2 {
   private final HashTagManager hashTagManager;
   private final PostRepository postRepository;
-  private final PostFileDslRepository postFileDslRepository;
-  private final JwtEntityLoader entityLoader;
-  private final CreatePostBusinessManager createPostBusinessManager;
-  private final UpdatePostBusinessManager updatePostBusinessManager;
-  private final SelectPostBusinessManager selectPostBusinessManager;
 
-  //게시물 조회 기능
-  public PostInfo selectPost(Pageable pageable, String token) {
-    User user = entityLoader.getUser(token);
-    Page<Post> articlePage = postRepository.findAllCreatedDateDesc(pageable);
-    return selectPostBusinessManager.getListOfSingleArticleDtoByPageResults(articlePage, user);
+  private final PostDslRespository postDslRespository;
+
+  private final PostFileDslRepository postFileDslRepository;
+
+  private final GetPostBusinessManager getPostBusinessManager;
+
+  private final CreatePostBusinessManager createPostBusinessManager;
+
+  private final UpdatePostBusinessManager updatePostBusinessManager;
+
+
+  public List<PostInfo> getPosts(GetPostCursorRequest postCursorRequest, User user) {
+    List<Post> posts = postDslRespository.findPosts(postCursorRequest.getCursorId());
+//    Page<Post> articlePage = postRepository.findAllCreatedDateDesc(pageable);
+    return getPostBusinessManager.createPostInfos(posts, user);
   }
 
-  public PostInfo createPost(String token, CreatePostRequest createPostRequest) {
-    User user = entityLoader.getUser(token);
+  public PostInfo createPost(User user, CreatePostRequest createPostRequest) {
     List<String> hashtags = createPostRequest.getHashtags();
     Post newPost = createPostBusinessManager.commitAndReturnPost(createPostRequest, user);
     hashTagManager.connectHashtagsWithPost(hashtags, newPost);
@@ -52,8 +54,7 @@ public class PostCrudManagerV2 {
     return createPostBusinessManager.getPostInfo(newPost, createPostRequest, user, fileInfos);
   }
 
-  public PostInfo updatePost(Long postId, String token, UpdatePostRequest updatePostRequest) {
-    User user = entityLoader.getUser(token);
+  public PostInfo updatePost(Long postId, User user, UpdatePostRequest updatePostRequest) {
     Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
     updatePostBusinessManager.checkUserPermission(user, post.getUser());
     updatePostBusinessManager.updateHashtags(post, updatePostRequest.getHashtags());
@@ -64,14 +65,11 @@ public class PostCrudManagerV2 {
     return updatePostBusinessManager.getPostInfo(post, user, updatePostRequest.getHashtags(), fileInfos);
   }
 
-  public void deletePost(Long postId, String token) {
-    User user = entityLoader.getUser(token);
+  public void deletePost(Long postId, Long userId) {
     Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
-    boolean isOwner = post.getUser().getId().equals(user.getId());
-    if (!isOwner)
-      throw new NotPermissionException();
+    boolean isOwner = post.getUser().getId().equals(userId);
+    if (!isOwner) throw new NotPermissionException();
     postRepository.delete(post);
   }
-
 
 }

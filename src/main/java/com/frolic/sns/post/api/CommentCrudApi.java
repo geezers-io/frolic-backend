@@ -32,9 +32,7 @@ public class CommentCrudApi {
     @RequestBody @Valid CreateCommentRequest dto
     ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    CommentInfo commentInfo = commentCrudManager.createComment(
-      token,dto
-    );
+    CommentInfo commentInfo = commentCrudManager.createComment(token, dto);
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(commentInfo));

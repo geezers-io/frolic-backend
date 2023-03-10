@@ -2,6 +2,7 @@ package com.frolic.sns.post.dto.v2;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.post.dto.CommentInfo;
+import com.frolic.sns.post.model.Post;
 import com.frolic.sns.user.dto.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +33,6 @@ public class PostInfo {
     Long id,
     String textContent,
     UserInfo userInfo,
-    //List<CommentInfo> comments,
     Long commentCount,
     List<String> hashtags,
     Long likeCount,
@@ -61,6 +61,14 @@ public class PostInfo {
     this.files = files;
     this.createdDate = createdDate;
     this.updatedDate = updatedDate;
+  }
+
+  public static PostInfoBuilder addProperties(Post post) {
+    return PostInfo.builder()
+      .addId(post.getId())
+      .addTextContent(post.getTextContent())
+      .addCreatedDate(post.getCreatedDate())
+      .addUpdatedDate(post.getUpdatedDate());
   }
 
 }
