@@ -15,7 +15,7 @@ import static com.frolic.sns.post.model.QHashtag.*;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepositoryDslImpl implements PostDslRepository {
+public class PostDslRespository {
 
   private final JPAQueryFactory queryFactory;
 /*
@@ -34,18 +34,25 @@ public class PostRepositoryDslImpl implements PostDslRepository {
       .fetch();
   }
 */
-  @Override
+
+  public List<Post> findPosts(Long cursorId) {
+    return queryFactory.selectFrom(post)
+      .where(post.id.gt(cursorId))
+      .limit(10)
+      .fetch();
+  }
+
   public List<Post> findBySearchParamsByPagination(List<String> searchParams, Long cursorId, Pageable pageable) {
     return queryFactory.selectFrom(post)
-            .join(postHashTag)
-            .on(postHashTag.id.eq(post.id))
-            .where(postHashTag.id.in(
-                    queryFactory.select(hashtag.id)
-                            .from(hashtag)
-                            .where(hashtag.name.in(searchParams))
-            ), eqCursorId(cursorId))
-            .limit(pageable.getPageNumber())
-            .fetch();
+      .join(postHashTag)
+      .on(postHashTag.id.eq(post.id))
+      .where(postHashTag.id.in(
+              queryFactory.select(hashtag.id)
+                      .from(hashtag)
+                      .where(hashtag.name.in(searchParams))
+      ), eqCursorId(cursorId))
+      .limit(pageable.getPageNumber())
+      .fetch();
   }
 
   private BooleanExpression eqCursorId(Long cursorId) { // (7)
@@ -54,4 +61,5 @@ public class PostRepositoryDslImpl implements PostDslRepository {
     }
     return null;
   }
+
 }
