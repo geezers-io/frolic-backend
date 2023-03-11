@@ -23,17 +23,13 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class PostCrudManagerV2 {
+
   private final HashTagManager hashTagManager;
   private final PostRepository postRepository;
-
   private final PostDslRespository postDslRespository;
-
   private final PostFileDslRepository postFileDslRepository;
-
   private final GetPostBusinessManager getPostBusinessManager;
-
   private final CreatePostBusinessManager createPostBusinessManager;
-
   private final UpdatePostBusinessManager updatePostBusinessManager;
 
 

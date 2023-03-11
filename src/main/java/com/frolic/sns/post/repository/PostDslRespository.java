@@ -37,13 +37,15 @@ public class PostDslRespository {
 
   public List<Post> findPosts() {
     return queryFactory.selectFrom(post)
+      .orderBy(post.createdDate.desc())
       .limit(10)
       .fetch();
   }
 
   public List<Post> findPostsByCursorId(Long cursorId) {
     return queryFactory.selectFrom(post)
-      .where(post.id.gt(cursorId))
+      .where(post.id.lt(cursorId))
+      .orderBy(post.createdDate.desc())
       .limit(10)
       .fetch();
   }

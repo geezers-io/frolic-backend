@@ -34,8 +34,8 @@ public class PostCrudV2Api {
 
   private final PostCrudManagerV2 postCrudManager;
 
-  @GetMapping("/lists")
-  public ResponseEntity<Map<String, List<PostInfo>>> selectPostApi(
+  @PostMapping("/list")
+  public ResponseEntity<Map<String, List<PostInfo>>> getPostsApi(
     HttpServletRequest request,
     @RequestBody GetPostCursorRequest getPostCursorRequest
   ) {
