@@ -35,7 +35,13 @@ public class PostDslRespository {
   }
 */
 
-  public List<Post> findPosts(Long cursorId) {
+  public List<Post> findPosts() {
+    return queryFactory.selectFrom(post)
+      .limit(10)
+      .fetch();
+  }
+
+  public List<Post> findPostsByCursorId(Long cursorId) {
     return queryFactory.selectFrom(post)
       .where(post.id.gt(cursorId))
       .limit(10)

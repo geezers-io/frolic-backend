@@ -38,8 +38,12 @@ public class PostCrudManagerV2 {
 
 
   public List<PostInfo> getPosts(GetPostCursorRequest postCursorRequest, User user) {
-    List<Post> posts = postDslRespository.findPosts(postCursorRequest.getCursorId());
-//    Page<Post> articlePage = postRepository.findAllCreatedDateDesc(pageable);
+    List<Post> posts;
+    Long cursorId = postCursorRequest.getCursorId();
+    if (postCursorRequest.getCursorId() == null)
+      posts = postDslRespository.findPosts();
+    else
+      posts = postDslRespository.findPostsByCursorId(cursorId);
     return getPostBusinessManager.createPostInfos(posts, user);
   }
 

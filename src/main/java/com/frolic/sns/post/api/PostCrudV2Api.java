@@ -37,7 +37,7 @@ public class PostCrudV2Api {
   @GetMapping("/lists")
   public ResponseEntity<Map<String, List<PostInfo>>> selectPostApi(
     HttpServletRequest request,
-    @RequestBody @Valid GetPostCursorRequest getPostCursorRequest
+    @RequestBody GetPostCursorRequest getPostCursorRequest
   ) {
     User user = userManager.getUserByHttpRequest(request);
     List<PostInfo> PostInfos = postCrudManager.getPosts(getPostCursorRequest, user);

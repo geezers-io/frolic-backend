@@ -1,15 +1,16 @@
 package com.frolic.sns.post.dto.v2;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-import javax.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class GetPostCursorRequest {
 
-  @NotNull
-  private final Long cursorId;
+  private Long cursorId;
+
+  public GetPostCursorRequest(Long cursorId) {
+    this.cursorId = cursorId;
+  }
 
 }

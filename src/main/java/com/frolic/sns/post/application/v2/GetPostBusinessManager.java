@@ -4,10 +4,7 @@ import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.model.Comment;
 import com.frolic.sns.post.model.Post;
-import com.frolic.sns.post.repository.CommentRepository;
-import com.frolic.sns.post.repository.LikeRepository;
-import com.frolic.sns.post.repository.PostFileRepository;
-import com.frolic.sns.post.repository.PostHashtagRepository;
+import com.frolic.sns.post.repository.*;
 import com.frolic.sns.user.dto.UserInfo;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +23,17 @@ public class GetPostBusinessManager {
 
   private final PostFileRepository postFileRepository;
 
+  private final CommentDslRepository commentDslRepository;
+
   public List<PostInfo> createPostInfos(List<Post> posts, User user) {
     return posts.stream().map(
       post -> PostInfo.addProperties(post)
+        .addCommentCount(
+          commentDslRepository.getCommentCount(post.getId())
+        )
+        .addLikeCount(likeRepository.countAllByPost(post))
+//        .addIsLikeUp(likeRepository)
+        .addUserInfo(UserInfo.from(user))
         .build()
     )
       .collect(Collectors.toList());
