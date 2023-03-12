@@ -11,6 +11,4 @@ import java.util.List;
 @Repository
 public interface PostFileRepository extends JpaRepository<PostFile, Long> {
 
-    //@Query("select pf.file from files pf where pf.post = ?1 ")
-    //List<FileInfo> getFilesByPostId(Long postId);
 }

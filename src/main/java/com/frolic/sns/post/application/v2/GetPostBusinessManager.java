@@ -39,46 +39,4 @@ public class GetPostBusinessManager {
       .collect(Collectors.toList());
   }
 
-  public PostInfo getListOfSingleArticleDtoByPageResults(Page<Post> articlePage, User user) {
-    List<String> hashtags = postHashtagRepository.findAllByPost((Post) articlePage);
-    UserInfo articleOwner = UserInfo.from(((Post) articlePage).getUser());
-    PostInfo getPostInfo = getSingleArticleDto((Post) articlePage, hashtags, articleOwner, user);
-
-    return getPostInfo;
-  }
-
-  private PostInfo getSingleArticleDto(Post post, List<String> hashtags, UserInfo userInfo, User user) {
-    long likeCount = likeRepository.countAllByPost(post);
-    List<CommentInfo> comments = commentRepository.findAllByPost(post)
-      .stream()
-      .map(comment -> getSingleCommentDtoByEntity(comment, post))
-      .collect(Collectors.toList());
-    long commentCount = commentRepository.countAllByPost(post);
-    //List<FileInfo> files = postFileRepository.getFilesByPostId(post.getId());
-    boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
-
-    return PostInfo.builder()
-      .addId(post.getId())
-      .addHashtags(hashtags)
-      .addCommentCount(commentCount)
-      .addUserInfo(userInfo)
-      .addIsLikeUp(isLikeUp)
-      .addLikeCount(likeCount)
-      .addTextContent(post.getTextContent())
-      //.addFiles(files)
-      .addCreatedDate(post.getCreatedDate())
-      .addUpdatedDate(post.getUpdatedDate())
-      .build();
-  }
-
-  private CommentInfo getSingleCommentDtoByEntity(Comment comment, Post post) {
-    return CommentInfo.builder()
-      .addId(comment.getId())
-      .addReplyUserId(comment.getReplyUserPkId())
-      .addPostId(post.getId())
-      .addUserInfo(UserInfo.from(comment.getUser()))
-      .addTextContent(comment.getTextContent())
-      .build();
-  }
-
 }
