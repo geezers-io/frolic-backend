@@ -23,20 +23,18 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CommentCrudManagerImpl implements CommentCrudManager {
+public class CommentCrudService {
 
   private final JwtProvider jwtProvider;
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final PostRepository postRepository;
 
-  @Override
   public CommentInfo getCommentById(Long commentId) {
     Comment comment = commentRepository.findById(commentId).orElseThrow(NotFoundResourceException::new);
     return CommentInfo.from(comment);
   }
 
-  @Override
   public List<CommentInfo> getCommentsByArticlePagination(Long articleId, Pageable pageable) {
     Post post = postRepository.findById(articleId).orElseThrow(NotFoundResourceException::new);
     Page<Comment> commentPage = commentRepository.findAllByPostOrderByCreatedDate(post, pageable);
@@ -46,7 +44,6 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       .collect(Collectors.toList());
   }
 
-  @Override
   public List<CommentInfo> getCommentsByUserPagination(String username, Pageable pageable) {
     User user = userRepository.findByUsername(username)
       .orElseThrow(UserNotFoundException::new);
@@ -58,28 +55,25 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
       .collect(Collectors.toList());
   }
 
-  @Override
-  public CommentInfo createComment(String token, CreateCommentRequest dto) {
-    Comment newComment = getCommentByCreateRequestDto(dto);
+  public CommentInfo createComment(User user, CreateCommentRequest createCommentRequest) {
+    Comment newComment = getCommentByCreateRequestDto(user, createCommentRequest);
     commentRepository.save(newComment);
     return CommentInfo.from(newComment);
   }
 
-  @Override
-  public CommentInfo updateComment(String token, CreateCommentRequest createCommentInfo, Long commentId) {
-    User tokenUser = getUserIsTokenAble(token);
-    boolean isSameUser = Objects.equals(tokenUser.getId(), createCommentInfo.getPostOwnerId());
+  public CommentInfo updateComment(User user, CreateCommentRequest updateCommentInfo, Long commentId) {
+    Post post = postRepository.findById(updateCommentInfo.getPostId()).orElseThrow(NotFoundResourceException::new);
+    boolean isSameUser = Objects.equals(user.getId(),  post.getUser().getId());
     if (!isSameUser)
       throw new NotPermissionException();
     Comment comment = commentRepository.findById(commentId)
       .orElseThrow(NotFoundResourceException::new);
 
-    comment.updateTextContent(createCommentInfo.getTextContent());
+    comment.updateTextContent(updateCommentInfo.getTextContent());
     commentRepository.save(comment);
     return CommentInfo.from(comment);
   }
 
-  @Override
   public void deleteComment(String token, Long commentId) {
     User tokenUser = getUserIsTokenAble(token);
     Comment comment = commentRepository.findById(commentId)
@@ -98,15 +92,12 @@ public class CommentCrudManagerImpl implements CommentCrudManager {
     ).orElseThrow(UserNotFoundException::new);
   }
 
-  private Comment getCommentByCreateRequestDto(CreateCommentRequest dto) {
-    User user = userRepository.findById(dto.getPostOwnerId())
-      .orElseThrow(UserNotFoundException::new);
-    Post post = postRepository.findById(dto.getPostId())
+  private Comment getCommentByCreateRequestDto(User user, CreateCommentRequest createCommentRequest) {
+    Post post = postRepository.findById(createCommentRequest.getPostId())
       .orElseThrow(NotFoundResourceException::new);
 
     return Comment.builder()
-      .addTextContent(dto.getTextContent())
-      .addReplyUserPkId(dto.getReplyUserId())
+      .addTextContent(createCommentRequest.getTextContent())
       .addUser(user)
       .addPost(post)
       .build();
