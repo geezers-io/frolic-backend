@@ -32,7 +32,7 @@ public class GetPostBusinessManager {
           commentDslRepository.getCommentCount(post.getId())
         )
         .addLikeCount(likeRepository.countAllByPost(post))
-//        .addIsLikeUp(likeRepository)
+        .addIsLikeUp(likeRepository.existsByPostAndUser(post, user))
         .addUserInfo(UserInfo.from(user))
         .build()
     )
