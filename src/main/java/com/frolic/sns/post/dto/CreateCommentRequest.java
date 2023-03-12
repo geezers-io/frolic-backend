@@ -16,7 +16,6 @@ public class CreateCommentRequest {
   private Long postId;
 
   @NotNull // TODO: 2022-11-16 validation
-//  @Max(value = 500, message = "본문 데이터는 500자 이하여야 합니다.")
   private String textContent;
 
 

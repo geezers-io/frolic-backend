@@ -26,7 +26,6 @@ public class PostFileManagerImpl implements PostFileManager {
   public List<String> saveFilesWithArticle(Post post, List<CustomFile> files) {
     if (files.size() == 0) return new ArrayList<>();
 
-//    fileService.uploadMultipleFile(files);
     return files.stream()
       .map(CustomFile::getDownloadUrl)
       .collect(Collectors.toList());
