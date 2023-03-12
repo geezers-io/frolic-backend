@@ -30,7 +30,7 @@ class ImageFileExtensionValidatorTest {
     MockMultipartFile mockMultipartFile = new MockMultipartFile("test.svg", "test.svg", "image", "hello".getBytes());
 
     // when, then
-    imageFileExtensionValidator.validate(mockMultipartFile);
+    assertDoesNotThrow(() -> imageFileExtensionValidator.validate(mockMultipartFile));
   }
 
 }
