@@ -45,7 +45,7 @@ public class PostCrudV2Api {
   }
 
   @CreatePostDocs
-  @PostMapping()
+  @PostMapping
   public ResponseEntity<Map<String, PostInfo>> createPostApi(
     @Valid @RequestBody CreatePostRequest createPostRequest,
     HttpServletRequest request

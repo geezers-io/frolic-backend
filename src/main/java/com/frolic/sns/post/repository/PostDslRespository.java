@@ -18,22 +18,6 @@ import static com.frolic.sns.post.model.QHashtag.*;
 public class PostDslRespository {
 
   private final JPAQueryFactory queryFactory;
-/*
-  @Override
-  public List<Post> findBySearchParamsByPagination(List<String> searchParams, Pageable pageable) {
-    return queryFactory.selectFrom(post)
-      .join(postHashTag)
-      .on(postHashTag.id.eq(post.id))
-      .where(postHashTag.id.in(
-        queryFactory.select(hashtag.id)
-          .from(hashtag)
-          .where(hashtag.name.in(searchParams))
-      ))
-      .offset(pageable.getPageNumber())
-      .limit(pageable.getPageNumber())
-      .fetch();
-  }
-*/
 
   public List<Post> findPosts() {
     return queryFactory.selectFrom(post)
@@ -50,14 +34,17 @@ public class PostDslRespository {
       .fetch();
   }
 
+  /**
+   * @announcement 이 부분 사용 예정인 지 미사용인 지 작성자분께서 검토 부탁드립니다!
+   */
   public List<Post> findBySearchParamsByPagination(List<String> searchParams, Long cursorId, Pageable pageable) {
     return queryFactory.selectFrom(post)
       .join(postHashTag)
       .on(postHashTag.id.eq(post.id))
       .where(postHashTag.id.in(
-              queryFactory.select(hashtag.id)
-                      .from(hashtag)
-                      .where(hashtag.name.in(searchParams))
+        queryFactory.select(hashtag.id)
+          .from(hashtag)
+          .where(hashtag.name.in(searchParams))
       ), eqCursorId(cursorId))
       .limit(pageable.getPageNumber())
       .fetch();

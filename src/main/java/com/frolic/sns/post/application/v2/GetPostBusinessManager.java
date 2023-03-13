@@ -1,14 +1,11 @@
 package com.frolic.sns.post.application.v2;
 
-import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.dto.v2.PostInfo;
-import com.frolic.sns.post.model.Comment;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.repository.*;
 import com.frolic.sns.user.dto.UserInfo;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,12 +14,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class GetPostBusinessManager {
-  private final PostHashtagRepository postHashtagRepository;
+
   private final LikeRepository likeRepository;
-  private final CommentRepository commentRepository;
-
-  private final PostFileRepository postFileRepository;
-
   private final CommentDslRepository commentDslRepository;
 
   public List<PostInfo> createPostInfos(List<Post> posts, User user) {

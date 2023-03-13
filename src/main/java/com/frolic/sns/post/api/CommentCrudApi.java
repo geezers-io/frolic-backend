@@ -25,12 +25,13 @@ import java.util.Map;
 public class CommentCrudApi {
 
   private final JwtProvider jwtProvider;
+
   private final CommentCrudService commentCrudService;
 
   private final UserManager userManager;
 
   @CreateCommentDocs
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<Map<String, CommentInfo>> createCommentApi(
     HttpServletRequest request,
     @RequestBody @Valid CreateCommentRequest createCommentRequest

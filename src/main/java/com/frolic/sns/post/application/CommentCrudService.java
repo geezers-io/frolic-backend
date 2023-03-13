@@ -1,5 +1,6 @@
 package com.frolic.sns.post.application;
 
+import com.frolic.sns.post.application.v2.CommentManager;
 import com.frolic.sns.post.dto.CreateCommentRequest;
 import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.model.Post;
@@ -30,9 +31,10 @@ public class CommentCrudService {
   private final UserRepository userRepository;
   private final PostRepository postRepository;
 
+  private final CommentManager commentManager;
+
   public CommentInfo getCommentById(Long commentId) {
-    Comment comment = commentRepository.findById(commentId).orElseThrow(NotFoundResourceException::new);
-    return CommentInfo.from(comment);
+    return commentManager.getCommentInfo(commentId);
   }
 
   public List<CommentInfo> getCommentsByArticlePagination(Long articleId, Pageable pageable) {
