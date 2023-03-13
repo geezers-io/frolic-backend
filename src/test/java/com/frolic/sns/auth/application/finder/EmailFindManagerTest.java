@@ -61,7 +61,7 @@ class EmailFindManagerTest {
     VerifyCodeRequest request = new VerifyCodeRequest("wrongCode");
 
     // then
-    assertThrows(MisMatchAuthCodeException.class, () -> emailFindManager.authCodeVerify(id, request));
+    assertThrows(MisMatchAuthCodeException.class, () -> emailFindManager.verifyAuthCode(id, request));
   }
 
   @Test
@@ -73,12 +73,12 @@ class EmailFindManagerTest {
     // when
     for (int i = 0; i < 5; i++) {
       assertThrows(MisMatchAuthCodeException.class, () -> {
-        emailFindManager.authCodeVerify(id, request);
+        emailFindManager.verifyAuthCode(id, request);
       });
     }
 
     // then
-    assertThrows(OverTriedAuthCodeException.class, () -> emailFindManager.authCodeVerify(id, request));
+    assertThrows(OverTriedAuthCodeException.class, () -> emailFindManager.verifyAuthCode(id, request));
   }
 
 }

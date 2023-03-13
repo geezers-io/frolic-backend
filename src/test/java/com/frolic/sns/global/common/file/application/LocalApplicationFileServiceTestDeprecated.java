@@ -28,7 +28,7 @@ class LocalApplicationFileServiceTestDeprecated {
       MediaType.TEXT_PLAIN_VALUE,
       fileContentBytes
     );
-    assertThrows(FaultFileExtensionException.class, () -> localFileManager.singleUpload(file));
+    assertThrows(FaultFileExtensionException.class, () -> localFileManager.uploadSingleFile(file));
   }
 
 //  @Test
