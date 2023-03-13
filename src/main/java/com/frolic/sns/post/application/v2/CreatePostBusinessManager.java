@@ -40,7 +40,7 @@ public class CreatePostBusinessManager {
       .addUpdatedDate(LocalDateTime.now())
       .addIsLikeUp(false)
       .addLikeCount(0L)
-      .addCommentCount(Long.valueOf(0))
+      .addCommentCount(0L)
       .addFiles(fileInfos)
       .build();
   }
