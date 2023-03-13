@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class CreatePostBusinessManager {
       .addUpdatedDate(LocalDateTime.now())
       .addIsLikeUp(false)
       .addLikeCount(0L)
-      .addComments(new ArrayList<>())
+      .addCommentCount(0L)
       .addFiles(fileInfos)
       .build();
   }

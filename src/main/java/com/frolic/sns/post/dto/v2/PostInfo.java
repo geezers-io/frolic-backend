@@ -2,6 +2,10 @@ package com.frolic.sns.post.dto.v2;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.post.dto.CommentInfo;
+import com.frolic.sns.post.model.Hashtag;
+import com.frolic.sns.post.model.Post;
+import com.frolic.sns.post.model.PostFile;
+import com.frolic.sns.post.model.PostHashTag;
 import com.frolic.sns.user.dto.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +13,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.frolic.sns.global.util.message.CommonMessageUtils.getIllegalFieldError;
 
@@ -18,7 +23,7 @@ public class PostInfo {
   private final Long id;
   private final UserInfo userInfo;
   private final String textContent;
-  private final List<CommentInfo> comments;
+  private final Long commentCount;
   private final List<String> hashtags;
   private final Long likeCount;
   private final List<FileInfo> files;
@@ -31,7 +36,7 @@ public class PostInfo {
     Long id,
     String textContent,
     UserInfo userInfo,
-    List<CommentInfo> comments,
+    Long commentCount,
     List<String> hashtags,
     Long likeCount,
     boolean isLikeUp,
@@ -42,22 +47,42 @@ public class PostInfo {
     Assert.isInstanceOf(Long.class, id, getIllegalFieldError("postId"));
     Assert.isInstanceOf(String.class, textContent, getIllegalFieldError("textContent"));
     Assert.isInstanceOf(UserInfo.class, userInfo, getIllegalFieldError("userInfo"));
-    Assert.isInstanceOf(List.class, comments, getIllegalFieldError("comments"));
+    Assert.isInstanceOf(Long.class, commentCount, getIllegalFieldError("commentCount"));
     Assert.isInstanceOf(Long.class, likeCount, getIllegalFieldError("likeCount"));
-    Assert.notNull(files, getIllegalFieldError("fileDownloadUrls"));
+    Assert.notNull(files, getIllegalFieldError("files"));
     Assert.isInstanceOf(LocalDateTime.class, createdDate, getIllegalFieldError("createdDate"));
     Assert.isInstanceOf(LocalDateTime.class, updatedDate, getIllegalFieldError("updatedDate"));
 
     this.id = id;
     this.textContent = textContent;
     this.userInfo = userInfo;
-    this.comments = comments;
+    this.commentCount = commentCount;
     this.hashtags = hashtags;
     this.likeCount = likeCount;
     this.isLikeUp = isLikeUp;
     this.files = files;
     this.createdDate = createdDate;
     this.updatedDate = updatedDate;
+  }
+
+  public static PostInfoBuilder addProperties(Post post) {
+    return PostInfo.builder()
+      .addId(post.getId())
+      .addTextContent(post.getTextContent())
+      .addHashtags(
+        post.getPostHashTags().stream()
+          .map(PostHashTag::getHashtag)
+          .map(Hashtag::getName)
+          .collect(Collectors.toList())
+      )
+      .addFiles(
+        post.getPostFiles().stream()
+          .map(PostFile::getFile)
+          .map(FileInfo::from)
+          .collect(Collectors.toList())
+      )
+      .addCreatedDate(post.getCreatedDate())
+      .addUpdatedDate(post.getUpdatedDate());
   }
 
 }

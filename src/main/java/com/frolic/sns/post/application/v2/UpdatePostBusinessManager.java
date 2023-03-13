@@ -83,7 +83,8 @@ public class UpdatePostBusinessManager {
   public PostInfo getPostInfo(Post post, User user, List<String> hashtags, List<FileInfo> fileInfos) {
     UserInfo userInfo = UserInfo.from(user);
     boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
-    List<CommentInfo> commentInfos = getCommentInfos(post, userInfo);
+    //List<CommentInfo> commentInfos = getCommentInfos(post, userInfo);
+    long commentCount = commentRepository.countAllByPost(post);
     long likeCount = likeRepository.countAllByPost(post);
 
     return PostInfo.builder()
@@ -94,7 +95,7 @@ public class UpdatePostBusinessManager {
       .addIsLikeUp(isLikeUp)
       .addLikeCount(likeCount)
       .addUserInfo(userInfo)
-      .addComments(commentInfos)
+      .addCommentCount(commentCount)
       .addHashtags(hashtags)
       .addFiles(fileInfos)
       .build();

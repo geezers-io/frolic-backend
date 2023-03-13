@@ -1,6 +1,7 @@
 package com.frolic.sns.post.repository;
 
 import com.frolic.sns.post.model.Post;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,22 +15,22 @@ import static com.frolic.sns.post.model.QHashtag.*;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepositoryDslImpl implements PostDslRepository {
+public class PostDslRespository {
 
   private final JPAQueryFactory queryFactory;
 
-  @Override
-  public List<Post> findBySearchParamsByPagination(List<String> searchParams, Pageable pageable) {
+  public List<Post> findPosts() {
     return queryFactory.selectFrom(post)
-      .join(postHashTag)
-      .on(postHashTag.id.eq(post.id))
-      .where(postHashTag.id.in(
-        queryFactory.select(hashtag.id)
-          .from(hashtag)
-          .where(hashtag.name.in(searchParams))
-      ))
-      .offset(pageable.getPageNumber())
-      .limit(pageable.getPageNumber())
+      .orderBy(post.createdDate.desc())
+      .limit(10)
+      .fetch();
+  }
+
+  public List<Post> findPostsByCursorId(Long cursorId) {
+    return queryFactory.selectFrom(post)
+      .where(post.id.lt(cursorId))
+      .orderBy(post.createdDate.desc())
+      .limit(10)
       .fetch();
   }
 

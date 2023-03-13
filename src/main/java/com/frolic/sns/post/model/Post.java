@@ -30,7 +30,10 @@ public class Post extends CreateAndModifiedTimeAuditEntity {
   private User user;
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-  private List<PostFile> postFiles = new ArrayList<>();
+  private final List<PostFile> postFiles = new ArrayList<>();
+
+  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+  private final List<PostHashTag> postHashTags = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
   public Post(

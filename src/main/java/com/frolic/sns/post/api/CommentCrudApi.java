@@ -1,11 +1,13 @@
 package com.frolic.sns.post.api;
 
-import com.frolic.sns.post.application.CommentCrudManager;
+import com.frolic.sns.post.application.CommentCrudService;
 import com.frolic.sns.post.dto.CreateCommentRequest;
 import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.swagger.*;
 import com.frolic.sns.global.common.ResponseHelper;
 import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.user.application.UserManager;
+import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,18 +25,19 @@ import java.util.Map;
 public class CommentCrudApi {
 
   private final JwtProvider jwtProvider;
-  private final CommentCrudManager commentCrudManager;
+
+  private final CommentCrudService commentCrudService;
+
+  private final UserManager userManager;
 
   @CreateCommentDocs
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<Map<String, CommentInfo>> createCommentApi(
     HttpServletRequest request,
-    @RequestBody @Valid CreateCommentRequest dto
+    @RequestBody @Valid CreateCommentRequest createCommentRequest
     ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    CommentInfo commentInfo = commentCrudManager.createComment(
-      token,dto
-    );
+    User user = userManager.getUserByHttpRequest(request);
+    CommentInfo commentInfo = commentCrudService.createComment(user, createCommentRequest);
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(commentInfo));
@@ -47,7 +50,7 @@ public class CommentCrudApi {
     @PathVariable(name = "commentId") Long commentId
   ) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    commentCrudManager.deleteComment(token, commentId);
+    commentCrudService.deleteComment(token, commentId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
@@ -55,13 +58,11 @@ public class CommentCrudApi {
   @PutMapping("/{commentId}")
   public ResponseEntity<Map<String, CommentInfo>> updateCommentApi(
     HttpServletRequest request,
-    @RequestBody @Valid CreateCommentRequest dto,
+    @RequestBody @Valid CreateCommentRequest createCommentRequest,
     @PathVariable(name = "commentId") Long commentId
   ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    CommentInfo commentInfo = commentCrudManager.updateComment(
-      token, dto, commentId
-    );
+    User user = userManager.getUserByHttpRequest(request);
+    CommentInfo commentInfo = commentCrudService.updateComment(user, createCommentRequest, commentId);
     return ResponseEntity.ok(ResponseHelper.createDataMap(commentInfo));
   }
 
@@ -70,7 +71,7 @@ public class CommentCrudApi {
   public ResponseEntity<Map<String, CommentInfo>> getCommentByIdApi(
     @PathVariable(name = "commentId") Long commentId
   ) {
-    CommentInfo info = commentCrudManager.getCommentById(commentId);
+    CommentInfo info = commentCrudService.getCommentById(commentId);
     return ResponseEntity.ok(ResponseHelper.createDataMap(info));
   }
 
@@ -80,8 +81,7 @@ public class CommentCrudApi {
     @PathVariable(name = "postId") Long postId,
     Pageable pageable
   ) {
-    List<CommentInfo> comments = commentCrudManager
-      .getCommentsByArticlePagination(postId, pageable);
+    List<CommentInfo> comments = commentCrudService.getCommentsByArticlePagination(postId, pageable);
     return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
   }
 
@@ -91,8 +91,7 @@ public class CommentCrudApi {
     @PathVariable String username,
     Pageable pageable
     ) {
-      List<CommentInfo> comments = commentCrudManager
-        .getCommentsByUserPagination(username, pageable);
+      List<CommentInfo> comments = commentCrudService.getCommentsByUserPagination(username, pageable);
       return ResponseEntity.ok(ResponseHelper.createDataMap(comments));
   }
 
