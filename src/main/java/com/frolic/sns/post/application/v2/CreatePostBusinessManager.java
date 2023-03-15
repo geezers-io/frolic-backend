@@ -53,6 +53,7 @@ public class CreatePostBusinessManager {
     ApplicationFile file = postFile.getFile();
     return FileInfo.builder()
       .addId(file.getId())
+      .addFilename(file.getName())
       .build();
   }
 

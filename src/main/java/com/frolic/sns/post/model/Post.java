@@ -36,10 +36,7 @@ public class Post extends CreateAndModifiedTimeAuditEntity {
   private final List<PostHashTag> postHashTags = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
-  public Post(
-    String textContent,
-    User user
-  ) {
+  public Post(String textContent, User user) {
     this.textContent = textContent;
     this.user = user;
   }

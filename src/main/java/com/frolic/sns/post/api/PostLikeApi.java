@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/posts")
+@RequestMapping("/api/posts/like")
 public class PostLikeApi {
 
   private final JwtProvider jwtProvider;
@@ -23,7 +23,7 @@ public class PostLikeApi {
 
 
   @PostLikeDocs
-  @GetMapping("/like")
+  @GetMapping
   public ResponseEntity<Map<String, Long>> likeApi(
     HttpServletRequest request,
     @RequestParam(name = "postId") Long postId
@@ -36,7 +36,7 @@ public class PostLikeApi {
   }
 
   @PostDisLikeDocs
-  @DeleteMapping("/like")
+  @DeleteMapping
   public ResponseEntity<Map<String, Long>> unLikeApi(
     HttpServletRequest request,
     @RequestParam(name = "postId") Long postId
