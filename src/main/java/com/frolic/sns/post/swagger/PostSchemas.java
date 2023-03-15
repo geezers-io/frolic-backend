@@ -8,6 +8,11 @@ import java.util.List;
 public class PostSchemas {
 
   @Getter
+  public static class GetPostListSchema {
+    List<PostInfo> data;
+  }
+
+  @Getter
   public static class CreateArticleSchema {
     PostInfo data;
   }
