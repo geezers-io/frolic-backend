@@ -8,11 +8,11 @@ import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.dto.v2.UpdatePostRequest;
 import com.frolic.sns.post.swagger.CreatePostDocs;
 import com.frolic.sns.post.swagger.DeletePostDocs;
+import com.frolic.sns.post.swagger.GetPostListDocs;
 import com.frolic.sns.post.swagger.UpdatePostDocs;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,6 @@ import java.util.Map;
 
 import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v2/posts")
@@ -34,6 +33,7 @@ public class PostCrudV2Api {
 
   private final PostCrudManagerV2 postCrudManager;
 
+  @GetPostListDocs
   @PostMapping("/list")
   public ResponseEntity<Map<String, List<PostInfo>>> getPostsApi(
     HttpServletRequest request,
@@ -41,7 +41,7 @@ public class PostCrudV2Api {
   ) {
     User user = userManager.getUserByHttpRequest(request);
     List<PostInfo> PostInfos = postCrudManager.getPosts(getPostCursorRequest, user);
-    return ResponseEntity.ok(ResponseHelper.createDataMap(PostInfos));
+    return ResponseEntity.ok(createDataMap(PostInfos));
   }
 
   @CreatePostDocs
