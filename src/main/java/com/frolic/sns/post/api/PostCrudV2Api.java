@@ -8,7 +8,6 @@ import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.dto.v2.UpdatePostRequest;
 import com.frolic.sns.post.swagger.CreatePostDocs;
 import com.frolic.sns.post.swagger.DeletePostDocs;
-import com.frolic.sns.post.swagger.GetPostListDocs;
 import com.frolic.sns.post.swagger.UpdatePostDocs;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.model.User;
@@ -19,30 +18,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/posts")
+@RequestMapping("/api/posts")
 public class PostCrudV2Api {
 
   private final UserManager userManager;
-
   private final PostCrudManagerV2 postCrudManager;
-
-  @GetPostListDocs
-  @PostMapping("/list")
-  public ResponseEntity<Map<String, List<PostInfo>>> getPostsApi(
-    HttpServletRequest request,
-    @RequestBody GetPostCursorRequest getPostCursorRequest
-  ) {
-    User user = userManager.getUserByHttpRequest(request);
-    List<PostInfo> PostInfos = postCrudManager.getPosts(getPostCursorRequest, user);
-    return ResponseEntity.ok(createDataMap(PostInfos));
-  }
 
   @CreatePostDocs
   @PostMapping
