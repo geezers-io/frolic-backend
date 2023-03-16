@@ -33,14 +33,10 @@ public class PostCrudManagerV2 {
   private final UpdatePostBusinessManager updatePostBusinessManager;
 
 
-  public List<PostInfo> getPosts(GetPostCursorRequest postCursorRequest, User user) {
-    List<Post> posts;
+  public List<PostInfo> getPosts(GetPostCursorRequest postCursorRequest) {
     Long cursorId = postCursorRequest.getCursorId();
-    if (postCursorRequest.getCursorId() == null)
-      posts = postDslRespository.findPosts();
-    else
-      posts = postDslRespository.findPostsByCursorId(cursorId);
-    return getPostBusinessManager.createPostInfos(posts, user);
+    List<Post> posts = postDslRespository.findPosts(cursorId);
+    return getPostBusinessManager.createPostInfos(posts);
   }
 
   public PostInfo createPost(User user, CreatePostRequest createPostRequest) {

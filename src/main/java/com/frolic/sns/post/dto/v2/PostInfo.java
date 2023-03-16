@@ -12,7 +12,9 @@ import lombok.Getter;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.frolic.sns.global.util.message.CommonMessageUtils.getIllegalFieldError;
@@ -57,7 +59,7 @@ public class PostInfo {
     this.textContent = textContent;
     this.userInfo = userInfo;
     this.commentCount = commentCount;
-    this.hashtags = hashtags;
+    this.hashtags = Objects.requireNonNullElseGet(hashtags, ArrayList::new);
     this.likeCount = likeCount;
     this.isLikeUp = isLikeUp;
     this.files = files;

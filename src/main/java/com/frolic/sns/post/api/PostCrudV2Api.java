@@ -12,37 +12,23 @@ import com.frolic.sns.post.swagger.UpdatePostDocs;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/posts")
+@RequestMapping("/api/posts")
 public class PostCrudV2Api {
 
   private final UserManager userManager;
-
   private final PostCrudManagerV2 postCrudManager;
-
-  @PostMapping("/list")
-  public ResponseEntity<Map<String, List<PostInfo>>> getPostsApi(
-    HttpServletRequest request,
-    @RequestBody GetPostCursorRequest getPostCursorRequest
-  ) {
-    User user = userManager.getUserByHttpRequest(request);
-    List<PostInfo> PostInfos = postCrudManager.getPosts(getPostCursorRequest, user);
-    return ResponseEntity.ok(ResponseHelper.createDataMap(PostInfos));
-  }
 
   @CreatePostDocs
   @PostMapping
