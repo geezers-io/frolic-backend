@@ -1,5 +1,6 @@
 package com.frolic.sns.user.application;
 
+import com.frolic.sns.post.repository.LikeDslRepository;
 import com.frolic.sns.post.repository.PostRepository;
 import com.frolic.sns.post.repository.LikeRepository;
 import com.frolic.sns.auth.exception.AlreadyExistsUserException;
@@ -25,6 +26,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
+  private final LikeDslRepository likeDslRepository;
   private final PostRepository postRepository;
   private final FollowRepository followRepository;
   private final PasswordEncoder passwordEncoder;
@@ -74,7 +76,7 @@ public class UserService {
     long followerCount = followRepository.countByFollowingId(user);
     long followingCount = followRepository.countByFollowerId(user);
     long postCount = postRepository.countAllByUser(user);
-    long likeCount = likeRepository.countAllByUser(user);
+    long likeCount = likeDslRepository.countAllLike(user);
     UserInfo userInfo = UserInfo.from(user);
 
     return UserUnitedInfo.builder()

@@ -3,6 +3,7 @@ package com.frolic.sns.post.application;
 import com.frolic.sns.post.exception.AlreadyExistsLikeException;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.model.Like;
+import com.frolic.sns.post.repository.LikeDslRepository;
 import com.frolic.sns.post.repository.PostRepository;
 import com.frolic.sns.post.repository.LikeRepository;
 import com.frolic.sns.global.config.security.JwtProvider;
@@ -17,39 +18,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PostLikeManagerImpl implements PostLikeManager {
+public class PostLikeService {
 
-  private final UserRepository userRepository;
   private final LikeRepository likeRepository;
+  private final LikeDslRepository likeDslRepository;
   private final PostRepository postRepository;
-  private final JwtProvider jwtProvider;
 
-  @Override
-  public Long likePostByTokenUser(String token, Long postId) {
-
-    User user = getUserByToken(token);
+  public Long addLike(User user, Long postId) {
     Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
-    if (likeRepository.existsByPostAndUser(post, user))
+    if (likeDslRepository.isExistsLike(user, post))
       throw new AlreadyExistsLikeException();
 
     Like newLike = new Like(user, post);
     likeRepository.save(newLike);
 
-    return likeRepository.countAllByPost(post);
+    return likeDslRepository.countAllLike(post);
   }
 
-  @Override
-  public Long unLikePostByTokenUser(String token, Long postId) {
-    User user = getUserByToken(token);
+  public Long removeLike(User user, Long postId) {
     Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
-    Like like = likeRepository.findByPostAndUser(post, user).orElseThrow(NotFoundResourceException::new);
-
+    Like like = likeDslRepository.findLike(user, post).orElseThrow(NotFoundResourceException::new);
     likeRepository.delete(like);
-    return likeRepository.countAllByPost(post);
-  }
-
-  private User getUserByToken(String token) {
-    return userRepository.findByEmail(jwtProvider.getUserEmailByToken(token)).orElseThrow(UserNotFoundException::new);
+    return likeDslRepository.countAllLike(post);
   }
 
 }
