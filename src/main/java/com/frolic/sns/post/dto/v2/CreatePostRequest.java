@@ -18,7 +18,6 @@ public class CreatePostRequest {
   @Size(max = 140, message = "게시글 본문은 140글자 이하여야 합니다.")
   private String textContent;
 
-  @NotNull(message = "hashtags 값이 null 이어서는 안됩니다.")
   private List<String> hashtags;
 
   @NotNull(message = "imageIds 값이 null 이어서는 안됩니다.")
@@ -31,7 +30,6 @@ public class CreatePostRequest {
     List<Long> imageIds
   ) {
     Assert.hasText(textContent, getIllegalFieldError("textContent"));
-    Assert.notNull(hashtags, getIllegalFieldError("hashtags"));
     this.textContent = textContent;
     this.hashtags = hashtags;
     this.imageIds = imageIds;
