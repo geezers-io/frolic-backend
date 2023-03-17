@@ -1,4 +1,4 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.model.Post;

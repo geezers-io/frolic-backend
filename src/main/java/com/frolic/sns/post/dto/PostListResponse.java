@@ -1,5 +1,6 @@
-package com.frolic.sns.post.dto.v2;
+package com.frolic.sns.post.dto;
 
+import com.frolic.sns.post.dto.v2.PostInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

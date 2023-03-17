@@ -1,9 +1,9 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
-import com.frolic.sns.post.dto.v2.GetPostCursorRequest;
+import com.frolic.sns.post.dto.GetPostCursorRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.dto.v2.UpdatePostRequest;
 import com.frolic.sns.post.model.Post;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class PostCrudManagerV2 {
+public class PostCrudManager {
 
   private final HashTagManager hashTagManager;
   private final PostRepository postRepository;

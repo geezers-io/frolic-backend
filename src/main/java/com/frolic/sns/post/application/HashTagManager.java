@@ -1,4 +1,4 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.post.model.Hashtag;
 import com.frolic.sns.post.model.Post;

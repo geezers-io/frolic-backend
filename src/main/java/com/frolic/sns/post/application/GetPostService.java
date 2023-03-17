@@ -1,7 +1,6 @@
 package com.frolic.sns.post.application;
 
-import com.frolic.sns.post.application.v2.GetPostBusinessManager;
-import com.frolic.sns.post.dto.v2.GetPostCursorRequest;
+import com.frolic.sns.post.dto.GetPostCursorRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.repository.PostDslRespository;

@@ -1,4 +1,4 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
