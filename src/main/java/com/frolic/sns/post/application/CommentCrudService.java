@@ -1,6 +1,5 @@
 package com.frolic.sns.post.application;
 
-import com.frolic.sns.post.application.v2.CommentManager;
 import com.frolic.sns.post.dto.CreateCommentRequest;
 import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.model.Post;

@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(exclude = { MailSenderAutoConfiguration.class })
 @EnableJpaAuditing
-public class RestfulServerApplication {
+public class FrolicApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(RestfulServerApplication.class, args);
+    SpringApplication.run(FrolicApplication.class, args);
   }
 
 }

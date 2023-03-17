@@ -1,8 +1,8 @@
 package com.frolic.sns.post.api;
 
 import com.frolic.sns.post.application.GetPostService;
-import com.frolic.sns.post.application.v2.PostCrudManagerV2;
-import com.frolic.sns.post.dto.v2.GetPostCursorRequest;
+import com.frolic.sns.post.application.PostCrudManager;
+import com.frolic.sns.post.dto.GetPostCursorRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.swagger.GetPostListDocs;
 import com.frolic.sns.post.swagger.GetPostsByHashtagsDocs;
@@ -25,7 +25,7 @@ import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
 public class GetPostApi {
 
   private final UserManager userManager;
-  private final PostCrudManagerV2 postCrudManager;
+  private final PostCrudManager postCrudManager;
   private final GetPostService getPostService;
 
   @GetPostListDocs

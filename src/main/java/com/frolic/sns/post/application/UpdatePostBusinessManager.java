@@ -1,4 +1,4 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
 import com.frolic.sns.global.common.file.model.ApplicationFile;
@@ -28,6 +28,7 @@ public class UpdatePostBusinessManager {
   private final PostFileRepository postFileRepository;
   private final FileRepository fileRepository;
   private final LikeRepository likeRepository;
+  private final LikeDslRepository likeDslRepository;
   private final CommentRepository commentRepository;
 
   public void checkUserPermission(User requestUser, User postOwnedUser) {
@@ -82,16 +83,11 @@ public class UpdatePostBusinessManager {
 
   public PostInfo getPostInfo(Post post, User user, List<String> hashtags, List<FileInfo> fileInfos) {
     UserInfo userInfo = UserInfo.from(user);
-    boolean isLikeUp = likeRepository.existsByPostAndUser(post, user);
-    //List<CommentInfo> commentInfos = getCommentInfos(post, userInfo);
+    boolean isLikeUp = likeDslRepository.isExistsLike(user, post);
     long commentCount = commentRepository.countAllByPost(post);
-    long likeCount = likeRepository.countAllByPost(post);
+    long likeCount = likeDslRepository.countAllLike(post);
 
-    return PostInfo.builder()
-      .addId(post.getId())
-      .addTextContent(post.getTextContent())
-      .addCreatedDate(post.getCreatedDate())
-      .addUpdatedDate(post.getUpdatedDate())
+    return PostInfo.addProperties(post)
       .addIsLikeUp(isLikeUp)
       .addLikeCount(likeCount)
       .addUserInfo(userInfo)

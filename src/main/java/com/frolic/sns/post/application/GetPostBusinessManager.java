@@ -1,4 +1,4 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.model.Post;
@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class GetPostBusinessManager {
 
   private final LikeRepository likeRepository;
+  private final LikeDslRepository likeDslRepository;
   private final CommentDslRepository commentDslRepository;
 
   public List<PostInfo> createPostInfos(List<Post> posts) {
@@ -23,8 +24,8 @@ public class GetPostBusinessManager {
         .addCommentCount(
           commentDslRepository.getCommentCount(post.getId())
         )
-        .addLikeCount(likeRepository.countAllByPost(post))
-        .addIsLikeUp(likeRepository.existsByPostAndUser(post, post.getUser()))
+        .addLikeCount(likeDslRepository.countAllLike(post))
+        .addIsLikeUp(likeDslRepository.isExistsLike(post.getUser(), post))
         .addUserInfo(UserInfo.from(post.getUser()))
         .build()
     )

@@ -1,4 +1,4 @@
-package com.frolic.sns.post.application.v2;
+package com.frolic.sns.post.application;
 
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.post.dto.CommentInfo;

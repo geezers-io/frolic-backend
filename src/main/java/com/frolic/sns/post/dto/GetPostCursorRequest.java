@@ -1,4 +1,4 @@
-package com.frolic.sns.post.dto.v2;
+package com.frolic.sns.post.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

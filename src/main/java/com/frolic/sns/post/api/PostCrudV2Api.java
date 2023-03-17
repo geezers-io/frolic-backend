@@ -1,9 +1,7 @@
 package com.frolic.sns.post.api;
 
-import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.post.application.v2.PostCrudManagerV2;
+import com.frolic.sns.post.application.PostCrudManager;
 import com.frolic.sns.post.dto.v2.CreatePostRequest;
-import com.frolic.sns.post.dto.v2.GetPostCursorRequest;
 import com.frolic.sns.post.dto.v2.PostInfo;
 import com.frolic.sns.post.dto.v2.UpdatePostRequest;
 import com.frolic.sns.post.swagger.CreatePostDocs;
@@ -28,7 +26,7 @@ import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
 public class PostCrudV2Api {
 
   private final UserManager userManager;
-  private final PostCrudManagerV2 postCrudManager;
+  private final PostCrudManager postCrudManager;
 
   @CreatePostDocs
   @PostMapping

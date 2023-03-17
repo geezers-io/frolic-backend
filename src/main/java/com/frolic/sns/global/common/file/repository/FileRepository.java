@@ -9,10 +9,6 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<ApplicationFile, Long> {
 
-  List<ApplicationFile> findAllByNameIn(List<String> filenames);
-
-  List<ApplicationFile> findAllByPost(Post post);
-
   Optional<ApplicationFile> findByName(String name);
 
 }
