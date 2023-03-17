@@ -1,6 +1,5 @@
 package com.frolic.sns.global.common.file.model;
 
-import com.frolic.sns.post.model.Post;
 import io.jsonwebtoken.lang.Assert;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,10 +23,6 @@ public class ApplicationFile {
   private String name;
 
   private Long size;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "post_id")
-  private Post post;
 
   @Builder(setterPrefix = "add")
   public ApplicationFile(String name, Long size) {
