@@ -49,8 +49,8 @@ public class CommentCrudApi {
     HttpServletRequest request,
     @PathVariable(name = "commentId") Long commentId
   ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    commentCrudService.deleteComment(token, commentId);
+    User user = userManager.getUserByHttpRequest(request);
+    commentCrudService.deleteComment(user, commentId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

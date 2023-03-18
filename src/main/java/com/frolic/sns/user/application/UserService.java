@@ -46,8 +46,7 @@ public class UserService {
     return UserInfo.from(user);
   }
 
-  public void updateUserPassword(String token, PasswordUpdateRequest updateRequest) {
-    User user = getUserByToken(token);
+  public void updateUserPassword(User user, PasswordUpdateRequest updateRequest) {
     boolean isMatchPassword = passwordEncoder.matches(updateRequest.getPrevPassword(), user.getPassword());
     if (!isMatchPassword)
       throw new PasswordNotMatchException();
@@ -57,8 +56,7 @@ public class UserService {
     userRepository.save(user);
   }
 
-  public void deleteUser(String token, String password) {
-    User user = getUserByToken(token);
+  public void deleteUser(User user, String password) {
     if (!passwordEncoder.matches(password, user.getPassword()))
       throw new PasswordNotMatchException();
     userRepository.delete(user);
@@ -82,11 +80,6 @@ public class UserService {
 
     if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
       throw new AlreadyExistsUserException();
-  }
-
-  private User getUserByToken(String token) {
-    String email = jwtProvider.getUserEmailByToken(token);
-    return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
 }

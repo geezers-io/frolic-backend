@@ -6,7 +6,6 @@ import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.model.Comment;
 import com.frolic.sns.post.repository.PostRepository;
 import com.frolic.sns.post.repository.CommentRepository;
-import com.frolic.sns.auth.application.security.JwtProvider;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.user.exception.NotPermissionException;
 import com.frolic.sns.user.exception.UserNotFoundException;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentCrudService {
 
-  private final JwtProvider jwtProvider;
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final PostRepository postRepository;
@@ -75,22 +73,15 @@ public class CommentCrudService {
     return CommentInfo.from(comment);
   }
 
-  public void deleteComment(String token, Long commentId) {
-    User tokenUser = getUserIsTokenAble(token);
+  public void deleteComment(User user, Long commentId) {
     Comment comment = commentRepository.findById(commentId)
       .orElseThrow(NotFoundResourceException::new);
 
-    boolean isSameUser = Objects.equals(tokenUser.getId(), comment.getUser().getId());
+    boolean isSameUser = Objects.equals(user.getId(), comment.getUser().getId());
     if (!isSameUser)
       throw new NotPermissionException();
 
     commentRepository.delete(comment);
-  }
-
-  private User getUserIsTokenAble(String token) {
-    return userRepository.findByEmail(
-      jwtProvider.getUserEmailByToken(token)
-    ).orElseThrow(UserNotFoundException::new);
   }
 
   private Comment getCommentByCreateRequestDto(User user, CreateCommentRequest createCommentRequest) {
