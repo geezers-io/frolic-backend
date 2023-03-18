@@ -1,6 +1,6 @@
 package com.frolic.sns.user.application;
 
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
 import com.frolic.sns.user.dto.FollowUserRequest;
 import com.frolic.sns.user.exception.AlreadyExistsFollowException;
 import com.frolic.sns.user.exception.UserNotFoundException;

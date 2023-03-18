@@ -6,7 +6,7 @@ import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.model.Comment;
 import com.frolic.sns.post.repository.PostRepository;
 import com.frolic.sns.post.repository.CommentRepository;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
 import com.frolic.sns.global.exception.NotFoundResourceException;
 import com.frolic.sns.user.exception.NotPermissionException;
 import com.frolic.sns.user.exception.UserNotFoundException;

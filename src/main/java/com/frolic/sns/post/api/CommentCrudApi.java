@@ -5,7 +5,7 @@ import com.frolic.sns.post.dto.CreateCommentRequest;
 import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.swagger.*;
 import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;

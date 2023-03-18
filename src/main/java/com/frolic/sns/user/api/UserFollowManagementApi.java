@@ -1,7 +1,7 @@
 package com.frolic.sns.user.api;
 
 import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
 import com.frolic.sns.user.application.UserFollowServiceImpl;
 import com.frolic.sns.user.dto.FollowUserRequest;
 import com.frolic.sns.user.swagger.*;
