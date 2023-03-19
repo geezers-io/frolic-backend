@@ -30,7 +30,6 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
   private final PhoneNumber sender;
   @Autowired
   private JavaMailSender javaMailSender;
-  private static final String senderEmail = "han05081486@gmail.com";
 
   public SendTempPasswordManager(
           AuthCodeCacheManager authCodeCacheManager,
@@ -63,11 +62,6 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
 
     LocalTime expiredTime = metaData.getLocalTime();
     authCodeOverTriedCheck(expiredTime);
-
-    String receivePhoneNumber = metaData.getDestination();
-    String emailValue = userRepository.getEmailByPhoneNumber(receivePhoneNumber).orElseThrow(UserNotFoundException::new);
-    String userInfoExist = userRepository.getUserInfoPwExist(emailValue, receivePhoneNumber).orElseThrow(UserNotFoundException::new);
-
     return metaData;
   }
 
@@ -117,7 +111,6 @@ public class SendTempPasswordManager extends UserInfoFindManager implements User
     SimpleMailMessage message = new SimpleMailMessage();
     String email = userRepository.getEmailByPhoneNumber(phoneNumber).orElseThrow();
 
-    message.setFrom(senderEmail);
     message.setTo(email);
     message.setSubject("[Frolic SNS 임시 비밀번호 발급 메일입니다.]");
     message.setText("회원님의 임시 비밀번호는 " + password + "입니다.");
