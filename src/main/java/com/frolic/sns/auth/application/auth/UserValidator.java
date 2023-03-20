@@ -5,13 +5,11 @@ import com.frolic.sns.auth.exception.PasswordNotMatchException;
 import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.repository.UserDslRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class UserValidator {
 
   private final UserDslRepository userDslRepository;
