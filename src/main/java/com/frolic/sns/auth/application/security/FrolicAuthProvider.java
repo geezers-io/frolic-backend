@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CustomAuthProvider implements AuthenticationProvider {
+public class FrolicAuthProvider implements AuthenticationProvider {
 
   private final UserManager userManager;
   private final JwtProvider jwtProvider;
@@ -30,7 +30,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return true;
+    return authentication.isInstance(Authentication.class);
   }
 
 }

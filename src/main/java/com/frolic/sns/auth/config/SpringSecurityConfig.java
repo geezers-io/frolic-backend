@@ -1,6 +1,6 @@
 package com.frolic.sns.auth.config;
 
-import com.frolic.sns.auth.application.security.CustomAuthProvider;
+import com.frolic.sns.auth.application.security.FrolicAuthProvider;
 import com.frolic.sns.auth.application.security.JwtAuthenticationEntryPoint;
 import com.frolic.sns.auth.application.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class SpringSecurityConfig {
 
   private final JwtFilter jwtFilter;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-  private final CustomAuthProvider customAuthProvider;
+  private final FrolicAuthProvider frolicAuthProvider;
 
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
@@ -99,7 +99,7 @@ public class SpringSecurityConfig {
   public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
     AuthenticationManagerBuilder authenticationManagerBuilder =
       http.getSharedObject(AuthenticationManagerBuilder.class);
-    authenticationManagerBuilder.authenticationProvider(customAuthProvider);
+    authenticationManagerBuilder.authenticationProvider(frolicAuthProvider);
     return authenticationManagerBuilder.build();
   }
 

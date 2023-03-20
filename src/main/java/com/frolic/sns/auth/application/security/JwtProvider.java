@@ -1,24 +1,22 @@
 package com.frolic.sns.auth.application.security;
 
-import com.amazonaws.services.guardduty.model.SecurityContext;
-import com.frolic.sns.auth.config.JwtConfig;
+import com.frolic.sns.auth.config.JwtProperties;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
 
-  private final JwtConfig jwtConfig;
+  private final JwtProperties jwtProperties;
+  private final JwtSecretKey jwtSecretKey;
 
   public String getTokenByHttpRequestHeader(HttpServletRequest request) {
     String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -29,7 +27,7 @@ public class JwtProvider {
   public boolean validateToken(String token) {
     try {
       Jwts.parserBuilder()
-        .setSigningKey(jwtConfig.getSecretKey())
+        .setSigningKey(jwtSecretKey.getKey())
         .build()
         .parseClaimsJws(token);
       return true;
@@ -53,7 +51,7 @@ public class JwtProvider {
   public Claims parseClaims(String token) {
     try {
       return Jwts.parserBuilder()
-        .setSigningKey(jwtConfig.getSecretKey())
+        .setSigningKey(jwtSecretKey.getKey())
         .build()
         .parseClaimsJws(token)
         .getBody();

@@ -1,4 +1,4 @@
 jwt:
   secret: ${JWT_SECRET_KEY}
-  accessTokenExpTime: ${JWT_ACCESS_TOKEN_EXP_TIME}
-  refreshTokenExpTime: ${JWT_REFRESH_TOKEN_EXP_TIME}
+  access-token-exp-time: ${JWT_ACCESS_TOKEN_EXP_TIME}
+  refresh-token-exp-time: ${JWT_REFRESH_TOKEN_EXP_TIME}

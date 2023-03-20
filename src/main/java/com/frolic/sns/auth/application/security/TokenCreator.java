@@ -1,6 +1,6 @@
 package com.frolic.sns.auth.application.security;
 
-import com.frolic.sns.auth.config.JwtConfig;
+import com.frolic.sns.auth.config.JwtProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TokenCreator {
 
-  private final JwtConfig jwtConfig;
+  private final JwtProperties jwtProperties;
+  private final JwtSecretKey jwtSecretKey;
 
   public String createToken(String email, TokenType tokenType) {
-    return create(email, jwtConfig.getExpTime(tokenType), tokenType);
+    return create(email, getExpTime(tokenType), tokenType);
   }
 
   private Map<String, String> createClaims(String userEmail, TokenType tokenType) {
@@ -37,7 +38,7 @@ public class TokenCreator {
 
   private String create(String userEmail, Long exp, TokenType tokenType) {
     return Jwts.builder()
-      .signWith(jwtConfig.getSecretKey(), SignatureAlgorithm.HS256)
+      .signWith(jwtSecretKey.getKey(), SignatureAlgorithm.HS256)
       .setClaims(createClaims(userEmail, tokenType))
       .setIssuedAt(new Date())
       .setExpiration(createTokenExpTime(exp))
@@ -46,6 +47,14 @@ public class TokenCreator {
 
   private Date createTokenExpTime(Long exp) {
     return new Date(System.currentTimeMillis() + exp);
+  }
+
+  private Long getExpTime(TokenType tokenType) {
+    if (tokenType.equals(TokenType.ACCESS_TOKEN))
+      return jwtProperties.getAccessTokenExpTime();
+    if (tokenType.equals(TokenType.REFRESH_TOKEN))
+      return jwtProperties.getRefreshTokenExpTime();
+    throw new NullPointerException("tokenType argument must be not null");
   }
 
 }
