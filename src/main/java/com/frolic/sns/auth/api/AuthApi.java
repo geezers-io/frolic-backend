@@ -1,12 +1,13 @@
 package com.frolic.sns.auth.api;
 
-import com.frolic.sns.auth.application.auth.AuthManager;
+import com.frolic.sns.auth.application.auth.AuthService;
+import com.frolic.sns.auth.dto.AccessTokenInfo;
 import com.frolic.sns.auth.dto.UserLoginRequest;
 import com.frolic.sns.auth.dto.UserLoginResponse;
 import com.frolic.sns.auth.dto.UserSignupRequest;
 import com.frolic.sns.auth.swagger.*;
 import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,12 @@ import java.util.Map;
 public class AuthApi {
 
   private final JwtProvider jwtProvider;
-  private final AuthManager authManager;
+  private final AuthService authService;
 
   @SignupDocs
   @PostMapping("/signup")
   public ResponseEntity<Map<String, UserLoginResponse>> signup(@RequestBody @Valid UserSignupRequest dto) {
-    UserLoginResponse loginInfo = authManager.saveUser(dto);
+    UserLoginResponse loginInfo = authService.signup(dto);
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(ResponseHelper.createDataMap(loginInfo));
@@ -36,7 +37,7 @@ public class AuthApi {
   @LoginDocs
   @PostMapping("/login")
   public ResponseEntity<Map<String, UserLoginResponse>> login(@RequestBody @Valid UserLoginRequest dto) {
-    UserLoginResponse loginInfo = authManager.loginUser(dto);
+    UserLoginResponse loginInfo = authService.login(dto);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseHelper.createDataMap(loginInfo));
@@ -44,17 +45,17 @@ public class AuthApi {
 
   @ReissueTokenDocs
   @GetMapping("/reissue")
-  public ResponseEntity<Map<String, Map<String, String>>> refresh(HttpServletRequest req) {
+  public ResponseEntity<Map<String, AccessTokenInfo>> refresh(HttpServletRequest req) {
     String refreshToken = jwtProvider.getTokenByHttpRequestHeader(req);
-    Map<String, String> tokens = authManager.refresh(refreshToken);
-    return ResponseEntity.ok(ResponseHelper.createDataMap(tokens));
+    AccessTokenInfo newAccessToken = authService.issueNewAccessToken(refreshToken);
+    return ResponseEntity.ok(ResponseHelper.createDataMap(newAccessToken));
   }
 
   @LogoutDocs
   @GetMapping("/logout")
   public ResponseEntity<Void> logoutApi(HttpServletRequest request) {
     String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    authManager.logout(token);
+    authService.logout(token);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

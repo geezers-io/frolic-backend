@@ -1,4 +1,4 @@
-package com.frolic.sns.global.config.security;
+package com.frolic.sns.auth.application.security;
 
 
 public class JwtConstants {

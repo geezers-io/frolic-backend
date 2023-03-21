@@ -5,7 +5,8 @@ import com.frolic.sns.post.repository.PostRepository;
 import com.frolic.sns.post.repository.LikeRepository;
 import com.frolic.sns.auth.exception.AlreadyExistsUserException;
 import com.frolic.sns.auth.exception.PasswordNotMatchException;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
+import com.frolic.sns.user.application.info.UserName;
 import com.frolic.sns.user.dto.UserUnitedInfo;
 import com.frolic.sns.user.dto.UserInfo;
 import com.frolic.sns.user.dto.PasswordUpdateRequest;
@@ -45,8 +46,7 @@ public class UserService {
     return UserInfo.from(user);
   }
 
-  public void updateUserPassword(String token, PasswordUpdateRequest updateRequest) {
-    User user = getUserByToken(token);
+  public void updateUserPassword(User user, PasswordUpdateRequest updateRequest) {
     boolean isMatchPassword = passwordEncoder.matches(updateRequest.getPrevPassword(), user.getPassword());
     if (!isMatchPassword)
       throw new PasswordNotMatchException();
@@ -56,36 +56,19 @@ public class UserService {
     userRepository.save(user);
   }
 
-  public void deleteUser(String token, String password) {
-    User user = getUserByToken(token);
+  public void deleteUser(User user, String password) {
     if (!passwordEncoder.matches(password, user.getPassword()))
       throw new PasswordNotMatchException();
     userRepository.delete(user);
   }
 
   public UserUnitedInfo getUserUnitedDetail(String username) {
-    User user = userManager.getUserByusername(username);
-    return buildUserUnitedDetail(user);
+    User user = userManager.getUser(new UserName(username));
+    return userManager.getUserUnitedInfo(user);
   }
 
   public UserUnitedInfo getUserUnitedInfoByUser(User user) {
-    return buildUserUnitedDetail(user);
-  }
-
-  private UserUnitedInfo buildUserUnitedDetail(User user) {
-    long followerCount = followRepository.countByFollowingId(user);
-    long followingCount = followRepository.countByFollowerId(user);
-    long postCount = postRepository.countAllByUser(user);
-    long likeCount = likeDslRepository.countAllLike(user);
-    UserInfo userInfo = UserInfo.from(user);
-
-    return UserUnitedInfo.builder()
-      .addAllFollowerCount(followerCount)
-      .addAllFollowingCount(followingCount)
-      .addAllGivenLikeCount(likeCount)
-      .addAllPostCount(postCount)
-      .addUserInfo(userInfo)
-      .build();
+    return userManager.getUserUnitedInfo(user);
   }
 
   private void checkDuplicatedUserDetailWhenModified(UserUpdateRequest dto, User targetUser) {
@@ -97,11 +80,6 @@ public class UserService {
 
     if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
       throw new AlreadyExistsUserException();
-  }
-
-  private User getUserByToken(String token) {
-    String email = jwtProvider.getUserEmailByToken(token);
-    return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
 }

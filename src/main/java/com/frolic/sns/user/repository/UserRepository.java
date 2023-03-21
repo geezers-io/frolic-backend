@@ -17,9 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
   boolean existsByEmail(String email);
   boolean existsByUsername(String username);
 
-  @Query("select u.refreshToken from users u where u.email = :email")
-  String getUserRefreshToken(@Param("email") String email);
-
   @Query("select u.email from users u where u.phoneNumber = :phoneNumber")
   Optional<String> getEmailByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 

@@ -1,4 +1,4 @@
-package com.frolic.sns.global.config.security;
+package com.frolic.sns.auth.application.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

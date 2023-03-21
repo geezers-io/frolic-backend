@@ -49,16 +49,6 @@ public class UserDslRepository {
       .fetchFirst() > 0;
   }
 
-  public Optional<String> findUserRefreshToken(String email) {
-    return Optional.ofNullable(
-      jpaQueryFactory
-        .select(user.refreshToken)
-        .from(user)
-        .where(user.email.eq(email))
-        .fetchOne()
-    );
-  }
-
   public Optional<String> findUserEmailByPhone(String phone) {
     return Optional.ofNullable(
       jpaQueryFactory

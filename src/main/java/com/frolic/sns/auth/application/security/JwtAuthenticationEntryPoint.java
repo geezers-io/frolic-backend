@@ -1,4 +1,4 @@
-package com.frolic.sns.global.config.security;
+package com.frolic.sns.auth.application.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
