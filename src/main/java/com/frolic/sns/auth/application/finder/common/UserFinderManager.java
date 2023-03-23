@@ -9,11 +9,10 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class UserInfoFindManager implements UserInfoFindable {
+public class UserFinderManager {
 
   private final AuthCodeCacheManager authCodeCacheManager;
 
-  @Override
   public AuthCode.MetaData getAuthCode(UUID id, FinderType finderType) {
     AuthCode.MetaData metaData = authCodeCacheManager.getAuthenticationCode(id)
       .orElseThrow(NotFoundResourceException::new);
@@ -22,22 +21,18 @@ public class UserInfoFindManager implements UserInfoFindable {
     return metaData;
   }
 
-  @Override
   public void storeAuthCode(AuthCode authCode) {
     authCodeCacheManager.storeAuthenticationCode(authCode);
   }
 
-  @Override
   public UUID createId() {
     return UUID.randomUUID();
   }
 
-  @Override
   public void removeAuthCode(UUID id) {
     authCodeCacheManager.removeAuthenticationCode(id);
   }
 
-  @Override
   public String createCode() {
     return String.valueOf(
       (int)(Math.random() * (999999 - 100000 + 1)) + 100000
