@@ -1,10 +1,10 @@
 package com.frolic.sns.post.api;
 
-import com.frolic.sns.post.application.PostLikeManager;
+import com.frolic.sns.post.application.PostLikeService;
 import com.frolic.sns.post.swagger.PostDisLikeDocs;
 import com.frolic.sns.post.swagger.PostLikeDocs;
-import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.user.application.UserManager;
+import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,39 +13,30 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+import static com.frolic.sns.global.common.ResponseHelper.createDataMap;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/posts")
+@RequestMapping("/api/posts/like")
 public class PostLikeApi {
 
-  private final JwtProvider jwtProvider;
-  private final PostLikeManager postLikeManager;
-
+  private final UserManager userManager;
+  private final PostLikeService postLikeService;
 
   @PostLikeDocs
-  @GetMapping("/like")
-  public ResponseEntity<Map<String, Long>> likeApi(
-    HttpServletRequest request,
-    @RequestParam(name = "postId") Long postId
-  ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    Long count = this.postLikeManager.likePostByTokenUser(token, postId);
-    return ResponseEntity
-      .status(HttpStatus.CREATED)
-      .body(ResponseHelper.createDataMap(count));
+  @GetMapping
+  public ResponseEntity<Map<String, Long>> likeApi(HttpServletRequest request, @RequestParam(name = "postId") Long postId) {
+    User user = userManager.getUserByHttpRequest(request);
+    Long count = this.postLikeService.addLike(user, postId);
+    return ResponseEntity.status(HttpStatus.CREATED).body(createDataMap(count));
   }
 
   @PostDisLikeDocs
-  @DeleteMapping("/like")
-  public ResponseEntity<Map<String, Long>> unLikeApi(
-    HttpServletRequest request,
-    @RequestParam(name = "postId") Long postId
-  ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    Long count =  this.postLikeManager.unLikePostByTokenUser(token, postId);
-    return ResponseEntity
-      .status(HttpStatus.OK)
-      .body(ResponseHelper.createDataMap(count));
+  @DeleteMapping
+  public ResponseEntity<Map<String, Long>> unLikeApi(HttpServletRequest request, @RequestParam(name = "postId") Long postId) {
+    User user = userManager.getUserByHttpRequest(request);
+    Long count =  this.postLikeService.removeLike(user, postId);
+    return ResponseEntity.status(HttpStatus.OK).body(createDataMap(count));
   }
 
 }

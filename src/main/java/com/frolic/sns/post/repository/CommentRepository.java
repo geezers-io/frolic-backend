@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
   List<Comment> findAllByPost(Post post);
+  Long countAllByPost(Post post);
 
   Page<Comment> findAllByPostOrderByCreatedDate(Post post, Pageable pageable);
 

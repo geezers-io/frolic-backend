@@ -35,6 +35,7 @@ public class HashtagDslRepository {
   }
 
   public List<Hashtag> createHashtagsIfNotExists(List<String> tags) {
+    if (tags == null) return null;
     List<String> exists = queryFactory
       .select(hashtag.name)
       .from(hashtag)

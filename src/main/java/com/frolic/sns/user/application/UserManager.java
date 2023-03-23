@@ -1,91 +1,51 @@
 package com.frolic.sns.user.application;
 
+import com.frolic.sns.auth.application.security.JwtProvider;
+import com.frolic.sns.post.repository.LikeDslRepository;
 import com.frolic.sns.post.repository.PostRepository;
-import com.frolic.sns.post.repository.LikeRepository;
-import com.frolic.sns.auth.exception.AlreadyExistsUserException;
-import com.frolic.sns.auth.exception.PasswordNotMatchException;
-import com.frolic.sns.global.config.security.JwtProvider;
-import com.frolic.sns.user.dto.UserUnitedInfo;
+import com.frolic.sns.user.application.info.UserEmail;
+import com.frolic.sns.user.application.info.UserName;
 import com.frolic.sns.user.dto.UserInfo;
-import com.frolic.sns.user.dto.PasswordUpdateRequest;
-import com.frolic.sns.user.dto.UserUpdateRequest;
+import com.frolic.sns.user.dto.UserUnitedInfo;
 import com.frolic.sns.user.exception.UserNotFoundException;
 import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.repository.FollowRepository;
-import com.frolic.sns.user.repository.UserRepository;
+import com.frolic.sns.user.repository.UserDslRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Slf4j
-@Service
+import javax.servlet.http.HttpServletRequest;
+
+@Component
 @RequiredArgsConstructor
-public class UserManager implements UserManageable {
+public final class UserManager {
 
-  private final UserRepository userRepository;
-  private final LikeRepository likeRepository;
-  private final PostRepository postRepository;
-  private final FollowRepository followRepository;
-  private final PasswordEncoder passwordEncoder;
-
+  private final UserDslRepository dslRepository;
   private final JwtProvider jwtProvider;
+  private final FollowRepository followRepository;
+  private final PostRepository postRepository;
+  private final LikeDslRepository likeDslRepository;
 
-  @Override
-  public UserInfo updateUserDetail(String token, UserUpdateRequest userUpdateRequest) {
-    User user = getUserByToken(token);
 
-    checkDuplicatedUserDetailWhenModified(userUpdateRequest, user);
-
-    user.changeEmail(userUpdateRequest.getEmail());
-    user.changeUsername(userUpdateRequest.getUsername());
-    user.changeRealname(userUpdateRequest.getRealname());
-    user.changePhoneNumber(userUpdateRequest.getPhoneNumber());
-    userRepository.save(user);
-
-    return UserInfo.from(user);
-  }
-
-  @Override
-  public void updateUserPassword(String token, PasswordUpdateRequest updateRequest) {
-    User user = getUserByToken(token);
-    boolean isMatchPassword = passwordEncoder.matches(updateRequest.getPrevPassword(), user.getPassword());
-    if (!isMatchPassword)
-      throw new PasswordNotMatchException();
-
-    String newPassword = passwordEncoder.encode(updateRequest.getNewPassword());
-    user.changePassword(newPassword);
-    userRepository.save(user);
-  }
-
-  @Override
-  public void deleteUser(String token, String password) {
-    User user = getUserByToken(token);
-    if (!passwordEncoder.matches(password, user.getPassword()))
-      throw new PasswordNotMatchException();
-    userRepository.delete(user);
-  }
-
-  @Override
-  public UserUnitedInfo getUserUnitedDetail(String username) {
-    User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-    return buildUserUnitedDetail(user);
-  }
-
-  @Override
-  public UserUnitedInfo getUserUnitedDetailByToken(String token) {
+  public User getUserByHttpRequest(HttpServletRequest request) {
+    String token = jwtProvider.getTokenByHttpRequestHeader(request);
     String email = jwtProvider.getUserEmailByToken(token);
-    User user = userRepository.findByEmail(email)
-      .orElseThrow(UserNotFoundException::new);
-
-    return buildUserUnitedDetail(user);
+    return dslRepository.findUserByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
-  private UserUnitedInfo buildUserUnitedDetail(User user) {
+  public User getUser(UserName userName) {
+    return dslRepository.findByUsername(userName.getUsername()).orElseThrow(UserNotFoundException::new);
+  }
+
+  public User getUser(UserEmail userEmail) {
+    return dslRepository.findUserByEmail(userEmail.getEmail()).orElseThrow(UserNotFoundException::new);
+  }
+
+  public UserUnitedInfo getUserUnitedInfo(User user) {
     long followerCount = followRepository.countByFollowingId(user);
     long followingCount = followRepository.countByFollowerId(user);
     long postCount = postRepository.countAllByUser(user);
-    long likeCount = likeRepository.countAllByUser(user);
+    long likeCount = likeDslRepository.countAllLike(user);
     UserInfo userInfo = UserInfo.from(user);
 
     return UserUnitedInfo.builder()
@@ -95,22 +55,6 @@ public class UserManager implements UserManageable {
       .addAllPostCount(postCount)
       .addUserInfo(userInfo)
       .build();
-  }
-
-  private void checkDuplicatedUserDetailWhenModified(UserUpdateRequest dto, User targetUser) {
-    boolean isAlreadyExistsEmail = userRepository.existsByEmail(dto.getEmail());
-    boolean isAlreadyExistsUsername = userRepository.existsByUsername(dto.getUsername());
-
-    if (isAlreadyExistsEmail && !dto.getEmail().equals(targetUser.getEmail()))
-      throw new AlreadyExistsUserException();
-
-    if (isAlreadyExistsUsername && !dto.getUsername().equals(targetUser.getUsername()))
-      throw new AlreadyExistsUserException();
-  }
-
-  private User getUserByToken(String token) {
-    String email = jwtProvider.getUserEmailByToken(token);
-    return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
   }
 
 }

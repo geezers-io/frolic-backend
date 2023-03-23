@@ -1,6 +1,5 @@
 package com.frolic.sns.post.model;
 
-import com.frolic.sns.global.common.file.model.ApplicationFile;
 import com.frolic.sns.post.dto.CreatePostRequest;
 import com.frolic.sns.global.util.models.BaseTimeAuditing.CreateAndModifiedTimeAuditEntity;
 import com.frolic.sns.user.model.User;
@@ -31,13 +30,13 @@ public class Post extends CreateAndModifiedTimeAuditEntity {
   private User user;
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-  private List<ApplicationFile> applicationFiles = new ArrayList<>();
+  private final List<PostFile> postFiles = new ArrayList<>();
+
+  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+  private final List<PostHashTag> postHashTags = new ArrayList<>();
 
   @Builder(setterPrefix = "add")
-  public Post(
-    String textContent,
-    User user
-  ) {
+  public Post(String textContent, User user) {
     this.textContent = textContent;
     this.user = user;
   }
@@ -53,11 +52,6 @@ public class Post extends CreateAndModifiedTimeAuditEntity {
   public void updateTextContent(String textContent) {
     // TODO: 2022-11-13 validation
     this.textContent = textContent;
-  }
-
-  @Deprecated
-  public void updateFiles(List<ApplicationFile> applicationFiles) {
-    this.applicationFiles = applicationFiles;
   }
 
 }

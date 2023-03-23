@@ -2,6 +2,7 @@ package com.frolic.sns.auth.application.finder;
 
 import com.frolic.sns.auth.application.finder.common.*;
 import com.frolic.sns.auth.dto.UserFindEmailRequest;
+import com.frolic.sns.auth.dto.UserFindEmailResponse;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
 import com.frolic.sns.auth.exception.OverTimeAuthCodeException;
@@ -43,7 +44,7 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoFin
   }
 
   @Override
-  public String authCodeVerify(UUID id, VerifyCodeRequest request) {
+  public AuthCode.MetaData verifyAuthCode(UUID id, VerifyCodeRequest request) {
     AuthCode.MetaData metaData = getAuthCode(id, FinderType.EMAIL);
 
     String receiveCode = request.getCode();
@@ -55,7 +56,7 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoFin
     String receivePhoneNumber = metaData.getDestination();
     String email = userRepository.getEmailByPhoneNumber(receivePhoneNumber).orElseThrow(UserNotFoundException::new);
     removeAuthCode(id);
-    return email;
+    return metaData;
   }
 
   @Override
@@ -63,6 +64,11 @@ public class EmailFindManager extends UserInfoFindManager implements UserInfoFin
     String convertedPhoneNumber = "+82" + receiver.substring(1);
     PhoneNumber receiverPhoneNumber = new PhoneNumber(convertedPhoneNumber);
     Message.creator(receiverPhoneNumber, sender, textContent).create();
+  }
+
+  public UserFindEmailResponse getFindEmailByDest(String dest) {
+    String email = userRepository.getEmailByPhoneNumber(dest).orElseThrow(UserNotFoundException::new);
+    return  new UserFindEmailResponse(email);
   }
 
   private void authCodeVerifyFailureCheck(AuthCode.MetaData metaData, UUID id, String receiveCode) {

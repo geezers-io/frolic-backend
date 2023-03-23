@@ -1,27 +1,71 @@
 package com.frolic.sns.post.application;
 
-import com.frolic.sns.post.dto.CreatePostRequest;
-import com.frolic.sns.post.dto.PostInfo;
-import com.frolic.sns.post.dto.UpdatePostRequest;
-import com.frolic.sns.global.common.file.application.CustomFile;
-import org.springframework.data.domain.Pageable;
+import com.frolic.sns.global.common.file.dto.FileInfo;
+import com.frolic.sns.global.exception.NotFoundResourceException;
+import com.frolic.sns.post.dto.v2.CreatePostRequest;
+import com.frolic.sns.post.dto.GetPostCursorRequest;
+import com.frolic.sns.post.dto.v2.PostInfo;
+import com.frolic.sns.post.dto.v2.UpdatePostRequest;
+import com.frolic.sns.post.model.Post;
+import com.frolic.sns.post.model.PostFile;
+import com.frolic.sns.post.repository.*;
+import com.frolic.sns.user.exception.NotPermissionException;
+import com.frolic.sns.user.model.User;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
-public interface PostCrudManager {
+@Service
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
+public class PostCrudManager {
 
-  PostInfo getPostById(Long id, String token);
+  private final HashTagManager hashTagManager;
+  private final PostRepository postRepository;
+  private final PostDslRespository postDslRespository;
+  private final PostFileDslRepository postFileDslRepository;
+  private final GetPostBusinessManager getPostBusinessManager;
+  private final CreatePostBusinessManager createPostBusinessManager;
+  private final UpdatePostBusinessManager updatePostBusinessManager;
 
-  PostInfo updatePostById(String token, Long id, UpdatePostRequest singleArticleInfoDto, List<CustomFile> customFiles);
 
-  void deletePostById(String token, Long id);
+  public List<PostInfo> getPosts(GetPostCursorRequest postCursorRequest) {
+    Long cursorId = postCursorRequest.getCursorId();
+    List<Post> posts = postDslRespository.findPosts(cursorId);
+    return getPostBusinessManager.createPostInfos(posts);
+  }
 
-  PostInfo createPost(String token, CreatePostRequest dto, List<CustomFile> files);
+  public PostInfo createPost(User user, CreatePostRequest createPostRequest) {
+    List<String> hashtags = createPostRequest.getHashtags();
+    Post newPost = createPostBusinessManager.commitAndReturnPost(createPostRequest, user);
+    hashTagManager.connectHashtagsWithPost(hashtags, newPost);
 
-  List<PostInfo> getPostByTokenAndPagination(String token, Pageable pageable);
+    List<PostFile> createdPostFiles = postFileDslRepository.createPostFilesByIds(newPost, createPostRequest.getImageIds());
+    List<FileInfo> fileInfos = createPostBusinessManager.getFileInfosFromPostFiles(createdPostFiles);
 
-  List<PostInfo> getEntirePostByPagination(Pageable pageable, String token);
+    return createPostBusinessManager.getPostInfo(newPost, createPostRequest, user, fileInfos);
+  }
 
-  List<PostInfo> getSearchParamByPagination(List<String> searchList, Pageable pageable, String token);
+  public PostInfo updatePost(Long postId, User user, UpdatePostRequest updatePostRequest) {
+    Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
+    updatePostBusinessManager.checkUserPermission(user, post.getUser());
+    updatePostBusinessManager.updateHashtags(post, updatePostRequest.getHashtags());
+    List<FileInfo> fileInfos = updatePostBusinessManager.updateImages(post, updatePostRequest.getImageIds());
+    post.updateTextContent(updatePostRequest.getTextContent());
+    postRepository.save(post);
+
+    return updatePostBusinessManager.getPostInfo(post, user, updatePostRequest.getHashtags(), fileInfos);
+  }
+
+  public void deletePost(Long postId, Long userId) {
+    Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
+    boolean isOwner = post.getUser().getId().equals(userId);
+    if (!isOwner) throw new NotPermissionException();
+    postRepository.delete(post);
+  }
 
 }
