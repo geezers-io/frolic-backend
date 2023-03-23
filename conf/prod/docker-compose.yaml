@@ -7,9 +7,9 @@ services:
       - "8081"
     env_file: ".prod.spring.env"
     restart: unless-stopped
-    container_name: spring_prod
-    networks:
-      - default
+    container_name: spring
+    depends_on:
+      - mariadb_prod
 
   nginx:
     image: "nginx:stable"
@@ -23,10 +23,17 @@ services:
       - spring_prod
     depends_on:
       - spring_prod
-    networks:
-      - default
 
-networks:
-  default:
-    external: true
-    name: frolic
+  mariadb_prod:
+    image: "mariadb:10.5"
+    container_name: mariadb
+    volumes:
+      - ./home/ec2-user/backup/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306/tcp"
+
+  redis_prod:
+    image: "redis:6.2"
+    container_name: redis
+    ports:
+      - "6379:6379/tcp"
