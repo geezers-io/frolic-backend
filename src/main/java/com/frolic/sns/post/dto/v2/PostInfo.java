@@ -1,7 +1,6 @@
 package com.frolic.sns.post.dto.v2;
 
 import com.frolic.sns.global.common.file.dto.FileInfo;
-import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.model.Hashtag;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.model.PostFile;
@@ -66,6 +65,8 @@ public class PostInfo {
     this.createdDate = createdDate;
     this.updatedDate = updatedDate;
   }
+
+  public static class PostInfoBuilder {}
 
   public static PostInfoBuilder addProperties(Post post) {
     return PostInfo.builder()

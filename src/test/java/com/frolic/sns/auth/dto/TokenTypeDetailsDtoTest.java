@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TokenDetailsDtoTest {
+class TokenTypeDetailsDtoTest {
 
   @Test
   @DisplayName("accessToken 이 없으면 예외가 발생한다.")

@@ -1,7 +1,6 @@
 package com.frolic.sns.user.api;
 
 import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.global.config.security.JwtProvider;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.application.UserService;
 import com.frolic.sns.user.dto.*;
@@ -25,7 +24,6 @@ public class UserManagementApi {
 
   private final UserService userService;
   private final UserManager userManager;
-  private final JwtProvider jwtProvider;
 
   @UserInfoDocs
   @GetMapping("")
@@ -59,10 +57,10 @@ public class UserManagementApi {
   @PatchMapping("/password")
   public ResponseEntity<Void> updateUserPasswordApi(
     HttpServletRequest request,
-    @RequestBody @Valid PasswordUpdateRequest dto
+    @RequestBody @Valid PasswordUpdateRequest updateRequest
     ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userService.updateUserPassword(token, dto);
+    User user = userManager.getUserByHttpRequest(request);
+    userService.updateUserPassword(user, updateRequest);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
@@ -70,10 +68,10 @@ public class UserManagementApi {
   @DeleteMapping("")
   public ResponseEntity<Void> deleteUserApi(
     HttpServletRequest request,
-    @RequestBody @Valid UserDeleteRequest dto
+    @RequestBody @Valid UserDeleteRequest userDeleteRequest
     ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    userService.deleteUser(token, dto.getPassword());
+    User user = userManager.getUserByHttpRequest(request);
+    userService.deleteUser(user, userDeleteRequest.getPassword());
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 

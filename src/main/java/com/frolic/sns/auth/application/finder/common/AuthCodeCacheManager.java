@@ -2,13 +2,13 @@ package com.frolic.sns.auth.application.finder.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class AuthCodeCacheManager {
 
   private final ValueOperations<String, AuthCode.MetaData> redisKeyValueStore;

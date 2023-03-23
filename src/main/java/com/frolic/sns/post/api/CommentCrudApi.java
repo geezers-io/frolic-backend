@@ -5,7 +5,7 @@ import com.frolic.sns.post.dto.CreateCommentRequest;
 import com.frolic.sns.post.dto.CommentInfo;
 import com.frolic.sns.post.swagger.*;
 import com.frolic.sns.global.common.ResponseHelper;
-import com.frolic.sns.global.config.security.JwtProvider;
+import com.frolic.sns.auth.application.security.JwtProvider;
 import com.frolic.sns.user.application.UserManager;
 import com.frolic.sns.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +49,8 @@ public class CommentCrudApi {
     HttpServletRequest request,
     @PathVariable(name = "commentId") Long commentId
   ) {
-    String token = jwtProvider.getTokenByHttpRequestHeader(request);
-    commentCrudService.deleteComment(token, commentId);
+    User user = userManager.getUserByHttpRequest(request);
+    commentCrudService.deleteComment(user, commentId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
