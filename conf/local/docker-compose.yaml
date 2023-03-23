@@ -5,7 +5,7 @@ services:
     image: mariadb:10.5
     ports:
       - "3307:3306"
-    env_file: ".local.mariadb.env"
+    env_file: "../prod/.prod.mariadb.env"
     container_name: mariadb_local
     environment:
       TZ: Asia/Seoul
