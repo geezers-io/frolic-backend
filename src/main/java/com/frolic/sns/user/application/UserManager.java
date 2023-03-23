@@ -11,7 +11,6 @@ import com.frolic.sns.user.exception.UserNotFoundException;
 import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.repository.FollowRepository;
 import com.frolic.sns.user.repository.UserDslRepository;
-import com.frolic.sns.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public final class UserManager {
 
-  private final UserRepository repository;
   private final UserDslRepository dslRepository;
   private final JwtProvider jwtProvider;
   private final FollowRepository followRepository;

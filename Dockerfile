@@ -1,8 +1,8 @@
 FROM openjdk:11-jdk AS builder
 COPY gradlew .
 COPY gradle gradle
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
+COPY build.gradle .
+COPY settings.gradle .
 COPY src src
 COPY conf conf
 RUN chmod +x ./gradlew

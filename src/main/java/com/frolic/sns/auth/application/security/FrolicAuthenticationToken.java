@@ -3,8 +3,6 @@ package com.frolic.sns.auth.application.security;
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import java.util.Map;
-
 @Getter
 public class FrolicAuthenticationToken extends AbstractAuthenticationToken {
 
