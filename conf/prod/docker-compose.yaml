@@ -31,6 +31,8 @@ services:
       - ./home/ec2-user/backup/mysql:/var/lib/mysql
     ports:
       - "3306:3306/tcp"
+    env_file:
+      - .prod.mariadb.env
 
   redis_prod:
     image: "redis:6.2"
