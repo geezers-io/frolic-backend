@@ -1,6 +1,7 @@
 package com.frolic.sns.global.config.spring;
 
 import com.twilio.Twilio;
+import com.twilio.type.PhoneNumber;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class SmsTwilioConfiguration {
     Twilio.setUsername(sid);
     Twilio.setPassword(token);
     log.info("Initializing Twilio Configuration");
+  }
+
+  public PhoneNumber getSenderPhoneNumber() {
+    return new PhoneNumber(twilioPhoneNumber);
   }
 
 }
