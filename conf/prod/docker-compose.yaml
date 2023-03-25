@@ -4,16 +4,14 @@ services:
   spring_prod:
     build: "../../"
     ports:
-      - "8081"
+      - "8080"
     env_file: ".prod.spring.env"
     restart: unless-stopped
-    container_name: spring
     depends_on:
       - mariadb_prod
 
-  nginx:
+  nginx_prod:
     image: "nginx:stable"
-    container_name: nginx_prod
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -26,7 +24,6 @@ services:
 
   mariadb_prod:
     image: "mariadb:10.5"
-    container_name: mariadb
     volumes:
       - ./home/ec2-user/backup/mysql:/var/lib/mysql
     ports:
@@ -36,6 +33,5 @@ services:
 
   redis_prod:
     image: "redis:6.2"
-    container_name: redis
     ports:
       - "6379:6379/tcp"
