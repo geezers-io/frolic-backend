@@ -34,19 +34,21 @@ public class UserDslRepository {
   }
 
   public boolean isExistsByEmail(String email) {
-    return jpaQueryFactory
-      .selectOne()
+    Long userId = jpaQueryFactory
+      .select(user.id)
       .from(user)
       .where(user.email.eq(email))
-      .fetchFirst() > 0;
+      .fetchFirst();
+    return userId != null;
   }
 
   public boolean isExistsUsername(String username) {
-    return jpaQueryFactory
-      .selectOne()
+    Long userId = jpaQueryFactory
+      .select(user.id)
       .from(user)
       .where(user.username.eq(username))
-      .fetchFirst() > 0;
+      .fetchFirst();
+    return userId != null;
   }
 
   public Optional<String> findUserEmailByPhone(String phone) {
