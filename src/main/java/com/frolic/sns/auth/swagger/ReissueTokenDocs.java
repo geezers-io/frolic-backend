@@ -18,7 +18,7 @@ import java.lang.annotation.*;
     @ApiResponse(
       responseCode = "200",
       description = "OK",
-      content = @Content(schema = @Schema(implementation = AuthSchemas.ReissueToken.class))
+      content = @Content(schema = @Schema(implementation = AuthSchemas.AccessToken.class))
     )
   },
   security = { @SecurityRequirement(name = "bearer-key") }
