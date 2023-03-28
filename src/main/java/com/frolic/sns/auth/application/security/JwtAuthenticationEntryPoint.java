@@ -1,8 +1,10 @@
 package com.frolic.sns.auth.application.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpHeaders;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -14,35 +16,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper objectMapper;
 
   @Override
-  public void commence(
-    HttpServletRequest request,
-    HttpServletResponse response,
-    AuthenticationException authException
-  ) throws IOException {
-    response.setContentType("application/json");
+  public void commence(HttpServletRequest request, HttpServletResponse response,  AuthenticationException authException) throws IOException {
+    log.error(authException.getMessage());
+    sendErrorResponse(response, "인증 권한이 없습니다.");
+  }
+
+  private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
     response.setCharacterEncoding("utf-8");
-    String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-    Map<String, String> resData = new HashMap<>();
-    if (bearerToken == null) {
-      resData.put("error", "헤더에 토큰이 존재하지 않습니다.");
-      String resDataString = mapping(resData);
-      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-      response.getWriter().write(resDataString);
-      return;
-    }
-    resData.put("error", "토큰이 유효하지 않습니다.");
-    String resDataString = mapping(resData);
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    response.getWriter().write(resDataString);
+    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    Map<String, String> data = new HashMap<>();
+    data.put("error", message);
+    response.getWriter().write(objectMapper.writeValueAsString(data));
   }
 
-  private String mapping(Map<String, String> data) throws JsonProcessingException {
-    return mapper.writeValueAsString(data);
-  }
 }

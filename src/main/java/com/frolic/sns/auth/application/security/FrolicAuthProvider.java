@@ -24,13 +24,14 @@ public class FrolicAuthProvider implements AuthenticationProvider {
     String credentials =  (String) authentication.getCredentials();
     Claims claims = jwtProvider.parseClaims(credentials);
     String userEmail = (String) claims.get(TokenKey.USER_EMAIL.name());
+    log.info("userEmail in AuthenticationProvider: {}", userEmail);
     User user = userManager.getUser(new UserEmail(userEmail));
     return new FrolicAuthenticationToken(user.getEmail(), credentials);
   }
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return authentication.isInstance(Authentication.class);
+    return authentication.equals(FrolicAuthenticationToken.class);
   }
 
 }
