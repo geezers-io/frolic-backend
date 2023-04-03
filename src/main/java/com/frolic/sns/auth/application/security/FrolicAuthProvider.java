@@ -30,7 +30,7 @@ public class FrolicAuthProvider implements AuthenticationProvider {
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return authentication.isInstance(Authentication.class);
+    return authentication.equals(FrolicAuthenticationToken.class);
   }
 
 }

@@ -10,6 +10,7 @@ import com.frolic.sns.user.model.User;
 import com.frolic.sns.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
 
   private final UserRepository userRepository;
   private final JwtProvider jwtProvider;
   private final PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
   private final TokenCreator tokenCreator;
   private final UserManager userManager;
   private final UserValidator userValidator;
   private final RefreshTokenCacheManager tokenCacheManager;
+  private final AuthenticationManager authenticationManager;
 
   public UserLoginResponse signup(UserSignupRequest userSignupRequest) {
     userValidator.validateUserExists(userSignupRequest.getEmail(), userSignupRequest.getUsername());
@@ -52,10 +54,9 @@ public class AuthService {
     String accessToken = tokenCreator.createToken(userEmail, TokenType.ACCESS_TOKEN);
     String refreshToken = tokenCreator.createToken(userEmail, TokenType.REFRESH_TOKEN);
 
-    FrolicAuthenticationToken emailPasswordAuthToken = new FrolicAuthenticationToken(userEmail, accessToken);
-    authenticationManager.authenticate(emailPasswordAuthToken);
+    FrolicAuthenticationToken frolicAuthToken = new FrolicAuthenticationToken(userEmail, accessToken);
+    authenticationManager.authenticate(frolicAuthToken);
     tokenCacheManager.store(userEmail, refreshToken);
-
     TokenInfo tokenInfo = TokenInfo.builder()
       .addAccessToken(accessToken)
       .addRefreshToken(refreshToken)

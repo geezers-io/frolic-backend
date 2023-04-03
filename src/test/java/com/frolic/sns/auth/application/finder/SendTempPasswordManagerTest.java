@@ -2,6 +2,7 @@ package com.frolic.sns.auth.application.finder;
 
 import com.frolic.sns.auth.application.finder.common.AuthCode;
 import com.frolic.sns.auth.application.finder.common.FinderType;
+import com.frolic.sns.auth.application.finder.common.UserFinderManager;
 import com.frolic.sns.auth.dto.VerifyCodeRequest;
 import com.frolic.sns.auth.exception.MisMatchAuthCodeException;
 import com.frolic.sns.auth.exception.OverTriedAuthCodeException;
@@ -25,14 +26,16 @@ public class SendTempPasswordManagerTest {
     protected SendTempPasswordManager sendTempPasswordManager;
     @Autowired
     protected UserRepository userRepository;
+    @Autowired
+    protected UserFinderManager userFinderManager;
 
     UUID id;
 
     @BeforeEach
     void beforeEach() {
-        id = sendTempPasswordManager.createId();
-        String code = sendTempPasswordManager.createCode();
-        sendTempPasswordManager.storeAuthCode(
+        id = userFinderManager.createId();
+        String code = userFinderManager.createCode();
+        userFinderManager.storeAuthCode(
                 AuthCode.builder()
                         .addId(id)
                         .addCode(code)
@@ -50,7 +53,7 @@ public class SendTempPasswordManagerTest {
         // given
 
         // when
-        AuthCode.MetaData metaData = sendTempPasswordManager.getAuthCode(id, FinderType.PASSWORD);
+        AuthCode.MetaData metaData = userFinderManager.getAuthCode(id, FinderType.PASSWORD);
 
         // then
         Assertions.assertNotNull(metaData);

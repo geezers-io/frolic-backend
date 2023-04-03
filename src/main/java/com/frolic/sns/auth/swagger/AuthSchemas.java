@@ -22,4 +22,13 @@ public class AuthSchemas {
     RefreshTokenData data;
   }
 
+  @Getter
+  public static class AccessToken {
+    @Getter
+    static class RefreshTokenDetails {
+      String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoiZ2FsYXh5aGk0Mjc2QGdtYWlsLmNvbSIsIlRPS0VOX1RZUEUiOiJBQ0NFU1NfVE9LRU4iLCJpYXQiOjE2ODAwMDI4MDgsImV4cCI6MTY4MDAwMzQwOH0.QBkf0GNMnD6p";
+    }
+    RefreshTokenDetails data;
+  }
+
 }
