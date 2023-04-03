@@ -5,7 +5,7 @@ services:
     container_name: spring_prod
     build: "../../"
     ports:
-      - "8080"
+      - "8080:8080"
     env_file: ".prod.spring.env"
     restart: always
     depends_on:
@@ -13,13 +13,10 @@ services:
 
   webserver:
     container_name: nginx
-    image: "nginx:stable"
+    image: "nginx:latest"
     restart: always
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf:/var/www/certbot
-      - ./certbot/var/www/html:/var/www/html
+      - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "80:80"
       - "443:443"
@@ -28,33 +25,10 @@ services:
     depends_on:
       - spring_prod
 
-
-  certbot:
-    image: "certbot/certbot:latest"
-    container_name: certbot
-    command:
-      certonly
-        --webroot
-        --webroot-path /var/www/html
-        -m galaxyhi4276@gmail.com
-        --agree-tos
-        --force-renewal
-        -d galaxyhi4276.co
-        -d www.galaxyhi4276.co
-    volumes:
-      - ./certbot/etc:/etc/letsencrypt
-      - ./certbot/var:/var
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
-    depends_on:
-      - webserver
-
   mariadb_prod:
     image: "mariadb:10.5"
-    container_name: mariadb_prod
-    restart: always
-#    volumes:
-#      - ./home/ec2-user/backup/mysql:/var/lib/mysql
+    volumes:
+      - /home/ec2-user/backup/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
     env_file:
