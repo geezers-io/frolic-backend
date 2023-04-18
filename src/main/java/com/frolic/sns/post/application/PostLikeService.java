@@ -1,5 +1,6 @@
 package com.frolic.sns.post.application;
 
+import com.frolic.sns.post.dto.LikeCount;
 import com.frolic.sns.post.exception.AlreadyExistsLikeException;
 import com.frolic.sns.post.model.Post;
 import com.frolic.sns.post.model.Like;
@@ -21,7 +22,7 @@ public class PostLikeService {
   private final LikeDslRepository likeDslRepository;
   private final PostRepository postRepository;
 
-  public Long addLike(User user, Long postId) {
+  public LikeCount addLike(User user, Long postId) {
     Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
     if (likeDslRepository.isExistsLike(user, post))
       throw new AlreadyExistsLikeException();
@@ -29,14 +30,16 @@ public class PostLikeService {
     Like newLike = new Like(user, post);
     likeRepository.save(newLike);
 
-    return likeDslRepository.countAllLike(post);
+    Long count = likeDslRepository.countAllLike(post);
+    return new LikeCount(count);
   }
 
-  public Long removeLike(User user, Long postId) {
+  public LikeCount removeLike(User user, Long postId) {
     Post post = postRepository.findById(postId).orElseThrow(NotFoundResourceException::new);
     Like like = likeDslRepository.findLike(user, post).orElseThrow(NotFoundResourceException::new);
     likeRepository.delete(like);
-    return likeDslRepository.countAllLike(post);
+    Long count = likeDslRepository.countAllLike(post);
+    return new LikeCount(count);
   }
 
 }
