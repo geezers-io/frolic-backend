@@ -8,7 +8,6 @@ Client Repository is [Here](https://github.com/geezers-io/frolic-frontend)
 
 # Introduce Developers
 
-<!-- ![galaxy4276](./.github/me_at_busan.png) -->
 <img src="./.github/me_at_busan.png" width="150" height="150" 
 style="border-radius: 150px" />
 
@@ -17,17 +16,17 @@ style="border-radius: 150px" />
 
 In this project, I did the overall application design and writing, and implemented an authentication system utilizing Spring Security and the Json Web Token specification.
 
-I have also built a CI/CD environment utilizing Jenkins and Docker
+I have also built a CI/CD environment utilizing Jenkins and DockerS
 
 <hr />
 
-<img src="./.github/한지연_증사.jpg" width="150" height="150" 
+<img src="./.github/한지연_증사.jpg" width="150" height="200" 
 style="border-radius: 150px" />
 
-Han Ji Yeon ([@Rungky](https://github.com/rungky))
+### Han Ji Yeon ([@Rungky](https://github.com/rungky))
 
 #### Java & Spring Developer
-I am a second year Java Spring developer and in my current project, I contributed to the overall maintenance and code quality of the application by performing tasks related to application authentication.
+I am a second year Java Spring developer and in this project, I contributed to the overall maintenance and code quality of the application by performing tasks related to application authentication.
  
 
 # Getting Started
