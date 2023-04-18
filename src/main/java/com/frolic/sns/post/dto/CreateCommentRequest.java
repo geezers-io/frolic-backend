@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import static com.frolic.sns.global.util.message.CommonMessageUtils.getIllegalFieldError;
 
@@ -17,8 +18,8 @@ public class CreateCommentRequest {
   @NotNull
   private Long postId;
 
-  @NotNull
-  @Max(value = 140, message = "텍스트 길이는 150자 미만이어야 합니다.")
+  @NotBlank
+  @Size(min = 1, max = 140)
   private String textContent;
 
   @Builder(setterPrefix = "add")

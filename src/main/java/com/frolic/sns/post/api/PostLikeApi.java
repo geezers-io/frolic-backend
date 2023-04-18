@@ -1,6 +1,7 @@
 package com.frolic.sns.post.api;
 
 import com.frolic.sns.post.application.PostLikeService;
+import com.frolic.sns.post.dto.LikeCount;
 import com.frolic.sns.post.swagger.PostDisLikeDocs;
 import com.frolic.sns.post.swagger.PostLikeDocs;
 import com.frolic.sns.user.application.UserManager;
@@ -25,17 +26,17 @@ public class PostLikeApi {
 
   @PostLikeDocs
   @GetMapping
-  public ResponseEntity<Map<String, Long>> likeApi(HttpServletRequest request, @RequestParam(name = "postId") Long postId) {
+  public ResponseEntity<Map<String, LikeCount>> likeApi(HttpServletRequest request, @RequestParam(name = "postId") Long postId) {
     User user = userManager.getUserByHttpRequest(request);
-    Long count = this.postLikeService.addLike(user, postId);
+    LikeCount count = this.postLikeService.addLike(user, postId);
     return ResponseEntity.status(HttpStatus.CREATED).body(createDataMap(count));
   }
 
   @PostDisLikeDocs
   @DeleteMapping
-  public ResponseEntity<Map<String, Long>> unLikeApi(HttpServletRequest request, @RequestParam(name = "postId") Long postId) {
+  public ResponseEntity<Map<String, LikeCount>> unLikeApi(HttpServletRequest request, @RequestParam(name = "postId") Long postId) {
     User user = userManager.getUserByHttpRequest(request);
-    Long count =  this.postLikeService.removeLike(user, postId);
+    LikeCount count =  this.postLikeService.removeLike(user, postId);
     return ResponseEntity.status(HttpStatus.OK).body(createDataMap(count));
   }
 
